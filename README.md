@@ -70,6 +70,15 @@ import vpcloud_client
 
 Execute `pytest` to run the tests.
 
+## Configuration
+
+Before using the SDK, you need to export the following environment variables:
+
+```sh
+export VPCLOUD_CLIENT_ID=
+export VPCLOUD_CLIENT_SECRET=
+```
+
 ## Getting Started
 
 Please follow the [installation procedure](#installation--usage) and then run the following:
