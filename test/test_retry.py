@@ -10,8 +10,6 @@
 import pytest
 import time
 
-import pytest_asyncio
-
 from unittest.mock import Mock, patch, MagicMock
 from vpcloud_client.retry import RetryStrategy
 from vpcloud_client import Configuration, ApiClient
@@ -160,8 +158,8 @@ class TestRetryIntegration:
             retry_strategy=RetryStrategy(max_retries=2, jitter=False)
         )
 
-    @pytest.mark.asyncio
-    async def test_retry_on_429(self, retry_config):
+    
+    def test_retry_on_429(self, retry_config):
         """Test retry logic handles 429 responses."""
         api_client = ApiClient(retry_config)
         
@@ -172,11 +170,11 @@ class TestRetryIntegration:
         ]
         
         with patch.object(api_client.rest_client, 'request', side_effect=mock_responses):
-            response = await api_client.call_api("GET", "https://api.test.example.com/test")
+            response = api_client.call_api("GET", "https://api.test.example.com/test")
             assert response.status == 200
 
-    @pytest.mark.asyncio
-    async def test_retry_exhausted(self, retry_config):
+    
+    def test_retry_exhausted(self, retry_config):
         """Test exception raised when retries exhausted."""
         api_client = ApiClient(retry_config)
         
@@ -185,11 +183,11 @@ class TestRetryIntegration:
         
         with patch.object(api_client.rest_client, 'request', return_value=mock_response):
             with pytest.raises(ApiException) as exc_info:
-                await api_client.call_api("GET", "https://api.test.example.com/test")
+                api_client.call_api("GET", "https://api.test.example.com/test")
             assert exc_info.value.status == 500
 
-    @pytest.mark.asyncio
-    async def test_no_retry_on_400(self, retry_config):
+    
+    def test_no_retry_on_400(self, retry_config):
         """Test that 400 Bad Request does not trigger retry."""
         api_client = ApiClient(retry_config)
         
@@ -197,7 +195,7 @@ class TestRetryIntegration:
         
         with patch.object(api_client.rest_client, 'request', return_value=mock_response) as mock_request:
             # call_api returns the response directly (exceptions are raised in response_deserialize)
-            response = await api_client.call_api(
+            response = api_client.call_api(
                 "GET", 
                 "https://api.test.example.com/test",
                 header_params={}
