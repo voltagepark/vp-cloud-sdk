@@ -44,7 +44,7 @@ class FleetsApi:
 
 
     @validate_call
-    def get_fleet(
+    async def get_fleet(
         self,
         fleet_id: Annotated[UUID, Field(description="Fleet identifier")],
         _request_timeout: Union[
@@ -101,11 +101,11 @@ class FleetsApi:
             '404': "ErrorResponse",
             '500': "ErrorResponse",
         }
-        response_data = self.api_client.call_api(
+        response_data = await self.api_client.call_api(
             *_param,
             _request_timeout=_request_timeout
         )
-        response_data.read()
+        await response_data.read()
         return self.api_client.response_deserialize(
             response_data=response_data,
             response_types_map=_response_types_map,
@@ -113,7 +113,7 @@ class FleetsApi:
 
 
     @validate_call
-    def get_fleet_with_http_info(
+    async def get_fleet_with_http_info(
         self,
         fleet_id: Annotated[UUID, Field(description="Fleet identifier")],
         _request_timeout: Union[
@@ -170,11 +170,11 @@ class FleetsApi:
             '404': "ErrorResponse",
             '500': "ErrorResponse",
         }
-        response_data = self.api_client.call_api(
+        response_data = await self.api_client.call_api(
             *_param,
             _request_timeout=_request_timeout
         )
-        response_data.read()
+        await response_data.read()
         return self.api_client.response_deserialize(
             response_data=response_data,
             response_types_map=_response_types_map,
@@ -182,7 +182,7 @@ class FleetsApi:
 
 
     @validate_call
-    def get_fleet_without_preload_content(
+    async def get_fleet_without_preload_content(
         self,
         fleet_id: Annotated[UUID, Field(description="Fleet identifier")],
         _request_timeout: Union[
@@ -239,7 +239,7 @@ class FleetsApi:
             '404': "ErrorResponse",
             '500': "ErrorResponse",
         }
-        response_data = self.api_client.call_api(
+        response_data = await self.api_client.call_api(
             *_param,
             _request_timeout=_request_timeout
         )
@@ -320,7 +320,7 @@ class FleetsApi:
 
 
     @validate_call
-    def get_fleet_health(
+    async def get_fleet_health(
         self,
         fleet_id: Annotated[UUID, Field(description="Fleet identifier")],
         _request_timeout: Union[
@@ -378,11 +378,11 @@ class FleetsApi:
             '422': "GetFleetHealth422Response",
             '500': "ErrorResponse",
         }
-        response_data = self.api_client.call_api(
+        response_data = await self.api_client.call_api(
             *_param,
             _request_timeout=_request_timeout
         )
-        response_data.read()
+        await response_data.read()
         return self.api_client.response_deserialize(
             response_data=response_data,
             response_types_map=_response_types_map,
@@ -390,7 +390,7 @@ class FleetsApi:
 
 
     @validate_call
-    def get_fleet_health_with_http_info(
+    async def get_fleet_health_with_http_info(
         self,
         fleet_id: Annotated[UUID, Field(description="Fleet identifier")],
         _request_timeout: Union[
@@ -448,11 +448,11 @@ class FleetsApi:
             '422': "GetFleetHealth422Response",
             '500': "ErrorResponse",
         }
-        response_data = self.api_client.call_api(
+        response_data = await self.api_client.call_api(
             *_param,
             _request_timeout=_request_timeout
         )
-        response_data.read()
+        await response_data.read()
         return self.api_client.response_deserialize(
             response_data=response_data,
             response_types_map=_response_types_map,
@@ -460,7 +460,7 @@ class FleetsApi:
 
 
     @validate_call
-    def get_fleet_health_without_preload_content(
+    async def get_fleet_health_without_preload_content(
         self,
         fleet_id: Annotated[UUID, Field(description="Fleet identifier")],
         _request_timeout: Union[
@@ -518,7 +518,7 @@ class FleetsApi:
             '422': "GetFleetHealth422Response",
             '500': "ErrorResponse",
         }
-        response_data = self.api_client.call_api(
+        response_data = await self.api_client.call_api(
             *_param,
             _request_timeout=_request_timeout
         )
@@ -599,7 +599,7 @@ class FleetsApi:
 
 
     @validate_call
-    def list_fleets(
+    async def list_fleets(
         self,
         limit: Annotated[Optional[Annotated[int, Field(le=100, strict=True, ge=0)]], Field(description="Optional: Maximum number of fleets to return per page (0-100). Use 0 to get all results in paginated format. If provided, response includes pagination metadata.")] = None,
         next_token: Annotated[Optional[StrictStr], Field(description="Optional: Pagination token from previous response to retrieve the next page. Only valid when 'limit' is provided.")] = None,
@@ -660,11 +660,11 @@ class FleetsApi:
             '400': "ErrorResponse",
             '500': "ErrorResponse",
         }
-        response_data = self.api_client.call_api(
+        response_data = await self.api_client.call_api(
             *_param,
             _request_timeout=_request_timeout
         )
-        response_data.read()
+        await response_data.read()
         return self.api_client.response_deserialize(
             response_data=response_data,
             response_types_map=_response_types_map,
@@ -672,7 +672,7 @@ class FleetsApi:
 
 
     @validate_call
-    def list_fleets_with_http_info(
+    async def list_fleets_with_http_info(
         self,
         limit: Annotated[Optional[Annotated[int, Field(le=100, strict=True, ge=0)]], Field(description="Optional: Maximum number of fleets to return per page (0-100). Use 0 to get all results in paginated format. If provided, response includes pagination metadata.")] = None,
         next_token: Annotated[Optional[StrictStr], Field(description="Optional: Pagination token from previous response to retrieve the next page. Only valid when 'limit' is provided.")] = None,
@@ -733,11 +733,11 @@ class FleetsApi:
             '400': "ErrorResponse",
             '500': "ErrorResponse",
         }
-        response_data = self.api_client.call_api(
+        response_data = await self.api_client.call_api(
             *_param,
             _request_timeout=_request_timeout
         )
-        response_data.read()
+        await response_data.read()
         return self.api_client.response_deserialize(
             response_data=response_data,
             response_types_map=_response_types_map,
@@ -745,7 +745,7 @@ class FleetsApi:
 
 
     @validate_call
-    def list_fleets_without_preload_content(
+    async def list_fleets_without_preload_content(
         self,
         limit: Annotated[Optional[Annotated[int, Field(le=100, strict=True, ge=0)]], Field(description="Optional: Maximum number of fleets to return per page (0-100). Use 0 to get all results in paginated format. If provided, response includes pagination metadata.")] = None,
         next_token: Annotated[Optional[StrictStr], Field(description="Optional: Pagination token from previous response to retrieve the next page. Only valid when 'limit' is provided.")] = None,
@@ -806,7 +806,7 @@ class FleetsApi:
             '400': "ErrorResponse",
             '500': "ErrorResponse",
         }
-        response_data = self.api_client.call_api(
+        response_data = await self.api_client.call_api(
             *_param,
             _request_timeout=_request_timeout
         )

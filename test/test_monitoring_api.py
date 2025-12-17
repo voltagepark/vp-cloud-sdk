@@ -29,7 +29,8 @@ class TestMonitoringApi:
         config = create_test_config()
         return MonitoringApi(api_client=ApiClient(config))
 
-    def test_get_fleet_grafana_dashboards_success(self, api_instance):
+    @pytest.mark.asyncio
+    async def test_get_fleet_grafana_dashboards_success(self, api_instance):
         """Test successful get_fleet_grafana_dashboards request.
         
         Get Grafana dashboards for a specific fleet
@@ -41,7 +42,8 @@ class TestMonitoringApi:
             # Test implementation
             pass
 
-    def test_get_fleet_grafana_dashboards_error(self, api_instance):
+    @pytest.mark.asyncio
+    async def test_get_fleet_grafana_dashboards_error(self, api_instance):
         """Test get_fleet_grafana_dashboards error handling.
         
         Get Grafana dashboards for a specific fleet
@@ -53,7 +55,8 @@ class TestMonitoringApi:
             # Test error handling
             pass
 
-    def test_list_fleet_grafana_dashboards_success(self, api_instance):
+    @pytest.mark.asyncio
+    async def test_list_fleet_grafana_dashboards_success(self, api_instance):
         """Test successful list_fleet_grafana_dashboards request.
         
         List Grafana dashboards for all fleets
@@ -65,7 +68,8 @@ class TestMonitoringApi:
             # Test implementation
             pass
 
-    def test_list_fleet_grafana_dashboards_error(self, api_instance):
+    @pytest.mark.asyncio
+    async def test_list_fleet_grafana_dashboards_error(self, api_instance):
         """Test list_fleet_grafana_dashboards error handling.
         
         List Grafana dashboards for all fleets

@@ -98,14 +98,14 @@ configuration = vpcloud_client.Configuration(
 
 
 # Enter a context with an instance of the API client
-with vpcloud_client.ApiClient(configuration) as api_client:
+async with vpcloud_client.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = vpcloud_client.FleetsApi(api_client)
     fleet_id = '900e8eac-2b1f-421f-a635-72556268b41f' # str | Fleet identifier
 
     try:
         # Get fleet details
-        api_response = api_instance.get_fleet(fleet_id)
+        api_response = await api_instance.get_fleet(fleet_id)
         print("The response of FleetsApi->get_fleet:\n")
         pprint(api_response)
     except ApiException as e:

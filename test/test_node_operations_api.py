@@ -29,7 +29,8 @@ class TestNodeOperationsApi:
         config = create_test_config()
         return NodeOperationsApi(api_client=ApiClient(config))
 
-    def test_remediate_nodes_success(self, api_instance):
+    @pytest.mark.asyncio
+    async def test_remediate_nodes_success(self, api_instance):
         """Test successful remediate_nodes request.
         
         Fix unhealthy nodes
@@ -41,7 +42,8 @@ class TestNodeOperationsApi:
             # Test implementation
             pass
 
-    def test_remediate_nodes_error(self, api_instance):
+    @pytest.mark.asyncio
+    async def test_remediate_nodes_error(self, api_instance):
         """Test remediate_nodes error handling.
         
         Fix unhealthy nodes

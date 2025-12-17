@@ -51,7 +51,7 @@ configuration = vpcloud_client.Configuration(
 )
 
 # Enter a context with an instance of the API client
-with vpcloud_client.ApiClient(configuration) as api_client:
+async with vpcloud_client.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = vpcloud_client.NodeOperationsApi(api_client)
     fleet_id = '900e8eac-2b1f-421f-a635-72556268b41f' # str | Fleet identifier
@@ -60,7 +60,7 @@ with vpcloud_client.ApiClient(configuration) as api_client:
 
     try:
         # Fix unhealthy nodes
-        api_response = api_instance.remediate_nodes(fleet_id, remediate_node_request, idempotency_key=idempotency_key)
+        api_response = await api_instance.remediate_nodes(fleet_id, remediate_node_request, idempotency_key=idempotency_key)
         print("The response of NodeOperationsApi->remediate_nodes:\n")
         pprint(api_response)
     except Exception as e:

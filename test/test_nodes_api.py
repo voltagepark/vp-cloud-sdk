@@ -29,7 +29,8 @@ class TestNodesApi:
         config = create_test_config()
         return NodesApi(api_client=ApiClient(config))
 
-    def test_get_node_by_fleet_id_success(self, api_instance):
+    @pytest.mark.asyncio
+    async def test_get_node_by_fleet_id_success(self, api_instance):
         """Test successful get_node_by_fleet_id request.
         
         Get node details
@@ -41,7 +42,8 @@ class TestNodesApi:
             # Test implementation
             pass
 
-    def test_get_node_by_fleet_id_error(self, api_instance):
+    @pytest.mark.asyncio
+    async def test_get_node_by_fleet_id_error(self, api_instance):
         """Test get_node_by_fleet_id error handling.
         
         Get node details
@@ -53,7 +55,8 @@ class TestNodesApi:
             # Test error handling
             pass
 
-    def test_list_nodes_by_fleet_id_success(self, api_instance):
+    @pytest.mark.asyncio
+    async def test_list_nodes_by_fleet_id_success(self, api_instance):
         """Test successful list_nodes_by_fleet_id request.
         
         List nodes in a fleet
@@ -65,7 +68,8 @@ class TestNodesApi:
             # Test implementation
             pass
 
-    def test_list_nodes_by_fleet_id_error(self, api_instance):
+    @pytest.mark.asyncio
+    async def test_list_nodes_by_fleet_id_error(self, api_instance):
         """Test list_nodes_by_fleet_id error handling.
         
         List nodes in a fleet

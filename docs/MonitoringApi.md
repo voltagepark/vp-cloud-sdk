@@ -52,14 +52,14 @@ configuration = vpcloud_client.Configuration(
 )
 
 # Enter a context with an instance of the API client
-with vpcloud_client.ApiClient(configuration) as api_client:
+async with vpcloud_client.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = vpcloud_client.MonitoringApi(api_client)
     fleet_id = '900e8eac-2b1f-421f-a635-72556268b41f' # str | Fleet identifier
 
     try:
         # Get Grafana dashboards for a specific fleet
-        api_response = api_instance.get_fleet_grafana_dashboards(fleet_id)
+        api_response = await api_instance.get_fleet_grafana_dashboards(fleet_id)
         print("The response of MonitoringApi->get_fleet_grafana_dashboards:\n")
         pprint(api_response)
     except Exception as e:
@@ -141,13 +141,13 @@ configuration = vpcloud_client.Configuration(
 )
 
 # Enter a context with an instance of the API client
-with vpcloud_client.ApiClient(configuration) as api_client:
+async with vpcloud_client.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = vpcloud_client.MonitoringApi(api_client)
 
     try:
         # List Grafana dashboards for all fleets
-        api_response = api_instance.list_fleet_grafana_dashboards()
+        api_response = await api_instance.list_fleet_grafana_dashboards()
         print("The response of MonitoringApi->list_fleet_grafana_dashboards:\n")
         pprint(api_response)
     except Exception as e:

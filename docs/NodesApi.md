@@ -48,7 +48,7 @@ configuration = vpcloud_client.Configuration(
 )
 
 # Enter a context with an instance of the API client
-with vpcloud_client.ApiClient(configuration) as api_client:
+async with vpcloud_client.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = vpcloud_client.NodesApi(api_client)
     fleet_id = '900e8eac-2b1f-421f-a635-72556268b41f' # str | Fleet identifier
@@ -56,7 +56,7 @@ with vpcloud_client.ApiClient(configuration) as api_client:
 
     try:
         # Get node details
-        api_response = api_instance.get_node_by_fleet_id(fleet_id, node_id)
+        api_response = await api_instance.get_node_by_fleet_id(fleet_id, node_id)
         print("The response of NodesApi->get_node_by_fleet_id:\n")
         pprint(api_response)
     except Exception as e:
@@ -138,7 +138,7 @@ configuration = vpcloud_client.Configuration(
 )
 
 # Enter a context with an instance of the API client
-with vpcloud_client.ApiClient(configuration) as api_client:
+async with vpcloud_client.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = vpcloud_client.NodesApi(api_client)
     fleet_id = '900e8eac-2b1f-421f-a635-72556268b41f' # str | Fleet identifier
@@ -147,7 +147,7 @@ with vpcloud_client.ApiClient(configuration) as api_client:
 
     try:
         # List nodes in a fleet
-        api_response = api_instance.list_nodes_by_fleet_id(fleet_id, limit=limit, next_token=next_token)
+        api_response = await api_instance.list_nodes_by_fleet_id(fleet_id, limit=limit, next_token=next_token)
         print("The response of NodesApi->list_nodes_by_fleet_id:\n")
         pprint(api_response)
     except Exception as e:
