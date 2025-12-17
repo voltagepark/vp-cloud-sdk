@@ -46,6 +46,7 @@ __all__ = [
     "FleetAppsMksCluster",
     "FleetComputeFootprint",
     "FleetHealthResponse",
+    "FleetNode",
     "FleetNodeSpec",
     "GetFleetHealth422Response",
     "GrafanaDashboardResponse",
@@ -93,6 +94,7 @@ from vpcloud_client.models.fleet_apps import FleetApps as FleetApps
 from vpcloud_client.models.fleet_apps_mks_cluster import FleetAppsMksCluster as FleetAppsMksCluster
 from vpcloud_client.models.fleet_compute_footprint import FleetComputeFootprint as FleetComputeFootprint
 from vpcloud_client.models.fleet_health_response import FleetHealthResponse as FleetHealthResponse
+from vpcloud_client.models.fleet_node import FleetNode as FleetNode
 from vpcloud_client.models.fleet_node_spec import FleetNodeSpec as FleetNodeSpec
 from vpcloud_client.models.get_fleet_health422_response import GetFleetHealth422Response as GetFleetHealth422Response
 from vpcloud_client.models.grafana_dashboard_response import GrafanaDashboardResponse as GrafanaDashboardResponse

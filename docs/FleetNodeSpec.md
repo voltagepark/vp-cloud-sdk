@@ -8,7 +8,7 @@ Name | Type | Description | Notes
 **instance_type** | **str** | Type of compute instance | 
 **replicas** | **int** | Number of replicas (deprecated: use nodes array instead) | [optional] 
 **reserved_nodes** | **List[str]** | List of reserved node identifiers (deprecated: use nodes array instead) | [optional] 
-**nodes** | [**List[Node]**](Node.md) | List of actual node details with IPs | [optional] 
+**nodes** | [**List[FleetNode]**](FleetNode.md) | List of actual node details with IPs | [optional] 
 
 ## Example
 

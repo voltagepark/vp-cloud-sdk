@@ -7,7 +7,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **instance_type** | **str** | Type of compute instance | 
 **max_replicas** | **int** | Maximum number of replicas | 
-**nodes** | [**List[Node]**](Node.md) | READ-ONLY: List of actual node details with IPs. This field is populated automatically during scaling operations and should not be provided in creation requests. | [optional] [readonly] 
+**nodes** | [**List[FleetNode]**](FleetNode.md) | READ-ONLY: List of actual node details with IPs. This field is populated automatically during scaling operations and should not be provided in creation requests. | [optional] [readonly] 
 
 ## Example
 

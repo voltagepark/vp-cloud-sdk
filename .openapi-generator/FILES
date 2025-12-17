@@ -14,6 +14,7 @@ docs/FleetApps.md
 docs/FleetAppsMksCluster.md
 docs/FleetComputeFootprint.md
 docs/FleetHealthResponse.md
+docs/FleetNode.md
 docs/FleetNodeSpec.md
 docs/FleetsApi.md
 docs/GetFleetHealth422Response.md
@@ -48,6 +49,7 @@ test/test_fleet_apps.py
 test/test_fleet_apps_mks_cluster.py
 test/test_fleet_compute_footprint.py
 test/test_fleet_health_response.py
+test/test_fleet_node.py
 test/test_fleet_node_spec.py
 test/test_fleets_api.py
 test/test_get_fleet_health422_response.py
@@ -87,6 +89,7 @@ vpcloud_client/models/fleet_apps.py
 vpcloud_client/models/fleet_apps_mks_cluster.py
 vpcloud_client/models/fleet_compute_footprint.py
 vpcloud_client/models/fleet_health_response.py
+vpcloud_client/models/fleet_node.py
 vpcloud_client/models/fleet_node_spec.py
 vpcloud_client/models/get_fleet_health422_response.py
 vpcloud_client/models/grafana_dashboard_response.py

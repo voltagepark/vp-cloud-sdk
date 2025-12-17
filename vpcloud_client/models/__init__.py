@@ -24,6 +24,7 @@ from vpcloud_client.models.fleet_apps import FleetApps
 from vpcloud_client.models.fleet_apps_mks_cluster import FleetAppsMksCluster
 from vpcloud_client.models.fleet_compute_footprint import FleetComputeFootprint
 from vpcloud_client.models.fleet_health_response import FleetHealthResponse
+from vpcloud_client.models.fleet_node import FleetNode
 from vpcloud_client.models.fleet_node_spec import FleetNodeSpec
 from vpcloud_client.models.get_fleet_health422_response import GetFleetHealth422Response
 from vpcloud_client.models.grafana_dashboard_response import GrafanaDashboardResponse

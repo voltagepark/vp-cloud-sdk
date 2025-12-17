@@ -1,22 +1,22 @@
 import os
 import json
-import vpcloud_client
-from vpcloud_client.rest import ApiException
+import {vpcloud_client}
+from {vpcloud_client}.rest import ApiException
 
 # Configure Auth0 M2M authentication using client credentials
 # The SDK will automatically exchange these for an access token
 # Defining the host is optional and defaults to https://api.sea1.voltagepark.com
 # See configuration.py for a list of all supported configuration parameters.
-configuration = vpcloud_client.Configuration(
+configuration = {vpcloud_client}.Configuration(
     host = "https://api.sea1.voltagepark.com",
     client_id = os.environ["VPCLOUD_CLIENT_ID"],
     client_secret = os.environ["VPCLOUD_CLIENT_SECRET"]
 )
 
 # Enter a context with an instance of the API client
-with vpcloud_client.ApiClient(configuration) as api_client:
+with {vpcloud_client}.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = vpcloud_client.FleetsApi(api_client)
+    api_instance = {vpcloud_client}.FleetsApi(api_client)
 
     try:
         # List your fleets

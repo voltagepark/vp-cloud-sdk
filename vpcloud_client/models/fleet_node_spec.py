@@ -20,7 +20,7 @@ import json
 
 from pydantic import BaseModel, ConfigDict, Field, StrictInt, StrictStr
 from typing import Any, ClassVar, Dict, List, Optional
-from vpcloud_client.models.node import Node
+from vpcloud_client.models.fleet_node import FleetNode
 from typing import Optional, Set
 from typing_extensions import Self
 
@@ -31,7 +31,7 @@ class FleetNodeSpec(BaseModel):
     instance_type: StrictStr = Field(description="Type of compute instance", alias="instanceType")
     replicas: Optional[StrictInt] = Field(default=None, description="Number of replicas (deprecated: use nodes array instead)")
     reserved_nodes: Optional[List[StrictStr]] = Field(default=None, description="List of reserved node identifiers (deprecated: use nodes array instead)")
-    nodes: Optional[List[Node]] = Field(default=None, description="List of actual node details with IPs")
+    nodes: Optional[List[FleetNode]] = Field(default=None, description="List of actual node details with IPs")
     __properties: ClassVar[List[str]] = ["instanceType", "replicas", "reserved_nodes", "nodes"]
 
     model_config = ConfigDict(
@@ -95,7 +95,7 @@ class FleetNodeSpec(BaseModel):
             "instanceType": obj.get("instanceType"),
             "replicas": obj.get("replicas"),
             "reserved_nodes": obj.get("reserved_nodes"),
-            "nodes": [Node.from_dict(_item) for _item in obj["nodes"]] if obj.get("nodes") is not None else None
+            "nodes": [FleetNode.from_dict(_item) for _item in obj["nodes"]] if obj.get("nodes") is not None else None
         })
         return _obj
 
