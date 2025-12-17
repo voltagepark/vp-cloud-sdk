@@ -29,8 +29,7 @@ class TestFleetsApi:
         config = create_test_config()
         return FleetsApi(api_client=ApiClient(config))
 
-    @pytest.mark.asyncio
-    async def test_get_fleet_success(self, api_instance):
+    def test_get_fleet_success(self, api_instance):
         """Test successful get_fleet request.
         
         Get fleet details
@@ -42,8 +41,7 @@ class TestFleetsApi:
             # Test implementation
             pass
 
-    @pytest.mark.asyncio
-    async def test_get_fleet_error(self, api_instance):
+    def test_get_fleet_error(self, api_instance):
         """Test get_fleet error handling.
         
         Get fleet details
@@ -55,8 +53,7 @@ class TestFleetsApi:
             # Test error handling
             pass
 
-    @pytest.mark.asyncio
-    async def test_get_fleet_health_success(self, api_instance):
+    def test_get_fleet_health_success(self, api_instance):
         """Test successful get_fleet_health request.
         
         Get fleet health metrics
@@ -68,8 +65,7 @@ class TestFleetsApi:
             # Test implementation
             pass
 
-    @pytest.mark.asyncio
-    async def test_get_fleet_health_error(self, api_instance):
+    def test_get_fleet_health_error(self, api_instance):
         """Test get_fleet_health error handling.
         
         Get fleet health metrics
@@ -81,8 +77,7 @@ class TestFleetsApi:
             # Test error handling
             pass
 
-    @pytest.mark.asyncio
-    async def test_list_fleets_success(self, api_instance):
+    def test_list_fleets_success(self, api_instance):
         """Test successful list_fleets request.
         
         List your fleets
@@ -94,8 +89,7 @@ class TestFleetsApi:
             # Test implementation
             pass
 
-    @pytest.mark.asyncio
-    async def test_list_fleets_error(self, api_instance):
+    def test_list_fleets_error(self, api_instance):
         """Test list_fleets error handling.
         
         List your fleets

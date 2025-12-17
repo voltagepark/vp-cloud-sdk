@@ -95,14 +95,11 @@ class ApiClient:
         self.user_agent = 'OpenAPI-Generator/1.0.0/python'
         self.client_side_validation = configuration.client_side_validation
 
-    async def __aenter__(self):
+    def __enter__(self):
         return self
 
-    async def __aexit__(self, exc_type, exc_value, traceback):
-        await self.close()
-
-    async def close(self):
-        await self.rest_client.close()
+    def __exit__(self, exc_type, exc_value, traceback):
+        pass
 
     @property
     def user_agent(self):
@@ -252,7 +249,7 @@ class ApiClient:
         return method, url, header_params, body, post_params
 
 
-    async def call_api(
+    def call_api(
         self,
         method,
         url,
@@ -275,13 +272,13 @@ class ApiClient:
 
         # Use retry logic if retry_strategy is configured
         if self.configuration.retry_strategy:
-            return await self._call_api_with_retry(
+            return self._call_api_with_retry(
                 method, url, header_params, body, post_params, _request_timeout
             )
         else:
             # Direct request without retry logic
             try:
-                response_data = await self.rest_client.request(
+                response_data = self.rest_client.request(
                     method, url,
                     headers=header_params,
                     body=body, post_params=post_params,
@@ -291,7 +288,7 @@ class ApiClient:
                 raise e
             return response_data
 
-    async def _call_api_with_retry(
+    def _call_api_with_retry(
         self,
         method,
         url,
@@ -313,7 +310,6 @@ class ApiClient:
         """
         import time
         import urllib3.exceptions
-        import asyncio
         
         strategy = self.configuration.retry_strategy
         attempt = 0
@@ -321,7 +317,7 @@ class ApiClient:
         while attempt <= strategy.max_retries:
             try:
                 # Perform the request
-                response_data = await self.rest_client.request(
+                response_data = self.rest_client.request(
                     method, url,
                     headers=header_params,
                     body=body, post_params=post_params,
@@ -357,7 +353,7 @@ class ApiClient:
                     )
                     
                     # Wait before retrying
-                    await asyncio.sleep(delay)
+                    time.sleep(delay)
                     continue
                 
                 # Success or non-retryable status code
@@ -384,7 +380,7 @@ class ApiClient:
                     )
                     
                     # Wait before retrying
-                    await asyncio.sleep(delay)
+                    time.sleep(delay)
                     continue
                 else:
                     # Non-retryable exception, re-raise
@@ -415,7 +411,7 @@ class ApiClient:
                     )
                     
                     # Wait before retrying
-                    await asyncio.sleep(delay)
+                    time.sleep(delay)
                     continue
                 else:
                     # Non-retryable ApiException, re-raise
@@ -436,7 +432,7 @@ class ApiClient:
                         f"Retrying request after {delay:.2f}s (attempt {attempt}/{strategy.max_retries}) "
                         f"due to {type(e).__name__}: {str(e)}"
                     )
-                    await asyncio.sleep(delay)
+                    time.sleep(delay)
                     continue
                 else:
                     # Non-retryable exception, wrap in ApiException

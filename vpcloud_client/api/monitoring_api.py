@@ -42,7 +42,7 @@ class MonitoringApi:
 
 
     @validate_call
-    async def get_fleet_grafana_dashboards(
+    def get_fleet_grafana_dashboards(
         self,
         fleet_id: Annotated[UUID, Field(description="Fleet identifier")],
         _request_timeout: Union[
@@ -100,11 +100,11 @@ class MonitoringApi:
             '401': "ErrorResponse",
             '500': "ErrorResponse",
         }
-        response_data = await self.api_client.call_api(
+        response_data = self.api_client.call_api(
             *_param,
             _request_timeout=_request_timeout
         )
-        await response_data.read()
+        response_data.read()
         return self.api_client.response_deserialize(
             response_data=response_data,
             response_types_map=_response_types_map,
@@ -112,7 +112,7 @@ class MonitoringApi:
 
 
     @validate_call
-    async def get_fleet_grafana_dashboards_with_http_info(
+    def get_fleet_grafana_dashboards_with_http_info(
         self,
         fleet_id: Annotated[UUID, Field(description="Fleet identifier")],
         _request_timeout: Union[
@@ -170,11 +170,11 @@ class MonitoringApi:
             '401': "ErrorResponse",
             '500': "ErrorResponse",
         }
-        response_data = await self.api_client.call_api(
+        response_data = self.api_client.call_api(
             *_param,
             _request_timeout=_request_timeout
         )
-        await response_data.read()
+        response_data.read()
         return self.api_client.response_deserialize(
             response_data=response_data,
             response_types_map=_response_types_map,
@@ -182,7 +182,7 @@ class MonitoringApi:
 
 
     @validate_call
-    async def get_fleet_grafana_dashboards_without_preload_content(
+    def get_fleet_grafana_dashboards_without_preload_content(
         self,
         fleet_id: Annotated[UUID, Field(description="Fleet identifier")],
         _request_timeout: Union[
@@ -240,7 +240,7 @@ class MonitoringApi:
             '401': "ErrorResponse",
             '500': "ErrorResponse",
         }
-        response_data = await self.api_client.call_api(
+        response_data = self.api_client.call_api(
             *_param,
             _request_timeout=_request_timeout
         )
@@ -321,7 +321,7 @@ class MonitoringApi:
 
 
     @validate_call
-    async def list_fleet_grafana_dashboards(
+    def list_fleet_grafana_dashboards(
         self,
         _request_timeout: Union[
             None,
@@ -374,11 +374,11 @@ class MonitoringApi:
             '401': "ErrorResponse",
             '500': "ErrorResponse",
         }
-        response_data = await self.api_client.call_api(
+        response_data = self.api_client.call_api(
             *_param,
             _request_timeout=_request_timeout
         )
-        await response_data.read()
+        response_data.read()
         return self.api_client.response_deserialize(
             response_data=response_data,
             response_types_map=_response_types_map,
@@ -386,7 +386,7 @@ class MonitoringApi:
 
 
     @validate_call
-    async def list_fleet_grafana_dashboards_with_http_info(
+    def list_fleet_grafana_dashboards_with_http_info(
         self,
         _request_timeout: Union[
             None,
@@ -439,11 +439,11 @@ class MonitoringApi:
             '401': "ErrorResponse",
             '500': "ErrorResponse",
         }
-        response_data = await self.api_client.call_api(
+        response_data = self.api_client.call_api(
             *_param,
             _request_timeout=_request_timeout
         )
-        await response_data.read()
+        response_data.read()
         return self.api_client.response_deserialize(
             response_data=response_data,
             response_types_map=_response_types_map,
@@ -451,7 +451,7 @@ class MonitoringApi:
 
 
     @validate_call
-    async def list_fleet_grafana_dashboards_without_preload_content(
+    def list_fleet_grafana_dashboards_without_preload_content(
         self,
         _request_timeout: Union[
             None,
@@ -504,7 +504,7 @@ class MonitoringApi:
             '401': "ErrorResponse",
             '500': "ErrorResponse",
         }
-        response_data = await self.api_client.call_api(
+        response_data = self.api_client.call_api(
             *_param,
             _request_timeout=_request_timeout
         )

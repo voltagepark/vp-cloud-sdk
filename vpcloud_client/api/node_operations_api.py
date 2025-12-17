@@ -43,7 +43,7 @@ class NodeOperationsApi:
 
 
     @validate_call
-    async def remediate_nodes(
+    def remediate_nodes(
         self,
         fleet_id: Annotated[UUID, Field(description="Fleet identifier")],
         remediate_node_request: Annotated[List[RemediateNodeRequest], Field(min_length=1, max_length=100)],
@@ -109,11 +109,11 @@ class NodeOperationsApi:
             '404': "ErrorResponse",
             '500': "ErrorResponse",
         }
-        response_data = await self.api_client.call_api(
+        response_data = self.api_client.call_api(
             *_param,
             _request_timeout=_request_timeout
         )
-        await response_data.read()
+        response_data.read()
         return self.api_client.response_deserialize(
             response_data=response_data,
             response_types_map=_response_types_map,
@@ -121,7 +121,7 @@ class NodeOperationsApi:
 
 
     @validate_call
-    async def remediate_nodes_with_http_info(
+    def remediate_nodes_with_http_info(
         self,
         fleet_id: Annotated[UUID, Field(description="Fleet identifier")],
         remediate_node_request: Annotated[List[RemediateNodeRequest], Field(min_length=1, max_length=100)],
@@ -187,11 +187,11 @@ class NodeOperationsApi:
             '404': "ErrorResponse",
             '500': "ErrorResponse",
         }
-        response_data = await self.api_client.call_api(
+        response_data = self.api_client.call_api(
             *_param,
             _request_timeout=_request_timeout
         )
-        await response_data.read()
+        response_data.read()
         return self.api_client.response_deserialize(
             response_data=response_data,
             response_types_map=_response_types_map,
@@ -199,7 +199,7 @@ class NodeOperationsApi:
 
 
     @validate_call
-    async def remediate_nodes_without_preload_content(
+    def remediate_nodes_without_preload_content(
         self,
         fleet_id: Annotated[UUID, Field(description="Fleet identifier")],
         remediate_node_request: Annotated[List[RemediateNodeRequest], Field(min_length=1, max_length=100)],
@@ -265,7 +265,7 @@ class NodeOperationsApi:
             '404': "ErrorResponse",
             '500': "ErrorResponse",
         }
-        response_data = await self.api_client.call_api(
+        response_data = self.api_client.call_api(
             *_param,
             _request_timeout=_request_timeout
         )

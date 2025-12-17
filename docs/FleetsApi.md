@@ -50,14 +50,14 @@ configuration = vpcloud_client.Configuration(
 )
 
 # Enter a context with an instance of the API client
-async with vpcloud_client.ApiClient(configuration) as api_client:
+with vpcloud_client.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = vpcloud_client.FleetsApi(api_client)
     fleet_id = '900e8eac-2b1f-421f-a635-72556268b41f' # str | Fleet identifier
 
     try:
         # Get fleet details
-        api_response = await api_instance.get_fleet(fleet_id)
+        api_response = api_instance.get_fleet(fleet_id)
         print("The response of FleetsApi->get_fleet:\n")
         pprint(api_response)
     except Exception as e:
@@ -137,14 +137,14 @@ configuration = vpcloud_client.Configuration(
 )
 
 # Enter a context with an instance of the API client
-async with vpcloud_client.ApiClient(configuration) as api_client:
+with vpcloud_client.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = vpcloud_client.FleetsApi(api_client)
     fleet_id = '900e8eac-2b1f-421f-a635-72556268b41f' # str | Fleet identifier
 
     try:
         # Get fleet health metrics
-        api_response = await api_instance.get_fleet_health(fleet_id)
+        api_response = api_instance.get_fleet_health(fleet_id)
         print("The response of FleetsApi->get_fleet_health:\n")
         pprint(api_response)
     except Exception as e:
@@ -227,7 +227,7 @@ configuration = vpcloud_client.Configuration(
 )
 
 # Enter a context with an instance of the API client
-async with vpcloud_client.ApiClient(configuration) as api_client:
+with vpcloud_client.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = vpcloud_client.FleetsApi(api_client)
     limit = 56 # int | Optional: Maximum number of fleets to return per page (0-100). Use 0 to get all results in paginated format. If provided, response includes pagination metadata. (optional)
@@ -235,7 +235,7 @@ async with vpcloud_client.ApiClient(configuration) as api_client:
 
     try:
         # List your fleets
-        api_response = await api_instance.list_fleets(limit=limit, next_token=next_token)
+        api_response = api_instance.list_fleets(limit=limit, next_token=next_token)
         print("The response of FleetsApi->list_fleets:\n")
         pprint(api_response)
     except Exception as e:

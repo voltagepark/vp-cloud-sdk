@@ -43,7 +43,7 @@ class NodesApi:
 
 
     @validate_call
-    async def get_node_by_fleet_id(
+    def get_node_by_fleet_id(
         self,
         fleet_id: Annotated[UUID, Field(description="Fleet identifier")],
         node_id: Annotated[StrictStr, Field(description="Node identifier (from list nodes response)")],
@@ -104,11 +104,11 @@ class NodesApi:
             '404': "ErrorResponse",
             '500': "ErrorResponse",
         }
-        response_data = await self.api_client.call_api(
+        response_data = self.api_client.call_api(
             *_param,
             _request_timeout=_request_timeout
         )
-        await response_data.read()
+        response_data.read()
         return self.api_client.response_deserialize(
             response_data=response_data,
             response_types_map=_response_types_map,
@@ -116,7 +116,7 @@ class NodesApi:
 
 
     @validate_call
-    async def get_node_by_fleet_id_with_http_info(
+    def get_node_by_fleet_id_with_http_info(
         self,
         fleet_id: Annotated[UUID, Field(description="Fleet identifier")],
         node_id: Annotated[StrictStr, Field(description="Node identifier (from list nodes response)")],
@@ -177,11 +177,11 @@ class NodesApi:
             '404': "ErrorResponse",
             '500': "ErrorResponse",
         }
-        response_data = await self.api_client.call_api(
+        response_data = self.api_client.call_api(
             *_param,
             _request_timeout=_request_timeout
         )
-        await response_data.read()
+        response_data.read()
         return self.api_client.response_deserialize(
             response_data=response_data,
             response_types_map=_response_types_map,
@@ -189,7 +189,7 @@ class NodesApi:
 
 
     @validate_call
-    async def get_node_by_fleet_id_without_preload_content(
+    def get_node_by_fleet_id_without_preload_content(
         self,
         fleet_id: Annotated[UUID, Field(description="Fleet identifier")],
         node_id: Annotated[StrictStr, Field(description="Node identifier (from list nodes response)")],
@@ -250,7 +250,7 @@ class NodesApi:
             '404': "ErrorResponse",
             '500': "ErrorResponse",
         }
-        response_data = await self.api_client.call_api(
+        response_data = self.api_client.call_api(
             *_param,
             _request_timeout=_request_timeout
         )
@@ -334,7 +334,7 @@ class NodesApi:
 
 
     @validate_call
-    async def list_nodes_by_fleet_id(
+    def list_nodes_by_fleet_id(
         self,
         fleet_id: Annotated[UUID, Field(description="Fleet identifier")],
         limit: Annotated[Optional[Annotated[int, Field(le=100, strict=True, ge=1)]], Field(description="Nodes per page (default: 100)")] = None,
@@ -400,11 +400,11 @@ class NodesApi:
             '404': "ErrorResponse",
             '500': "ErrorResponse",
         }
-        response_data = await self.api_client.call_api(
+        response_data = self.api_client.call_api(
             *_param,
             _request_timeout=_request_timeout
         )
-        await response_data.read()
+        response_data.read()
         return self.api_client.response_deserialize(
             response_data=response_data,
             response_types_map=_response_types_map,
@@ -412,7 +412,7 @@ class NodesApi:
 
 
     @validate_call
-    async def list_nodes_by_fleet_id_with_http_info(
+    def list_nodes_by_fleet_id_with_http_info(
         self,
         fleet_id: Annotated[UUID, Field(description="Fleet identifier")],
         limit: Annotated[Optional[Annotated[int, Field(le=100, strict=True, ge=1)]], Field(description="Nodes per page (default: 100)")] = None,
@@ -478,11 +478,11 @@ class NodesApi:
             '404': "ErrorResponse",
             '500': "ErrorResponse",
         }
-        response_data = await self.api_client.call_api(
+        response_data = self.api_client.call_api(
             *_param,
             _request_timeout=_request_timeout
         )
-        await response_data.read()
+        response_data.read()
         return self.api_client.response_deserialize(
             response_data=response_data,
             response_types_map=_response_types_map,
@@ -490,7 +490,7 @@ class NodesApi:
 
 
     @validate_call
-    async def list_nodes_by_fleet_id_without_preload_content(
+    def list_nodes_by_fleet_id_without_preload_content(
         self,
         fleet_id: Annotated[UUID, Field(description="Fleet identifier")],
         limit: Annotated[Optional[Annotated[int, Field(le=100, strict=True, ge=1)]], Field(description="Nodes per page (default: 100)")] = None,
@@ -556,7 +556,7 @@ class NodesApi:
             '404': "ErrorResponse",
             '500': "ErrorResponse",
         }
-        response_data = await self.api_client.call_api(
+        response_data = self.api_client.call_api(
             *_param,
             _request_timeout=_request_timeout
         )
