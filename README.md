@@ -19,18 +19,13 @@ Python 3.9+
 ## Installation & Usage
 ### uv (Recommended)
 
-Install directly using [uv](https://github.com/astral-sh/uv):
-
-```sh
-uv pip install git+https://github.com/voltagepark/vp-cloud-sdk.git
-```
-
-Or, clone the repository and:
+Clone the repository and:
 
 ```sh
 git clone https://github.com/voltagepark/vp-cloud-sdk.git
 cd vp-cloud-sdk
 uv sync
+source .venv/bin/activate
 ```
 
 Then import the package:
@@ -117,7 +112,8 @@ with vpcloud_client.ApiClient(configuration) as api_client:
 Save this example to a file (e.g., `example.py`) and run it with:
 
 ```sh
-uv run python3 example.py
+source .venv/bin/activate
+python3 example.py
 ```
 
 ## Documentation for API Endpoints
