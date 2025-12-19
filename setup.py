@@ -39,11 +39,12 @@ setup(
     author="Voltage Park",
     author_email="support@voltagepark.com",
     url="",
-    license="Apache-2.0",
+    license="Apache 2.0",
     keywords=["OpenAPI", "OpenAPI-Generator", "Voltage Park Cloud API"],
     install_requires=REQUIRES,
     packages=find_packages(exclude=["test", "tests"]),
     include_package_data=True,
+    license="Apache 2.0",
     long_description_content_type='text/markdown',
     long_description="""\
       ⚠️ **BETA PREVIEW**: This API is currently in beta and is subject to changes. Features, endpoints, request/response formats, and functionality may be modified as we continue to improve the service.      Bare Metal and VMs provisioning and managing service.

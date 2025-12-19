@@ -5,7 +5,7 @@ description = "Voltage Park Cloud API"
 authors = [
   {name = "Voltage Park",email = "support@voltagepark.com"},
 ]
-license = { text = "Apache-2.0" }
+license = { text = "Apache 2.0" }
 readme = "README.md"
 keywords = ["OpenAPI", "OpenAPI-Generator", "Voltage Park Cloud API"]
 requires-python = ">=3.9"
