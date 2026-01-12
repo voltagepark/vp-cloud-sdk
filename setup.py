@@ -27,7 +27,7 @@ PYTHON_REQUIRES = ">= 3.9"
 REQUIRES = [
     "urllib3 >= 2.1.0, < 3.0.0",
     "python-dateutil >= 2.8.2",
-    "httpx >= 0.28.1",
+    "httpx >= 0.20.0",
     "pydantic >= 2",
     "typing-extensions >= 4.7.1",
 ]
@@ -39,7 +39,6 @@ setup(
     author="Voltage Park",
     author_email="support@voltagepark.com",
     url="",
-    license="Apache 2.0",
     keywords=["OpenAPI", "OpenAPI-Generator", "Voltage Park Cloud API"],
     install_requires=REQUIRES,
     packages=find_packages(exclude=["test", "tests"]),
