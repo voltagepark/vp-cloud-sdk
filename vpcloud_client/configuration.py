@@ -621,6 +621,10 @@ class Configuration:
             {
                 'url': "https://api.sea1.voltagepark.com",
                 'description': "Seattle (sea1)",
+            },
+            {
+                'url': "https://api.iad1.voltagepark.com",
+                'description': "Washington D.C. (iad1)",
             }
         ]
 
