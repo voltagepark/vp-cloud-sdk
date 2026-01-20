@@ -577,12 +577,16 @@ class Configuration:
         # Check if we have client credentials (from env vars, explicit, or file)
         client_id, client_secret = self._credential_provider.get_client_credentials()
         if client_id and client_secret:
+            # Get current host to derive correct audience
+            current_host = self.host
+            # Check if we need to create a new manager or update audience
             if self._auth0_token_manager is None:
-                self._auth0_token_manager = Auth0TokenManager(client_id, client_secret)
+                self._auth0_token_manager = Auth0TokenManager(client_id, client_secret, host=current_host)
             elif (self._auth0_token_manager.client_id != client_id or 
-                  self._auth0_token_manager.client_secret != client_secret):
-                # Credentials changed, create new manager
-                self._auth0_token_manager = Auth0TokenManager(client_id, client_secret)
+                  self._auth0_token_manager.client_secret != client_secret or
+                  self._auth0_token_manager.audience != Auth0TokenManager._get_audience_from_host(current_host)):
+                # Credentials changed or host changed, create new manager with correct audience
+                self._auth0_token_manager = Auth0TokenManager(client_id, client_secret, host=current_host)
             
             try:
                 access_token = self._auth0_token_manager.get_token()

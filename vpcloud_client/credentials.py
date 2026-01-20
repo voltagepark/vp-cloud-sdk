@@ -175,23 +175,80 @@ class CredentialProvider:
 class Auth0TokenManager:
     """Manages Auth0 M2M token exchange and caching.
     
-    Hardcoded Auth0 configuration:
-    - Domain: voltagepark.us.auth0.com
-    - Audience: https://api.sea-1.voltagepark.com/harbor
+    Auth0 configuration:
+    - Domain: voltagepark-harbor.us.auth0.com
+    - Audience: Derived from API host URL (e.g., https://api.sea-1.voltagepark.com/harbor)
     """
     
     AUTH0_DOMAIN = "voltagepark-harbor.us.auth0.com"
-    AUTH0_AUDIENCE = "https://api.sea-1.voltagepark.com/harbor"
     TOKEN_URL = f"https://{AUTH0_DOMAIN}/oauth/token"
     
-    def __init__(self, client_id: str, client_secret: str):
+    # Mapping from region/datacenter code to Auth0 audience
+    # This map defines which audience to use when requesting tokens for each region
+    REGION_AUDIENCE_MAP = {
+        "sea1": "https://api.sea-1.voltagepark.com/harbor",
+        "iad1": "https://api.iad-1.voltagepark.com/harbor",
+    }
+    
+    @staticmethod
+    def _extract_region_from_host(host: str) -> str:
+        """Extract region/datacenter code from API host URL.
+        
+        :param host: API host URL (e.g., https://api.sea1.voltagepark.com)
+        :return: Region code (e.g., "sea1") or None if not found
+        """
+        import re
+        match = re.search(r'api\.([^.]+)\.voltagepark\.com', host)
+        if match:
+            return match.group(1)
+        return None
+    
+    @staticmethod
+    def _get_audience_for_region(region: str) -> str:
+        """Get Auth0 audience for a given region.
+        
+        :param region: Region/datacenter code (e.g., "sea1", "iad1")
+        :return: Auth0 audience URL for the region
+        """
+        if region in Auth0TokenManager.REGION_AUDIENCE_MAP:
+            return Auth0TokenManager.REGION_AUDIENCE_MAP[region]
+        # Fallback: try to construct audience from region
+        # Some regions use hyphenated format (e.g., sea1 -> sea-1)
+        if region.endswith('1') and len(region) == 4:
+            base = region[:-1]
+            return f"https://api.{base}-1.voltagepark.com/harbor"
+        return f"https://api.{region}.voltagepark.com/harbor"
+    
+    @staticmethod
+    def _get_audience_from_host(host: str) -> str:
+        """Derive Auth0 audience from API host URL.
+        
+        :param host: API host URL (e.g., https://api.sea1.voltagepark.com)
+        :return: Auth0 audience URL
+        """
+        region = Auth0TokenManager._extract_region_from_host(host)
+        if region:
+            return Auth0TokenManager._get_audience_for_region(region)
+        # Fallback to default (sea1)
+        return Auth0TokenManager.REGION_AUDIENCE_MAP.get("sea1", "https://api.sea-1.voltagepark.com/harbor")
+    
+    def __init__(self, client_id: str, client_secret: str, audience: Optional[str] = None, host: Optional[str] = None):
         """Initialize token manager.
         
         :param client_id: Auth0 M2M client ID
         :param client_secret: Auth0 M2M client secret
+        :param audience: Auth0 audience URL (optional, will be derived from host if not provided)
+        :param host: API host URL (used to derive audience if audience not provided)
         """
         self.client_id = client_id
         self.client_secret = client_secret
+        if audience:
+            self.audience = audience
+        elif host:
+            self.audience = self._get_audience_from_host(host)
+        else:
+            # Default to sea1 audience for backward compatibility
+            self.audience = "https://api.sea-1.voltagepark.com/harbor"
         self._cached_token: Optional[str] = None
         self._token_expires_at: float = 0
     
@@ -219,7 +276,7 @@ class Auth0TokenManager:
                 json={
                     "client_id": self.client_id,
                     "client_secret": self.client_secret,
-                    "audience": self.AUTH0_AUDIENCE,
+                    "audience": self.audience,
                     "grant_type": "client_credentials"
                 },
                 headers={"Content-Type": "application/json"},
