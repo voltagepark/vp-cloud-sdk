@@ -65,6 +65,7 @@ class TestFleet(unittest.TestCase):
                 bootstrap = vpcloud_client.models.bootstrap.Bootstrap(
                     cloud_init = 'sudo ls -a', 
                     machine_image = 'Ubuntu 24.04', 
+                    ssh_users = ["john_doe","jane_smith"], 
                     ssh_pub_keys = ["ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC...","ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIG..."], ),
                 fleet_apps = vpcloud_client.models.fleet_apps.FleetApps(
                     mk8s = 'disabled', 
@@ -97,6 +98,7 @@ class TestFleet(unittest.TestCase):
                 bootstrap = vpcloud_client.models.bootstrap.Bootstrap(
                     cloud_init = 'sudo ls -a', 
                     machine_image = 'Ubuntu 24.04', 
+                    ssh_users = ["john_doe","jane_smith"], 
                     ssh_pub_keys = ["ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC...","ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIG..."], ),
         )
         """

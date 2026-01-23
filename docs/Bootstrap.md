@@ -1,5 +1,6 @@
 # Bootstrap
 
+Bootstrap configuration for fleet nodes. Provide either sshUsers (recommended) or ssh-pub-keys for SSH access.
 
 ## Properties
 
@@ -7,7 +8,8 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **cloud_init** | **str** | Cloud-init script | [optional] 
 **machine_image** | **str** | Machine image to use | 
-**ssh_pub_keys** | **List[str]** | List of SSH public keys | 
+**ssh_users** | **List[str]** | List of SSH usernames from your organization&#39;s SSH key management. Each user&#39;s public keys will be added and a corresponding Linux user will be created on each node. | [optional] 
+**ssh_pub_keys** | **List[str]** | DEPRECATED: Use sshUsers instead. Raw keys for backward compatibility only. | [optional] 
 
 ## Example
 

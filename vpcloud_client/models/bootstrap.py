@@ -25,12 +25,13 @@ from typing_extensions import Self
 
 class Bootstrap(BaseModel):
     """
-    Bootstrap
+    Bootstrap configuration for fleet nodes. Provide either sshUsers (recommended) or ssh-pub-keys for SSH access.
     """ # noqa: E501
     cloud_init: Optional[StrictStr] = Field(default=None, description="Cloud-init script", alias="cloudInit")
     machine_image: StrictStr = Field(description="Machine image to use", alias="machineImage")
-    ssh_pub_keys: List[StrictStr] = Field(description="List of SSH public keys", alias="ssh-pub-keys")
-    __properties: ClassVar[List[str]] = ["cloudInit", "machineImage", "ssh-pub-keys"]
+    ssh_users: Optional[List[StrictStr]] = Field(default=None, description="List of SSH usernames from your organization's SSH key management. Each user's public keys will be added and a corresponding Linux user will be created on each node.", alias="sshUsers")
+    ssh_pub_keys: Optional[List[StrictStr]] = Field(default=None, description="DEPRECATED: Use sshUsers instead. Raw keys for backward compatibility only.", alias="ssh-pub-keys")
+    __properties: ClassVar[List[str]] = ["cloudInit", "machineImage", "sshUsers", "ssh-pub-keys"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -85,6 +86,7 @@ class Bootstrap(BaseModel):
         _obj = cls.model_validate({
             "cloudInit": obj.get("cloudInit"),
             "machineImage": obj.get("machineImage"),
+            "sshUsers": obj.get("sshUsers"),
             "ssh-pub-keys": obj.get("ssh-pub-keys")
         })
         return _obj
