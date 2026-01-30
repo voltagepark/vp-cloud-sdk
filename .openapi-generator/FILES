@@ -20,6 +20,7 @@ docs/FleetsApi.md
 docs/GetFleetHealth422Response.md
 docs/GrafanaDashboardResponse.md
 docs/Infrastructure.md
+docs/KubernetesServiceLinks.md
 docs/ListFleetsResponse.md
 docs/ListNodesResponse.md
 docs/MonitoringApi.md
@@ -55,6 +56,7 @@ test/test_fleets_api.py
 test/test_get_fleet_health422_response.py
 test/test_grafana_dashboard_response.py
 test/test_infrastructure.py
+test/test_kubernetes_service_links.py
 test/test_list_fleets_response.py
 test/test_list_nodes_response.py
 test/test_monitoring_api.py
@@ -94,6 +96,7 @@ vpcloud_client/models/fleet_node_spec.py
 vpcloud_client/models/get_fleet_health422_response.py
 vpcloud_client/models/grafana_dashboard_response.py
 vpcloud_client/models/infrastructure.py
+vpcloud_client/models/kubernetes_service_links.py
 vpcloud_client/models/list_fleets_response.py
 vpcloud_client/models/list_nodes_response.py
 vpcloud_client/models/node.py

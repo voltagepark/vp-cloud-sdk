@@ -38,9 +38,19 @@ class TestFleetAppsMksCluster(unittest.TestCase):
             return FleetAppsMksCluster(
                 cluster_id = 'cluster-123-abc',
                 cluster_name = 'my-fleet-mk8s-cluster',
+                kubernetes_version = '1.32',
                 installation_status = 'ACTIVE',
-                cluster_status = 'ACTIVE',
-                kubeconfig = 'apiVersion: v1\nkind: Config\n...'
+                cluster_status = 'READY',
+                kubeconfig = 'apiVersion: v1\nkind: Config\n...',
+                auth_config_b64 = 'eyJraW5kIjoiQXV0aGVudGljYXRpb25Db25maWd1cmF0aW9uIi4uLn0=',
+                service_links = vpcloud_client.models.kubernetes_service_links.KubernetesServiceLinks(
+                    grafana = 'https://grafana.mks.voltagepark.com/d/abc123/cluster-overview', ),
+                control_plane_node_count = 3,
+                ready_control_plane_node_count = 3,
+                worker_node_count = 8,
+                ready_worker_node_count = 8,
+                addons = ["prometheus"],
+                created_at = '2025-01-15T10:30:00Z'
             )
         else:
             return FleetAppsMksCluster(

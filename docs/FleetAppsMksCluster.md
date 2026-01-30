@@ -8,9 +8,18 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **cluster_id** | **str** | MK8s cluster ID | 
 **cluster_name** | **str** | MK8s cluster name | 
+**kubernetes_version** | **str** | Kubernetes version running on the cluster | [optional] 
 **installation_status** | **str** | MK8s installation status on the fleet | 
-**cluster_status** | **str** | Current MK8s cluster status | [optional] 
+**cluster_status** | **str** | Current MK8s cluster status from MKS API | [optional] 
 **kubeconfig** | **str** | The kubeconfig for accessing the cluster (if available) | [optional] 
+**auth_config_b64** | **str** | Base64-encoded authentication configuration for the cluster | [optional] 
+**service_links** | [**KubernetesServiceLinks**](KubernetesServiceLinks.md) |  | [optional] 
+**control_plane_node_count** | **int** | Number of control plane nodes | [optional] 
+**ready_control_plane_node_count** | **int** | Number of ready control plane nodes | [optional] 
+**worker_node_count** | **int** | Number of worker nodes | [optional] 
+**ready_worker_node_count** | **int** | Number of ready worker nodes | [optional] 
+**addons** | **List[str]** | List of installed addons | [optional] 
+**created_at** | **str** | Timestamp when the cluster was created | [optional] 
 
 ## Example
 

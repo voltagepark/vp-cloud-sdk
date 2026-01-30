@@ -51,6 +51,7 @@ __all__ = [
     "GetFleetHealth422Response",
     "GrafanaDashboardResponse",
     "Infrastructure",
+    "KubernetesServiceLinks",
     "ListFleetsResponse",
     "ListNodesResponse",
     "Node",
@@ -99,6 +100,7 @@ from vpcloud_client.models.fleet_node_spec import FleetNodeSpec as FleetNodeSpec
 from vpcloud_client.models.get_fleet_health422_response import GetFleetHealth422Response as GetFleetHealth422Response
 from vpcloud_client.models.grafana_dashboard_response import GrafanaDashboardResponse as GrafanaDashboardResponse
 from vpcloud_client.models.infrastructure import Infrastructure as Infrastructure
+from vpcloud_client.models.kubernetes_service_links import KubernetesServiceLinks as KubernetesServiceLinks
 from vpcloud_client.models.list_fleets_response import ListFleetsResponse as ListFleetsResponse
 from vpcloud_client.models.list_nodes_response import ListNodesResponse as ListNodesResponse
 from vpcloud_client.models.node import Node as Node

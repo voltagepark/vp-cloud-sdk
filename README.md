@@ -121,6 +121,7 @@ Class | Method | HTTP request | Description
  - [GetFleetHealth422Response](docs/GetFleetHealth422Response.md)
  - [GrafanaDashboardResponse](docs/GrafanaDashboardResponse.md)
  - [Infrastructure](docs/Infrastructure.md)
+ - [KubernetesServiceLinks](docs/KubernetesServiceLinks.md)
  - [ListFleetsResponse](docs/ListFleetsResponse.md)
  - [ListNodesResponse](docs/ListNodesResponse.md)
  - [Node](docs/Node.md)

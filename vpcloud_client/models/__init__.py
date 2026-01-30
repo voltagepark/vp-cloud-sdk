@@ -29,6 +29,7 @@ from vpcloud_client.models.fleet_node_spec import FleetNodeSpec
 from vpcloud_client.models.get_fleet_health422_response import GetFleetHealth422Response
 from vpcloud_client.models.grafana_dashboard_response import GrafanaDashboardResponse
 from vpcloud_client.models.infrastructure import Infrastructure
+from vpcloud_client.models.kubernetes_service_links import KubernetesServiceLinks
 from vpcloud_client.models.list_fleets_response import ListFleetsResponse
 from vpcloud_client.models.list_nodes_response import ListNodesResponse
 from vpcloud_client.models.node import Node

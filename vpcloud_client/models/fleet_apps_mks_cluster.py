@@ -18,8 +18,9 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict, Field, StrictStr, field_validator
+from pydantic import BaseModel, ConfigDict, Field, StrictInt, StrictStr, field_validator
 from typing import Any, ClassVar, Dict, List, Optional
+from vpcloud_client.models.kubernetes_service_links import KubernetesServiceLinks
 from typing import Optional, Set
 from typing_extensions import Self
 
@@ -29,10 +30,19 @@ class FleetAppsMksCluster(BaseModel):
     """ # noqa: E501
     cluster_id: StrictStr = Field(description="MK8s cluster ID", alias="clusterId")
     cluster_name: StrictStr = Field(description="MK8s cluster name", alias="clusterName")
+    kubernetes_version: Optional[StrictStr] = Field(default=None, description="Kubernetes version running on the cluster", alias="kubernetesVersion")
     installation_status: StrictStr = Field(description="MK8s installation status on the fleet", alias="installationStatus")
-    cluster_status: Optional[StrictStr] = Field(default=None, description="Current MK8s cluster status", alias="clusterStatus")
+    cluster_status: Optional[StrictStr] = Field(default=None, description="Current MK8s cluster status from MKS API", alias="clusterStatus")
     kubeconfig: Optional[StrictStr] = Field(default=None, description="The kubeconfig for accessing the cluster (if available)")
-    __properties: ClassVar[List[str]] = ["clusterId", "clusterName", "installationStatus", "clusterStatus", "kubeconfig"]
+    auth_config_b64: Optional[StrictStr] = Field(default=None, description="Base64-encoded authentication configuration for the cluster", alias="authConfigB64")
+    service_links: Optional[KubernetesServiceLinks] = Field(default=None, alias="serviceLinks")
+    control_plane_node_count: Optional[StrictInt] = Field(default=None, description="Number of control plane nodes", alias="controlPlaneNodeCount")
+    ready_control_plane_node_count: Optional[StrictInt] = Field(default=None, description="Number of ready control plane nodes", alias="readyControlPlaneNodeCount")
+    worker_node_count: Optional[StrictInt] = Field(default=None, description="Number of worker nodes", alias="workerNodeCount")
+    ready_worker_node_count: Optional[StrictInt] = Field(default=None, description="Number of ready worker nodes", alias="readyWorkerNodeCount")
+    addons: Optional[List[StrictStr]] = Field(default=None, description="List of installed addons")
+    created_at: Optional[StrictStr] = Field(default=None, description="Timestamp when the cluster was created", alias="createdAt")
+    __properties: ClassVar[List[str]] = ["clusterId", "clusterName", "kubernetesVersion", "installationStatus", "clusterStatus", "kubeconfig", "authConfigB64", "serviceLinks", "controlPlaneNodeCount", "readyControlPlaneNodeCount", "workerNodeCount", "readyWorkerNodeCount", "addons", "createdAt"]
 
     @field_validator('installation_status')
     def installation_status_validate_enum(cls, value):
@@ -47,8 +57,8 @@ class FleetAppsMksCluster(BaseModel):
         if value is None:
             return value
 
-        if value not in set(['CREATING', 'ACTIVE', 'UPDATING', 'DELETING', 'ERROR']):
-            raise ValueError("must be one of enum values ('CREATING', 'ACTIVE', 'UPDATING', 'DELETING', 'ERROR')")
+        if value not in set(['PENDING', 'PROVISIONING', 'READY', 'UPDATING', 'DEGRADED', 'FAILED', 'DELETING', 'TERMINATED', 'SHUTTING_DOWN', 'STARTING', 'STOPPED']):
+            raise ValueError("must be one of enum values ('PENDING', 'PROVISIONING', 'READY', 'UPDATING', 'DEGRADED', 'FAILED', 'DELETING', 'TERMINATED', 'SHUTTING_DOWN', 'STARTING', 'STOPPED')")
         return value
 
     model_config = ConfigDict(
@@ -90,6 +100,29 @@ class FleetAppsMksCluster(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
+        # override the default output from pydantic by calling `to_dict()` of service_links
+        if self.service_links:
+            _dict['serviceLinks'] = self.service_links.to_dict()
+        # set to None if auth_config_b64 (nullable) is None
+        # and model_fields_set contains the field
+        if self.auth_config_b64 is None and "auth_config_b64" in self.model_fields_set:
+            _dict['authConfigB64'] = None
+
+        # set to None if ready_control_plane_node_count (nullable) is None
+        # and model_fields_set contains the field
+        if self.ready_control_plane_node_count is None and "ready_control_plane_node_count" in self.model_fields_set:
+            _dict['readyControlPlaneNodeCount'] = None
+
+        # set to None if worker_node_count (nullable) is None
+        # and model_fields_set contains the field
+        if self.worker_node_count is None and "worker_node_count" in self.model_fields_set:
+            _dict['workerNodeCount'] = None
+
+        # set to None if ready_worker_node_count (nullable) is None
+        # and model_fields_set contains the field
+        if self.ready_worker_node_count is None and "ready_worker_node_count" in self.model_fields_set:
+            _dict['readyWorkerNodeCount'] = None
+
         return _dict
 
     @classmethod
@@ -104,9 +137,18 @@ class FleetAppsMksCluster(BaseModel):
         _obj = cls.model_validate({
             "clusterId": obj.get("clusterId"),
             "clusterName": obj.get("clusterName"),
+            "kubernetesVersion": obj.get("kubernetesVersion"),
             "installationStatus": obj.get("installationStatus"),
             "clusterStatus": obj.get("clusterStatus"),
-            "kubeconfig": obj.get("kubeconfig")
+            "kubeconfig": obj.get("kubeconfig"),
+            "authConfigB64": obj.get("authConfigB64"),
+            "serviceLinks": KubernetesServiceLinks.from_dict(obj["serviceLinks"]) if obj.get("serviceLinks") is not None else None,
+            "controlPlaneNodeCount": obj.get("controlPlaneNodeCount"),
+            "readyControlPlaneNodeCount": obj.get("readyControlPlaneNodeCount"),
+            "workerNodeCount": obj.get("workerNodeCount"),
+            "readyWorkerNodeCount": obj.get("readyWorkerNodeCount"),
+            "addons": obj.get("addons"),
+            "createdAt": obj.get("createdAt")
         })
         return _obj
 
