@@ -28,7 +28,7 @@ class ExpandableNodeSpec(BaseModel):
     """
     ExpandableNodeSpec
     """ # noqa: E501
-    instance_type: StrictStr = Field(description="Type of compute instance", alias="instanceType")
+    instance_type: StrictStr = Field(description="Server-derived compute instance type. `mixed` means the nodes have different GPU models; `unknown` means the hardware could not be determined.", alias="instanceType")
     max_replicas: StrictInt = Field(description="Maximum number of replicas", alias="maxReplicas")
     nodes: Optional[List[FleetNode]] = Field(default=None, description="READ-ONLY: List of actual node details with IPs. This field is populated automatically during scaling operations and should not be provided in creation requests.")
     __properties: ClassVar[List[str]] = ["instanceType", "maxReplicas", "nodes"]

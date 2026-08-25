@@ -1,14 +1,16 @@
 # FleetApps
 
-Fleet applications configuration
+Fleet applications configuration. mk8s (legacy MKS-1) and mks2 are mutually exclusive: at most one of them may be 'enabled' on the same fleet.
 
 ## Properties
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**mk8s** | **str** | Enable or disable MK8s (managed Kubernetes) for this fleet | [optional] 
+**mk8s** | **str** | Enable or disable MK8s (managed Kubernetes, MKS-1) for this fleet. Mutually exclusive with mks2. | [optional] 
+**mks2** | **str** | Enable or disable MKS-2 (Kamaji-based managed Kubernetes) for this fleet. Mutually exclusive with mk8s. | [optional] 
 **slurm** | **str** | Enable or disable Slurm for this fleet | [optional] 
-**mk8s_cluster** | [**FleetAppsMksCluster**](FleetAppsMksCluster.md) | MK8s cluster information (only present when mk8s is enabled) | [optional] 
+**mk8s_cluster** | [**FleetAppsMksCluster**](FleetAppsMksCluster.md) | MK8s (MKS-1) cluster information (only present when mk8s is enabled) | [optional] 
+**mks2_cluster** | [**FleetAppsMks2Cluster**](FleetAppsMks2Cluster.md) | MKS-2 cluster information (only present when mks2 is enabled) | [optional] 
 **slurm_parameters** | [**SlurmParameters**](SlurmParameters.md) | Slurm configuration (only present when slurm is enabled) | [optional] 
 
 ## Example

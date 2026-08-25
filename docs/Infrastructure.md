@@ -5,8 +5,8 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**network** | **str** | Network type | 
-**vast** | [**List[StorageConfig]**](StorageConfig.md) | Storage configuration | 
+**network** | [**InfrastructureNetwork**](InfrastructureNetwork.md) |  | 
+**vast** | [**List[StorageConfig]**](StorageConfig.md) | Storage configuration | [optional] 
 
 ## Example
 

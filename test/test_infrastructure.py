@@ -46,11 +46,6 @@ class TestInfrastructure(unittest.TestCase):
         else:
             return Infrastructure(
                 network = 'infiniband',
-                vast = [
-                    vpcloud_client.models.storage_config.StorageConfig(
-                        mount_point = '/data', 
-                        size = 10737418240, )
-                    ],
         )
         """
 

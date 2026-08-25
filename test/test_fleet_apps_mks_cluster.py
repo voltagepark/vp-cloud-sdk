@@ -42,7 +42,6 @@ class TestFleetAppsMksCluster(unittest.TestCase):
                 installation_status = 'ACTIVE',
                 cluster_status = 'READY',
                 kubeconfig = 'apiVersion: v1\nkind: Config\n...',
-                auth_config_b64 = 'eyJraW5kIjoiQXV0aGVudGljYXRpb25Db25maWd1cmF0aW9uIi4uLn0=',
                 service_links = vpcloud_client.models.kubernetes_service_links.KubernetesServiceLinks(
                     grafana = 'https://grafana.mks.voltagepark.com/d/abc123/cluster-overview', ),
                 control_plane_node_count = 3,

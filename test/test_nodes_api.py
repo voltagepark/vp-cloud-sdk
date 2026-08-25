@@ -53,6 +53,30 @@ class TestNodesApi:
             # Test error handling
             pass
 
+    def test_get_node_power_state_success(self, api_instance):
+        """Test successful get_node_power_state request.
+        
+        Get node power state
+        """
+        # Mock successful response
+        mock_response = MockResponse(200, data=b'{"result": "success"}')
+        with patch.object(api_instance.api_client.rest_client, 'request', 
+                         return_value=mock_response):
+            # Test implementation
+            pass
+
+    def test_get_node_power_state_error(self, api_instance):
+        """Test get_node_power_state error handling.
+        
+        Get node power state
+        """
+        # Mock error response
+        mock_response = MockResponse(400, data=b'{"error": "bad request"}')
+        with patch.object(api_instance.api_client.rest_client, 'request', 
+                         return_value=mock_response):
+            # Test error handling
+            pass
+
     def test_list_nodes_by_fleet_id_success(self, api_instance):
         """Test successful list_nodes_by_fleet_id request.
         

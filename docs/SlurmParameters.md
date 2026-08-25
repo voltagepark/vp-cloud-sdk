@@ -8,6 +8,8 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **ssh_keys** | [**List[SlurmParametersSshKeysInner]**](SlurmParametersSshKeysInner.md) | SSH user configurations with multiple keys per user | 
 **external_storage** | [**ExternalStorageConfig**](ExternalStorageConfig.md) |  | 
+**control_plane_nodes** | **List[str]** | Node IDs of the Slurm control-plane nodes. MKS labels these with slurm.voltagepark.io/node-role&#x3D;control-plane before activating the Helm chart. Install-only — optional at fleet creation; ignored if empty. | [optional] 
+**login_nodes** | **List[str]** | Node IDs of the Slurm login nodes. MKS labels these with slurm.voltagepark.io/login-node&#x3D;true. Kept separate from controlPlaneNodes so a rogue login pod cannot disrupt slurmctld/slurmdbd. | [optional] 
 
 ## Example
 

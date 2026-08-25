@@ -53,6 +53,30 @@ class TestMonitoringApi:
             # Test error handling
             pass
 
+    def test_get_fleet_logs_success(self, api_instance):
+        """Test successful get_fleet_logs request.
+        
+        Get Grafana Dashboard and Explore links for a fleet's system logs
+        """
+        # Mock successful response
+        mock_response = MockResponse(200, data=b'{"result": "success"}')
+        with patch.object(api_instance.api_client.rest_client, 'request', 
+                         return_value=mock_response):
+            # Test implementation
+            pass
+
+    def test_get_fleet_logs_error(self, api_instance):
+        """Test get_fleet_logs error handling.
+        
+        Get Grafana Dashboard and Explore links for a fleet's system logs
+        """
+        # Mock error response
+        mock_response = MockResponse(400, data=b'{"error": "bad request"}')
+        with patch.object(api_instance.api_client.rest_client, 'request', 
+                         return_value=mock_response):
+            # Test error handling
+            pass
+
     def test_list_fleet_grafana_dashboards_success(self, api_instance):
         """Test successful list_fleet_grafana_dashboards request.
         

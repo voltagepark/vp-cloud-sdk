@@ -20,6 +20,7 @@ import json
 
 from pydantic import BaseModel, ConfigDict, Field, StrictStr, field_validator
 from typing import Any, ClassVar, Dict, List, Optional
+from vpcloud_client.models.fleet_apps_mks2_cluster import FleetAppsMks2Cluster
 from vpcloud_client.models.fleet_apps_mks_cluster import FleetAppsMksCluster
 from vpcloud_client.models.slurm_parameters import SlurmParameters
 from typing import Optional, Set
@@ -27,16 +28,28 @@ from typing_extensions import Self
 
 class FleetApps(BaseModel):
     """
-    Fleet applications configuration
+    Fleet applications configuration. mk8s (legacy MKS-1) and mks2 are mutually exclusive: at most one of them may be 'enabled' on the same fleet.
     """ # noqa: E501
-    mk8s: Optional[StrictStr] = Field(default=None, description="Enable or disable MK8s (managed Kubernetes) for this fleet")
+    mk8s: Optional[StrictStr] = Field(default=None, description="Enable or disable MK8s (managed Kubernetes, MKS-1) for this fleet. Mutually exclusive with mks2.")
+    mks2: Optional[StrictStr] = Field(default=None, description="Enable or disable MKS-2 (Kamaji-based managed Kubernetes) for this fleet. Mutually exclusive with mk8s.")
     slurm: Optional[StrictStr] = Field(default=None, description="Enable or disable Slurm for this fleet")
-    mk8s_cluster: Optional[FleetAppsMksCluster] = Field(default=None, description="MK8s cluster information (only present when mk8s is enabled)", alias="mk8sCluster")
+    mk8s_cluster: Optional[FleetAppsMksCluster] = Field(default=None, description="MK8s (MKS-1) cluster information (only present when mk8s is enabled)", alias="mk8sCluster")
+    mks2_cluster: Optional[FleetAppsMks2Cluster] = Field(default=None, description="MKS-2 cluster information (only present when mks2 is enabled)", alias="mks2Cluster")
     slurm_parameters: Optional[SlurmParameters] = Field(default=None, description="Slurm configuration (only present when slurm is enabled)", alias="slurmParameters")
-    __properties: ClassVar[List[str]] = ["mk8s", "slurm", "mk8sCluster", "slurmParameters"]
+    __properties: ClassVar[List[str]] = ["mk8s", "mks2", "slurm", "mk8sCluster", "mks2Cluster", "slurmParameters"]
 
     @field_validator('mk8s')
     def mk8s_validate_enum(cls, value):
+        """Validates the enum"""
+        if value is None:
+            return value
+
+        if value not in set(['enabled', 'disabled']):
+            raise ValueError("must be one of enum values ('enabled', 'disabled')")
+        return value
+
+    @field_validator('mks2')
+    def mks2_validate_enum(cls, value):
         """Validates the enum"""
         if value is None:
             return value
@@ -97,6 +110,9 @@ class FleetApps(BaseModel):
         # override the default output from pydantic by calling `to_dict()` of mk8s_cluster
         if self.mk8s_cluster:
             _dict['mk8sCluster'] = self.mk8s_cluster.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of mks2_cluster
+        if self.mks2_cluster:
+            _dict['mks2Cluster'] = self.mks2_cluster.to_dict()
         # override the default output from pydantic by calling `to_dict()` of slurm_parameters
         if self.slurm_parameters:
             _dict['slurmParameters'] = self.slurm_parameters.to_dict()
@@ -113,8 +129,10 @@ class FleetApps(BaseModel):
 
         _obj = cls.model_validate({
             "mk8s": obj.get("mk8s"),
+            "mks2": obj.get("mks2"),
             "slurm": obj.get("slurm"),
             "mk8sCluster": FleetAppsMksCluster.from_dict(obj["mk8sCluster"]) if obj.get("mk8sCluster") is not None else None,
+            "mks2Cluster": FleetAppsMks2Cluster.from_dict(obj["mks2Cluster"]) if obj.get("mks2Cluster") is not None else None,
             "slurmParameters": SlurmParameters.from_dict(obj["slurmParameters"]) if obj.get("slurmParameters") is not None else None
         })
         return _obj

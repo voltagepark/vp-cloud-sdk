@@ -39,7 +39,8 @@ class TestNode(unittest.TestCase):
                 node_name = 'g0388',
                 state = 'ACTIVE',
                 public_ip = '10.9.41.182',
-                fleet_id = 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6'
+                fleet_id = 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6',
+                gpu_type = 'H200_BM'
             )
         else:
             return Node(

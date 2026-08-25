@@ -10,6 +10,7 @@ Name | Type | Description | Notes
 **machine_image** | **str** | Machine image to use | 
 **ssh_users** | **List[str]** | List of SSH usernames from your organization&#39;s SSH key management. Each user&#39;s public keys will be added and a corresponding Linux user will be created on each node. | [optional] 
 **ssh_pub_keys** | **List[str]** | DEPRECATED: Use sshUsers instead. Raw keys for backward compatibility only. | [optional] 
+**sudo_access** | **str** | Controls sudo access for the SSH users Harbor creates on every node in the fleet (both sshUsers and the deprecated ssh-pub-keys path). When enabled, each Harbor-managed user is granted passwordless sudo; when disabled, users are created without any Harbor-managed sudo rule. Applies to standalone bare-metal fleets and is fixed at creation time. Defaults to enabled. | [optional] 
 
 ## Example
 

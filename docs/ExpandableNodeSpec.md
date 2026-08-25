@@ -5,7 +5,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**instance_type** | **str** | Type of compute instance | 
+**instance_type** | **str** | Server-derived compute instance type. &#x60;mixed&#x60; means the nodes have different GPU models; &#x60;unknown&#x60; means the hardware could not be determined. | 
 **max_replicas** | **int** | Maximum number of replicas | 
 **nodes** | [**List[FleetNode]**](FleetNode.md) | READ-ONLY: List of actual node details with IPs. This field is populated automatically during scaling operations and should not be provided in creation requests. | [optional] [readonly] 
 

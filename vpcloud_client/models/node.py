@@ -18,8 +18,9 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict, Field, StrictStr, field_validator
+from pydantic import BaseModel, ConfigDict, Field, StrictStr
 from typing import Any, ClassVar, Dict, List, Optional
+from vpcloud_client.models.node_state import NodeState
 from typing import Optional, Set
 from typing_extensions import Self
 
@@ -28,17 +29,11 @@ class Node(BaseModel):
     A node represents an individual compute instance within a fleet
     """ # noqa: E501
     node_name: StrictStr = Field(description="Unique identifier for the node", alias="nodeName")
-    state: StrictStr = Field(description="Current state of the node")
+    state: NodeState
     public_ip: StrictStr = Field(description="Public IP address of the node", alias="publicIp")
     fleet_id: Optional[StrictStr] = Field(default=None, description="Fleet ID associated with the node, if any", alias="fleetId")
-    __properties: ClassVar[List[str]] = ["nodeName", "state", "publicIp", "fleetId"]
-
-    @field_validator('state')
-    def state_validate_enum(cls, value):
-        """Validates the enum"""
-        if value not in set(['ACTIVE', 'BASELINING', 'CONFIGURING', 'CONTRACTING', 'FAILED_PROVISIONING', 'ONBOARDING', 'PROVISIONING', 'READY', 'TERMINATED', 'TERMINATING', 'TESTING', 'UNHEALTHY', 'VALIDATION']):
-            raise ValueError("must be one of enum values ('ACTIVE', 'BASELINING', 'CONFIGURING', 'CONTRACTING', 'FAILED_PROVISIONING', 'ONBOARDING', 'PROVISIONING', 'READY', 'TERMINATED', 'TERMINATING', 'TESTING', 'UNHEALTHY', 'VALIDATION')")
-        return value
+    gpu_type: Optional[StrictStr] = Field(default=None, description="GPU model installed on this node. Not an enum: new hardware models must reach clients rather than break deserialization. Absent when the model is not known.", alias="gpuType")
+    __properties: ClassVar[List[str]] = ["nodeName", "state", "publicIp", "fleetId", "gpuType"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -94,7 +89,8 @@ class Node(BaseModel):
             "nodeName": obj.get("nodeName"),
             "state": obj.get("state"),
             "publicIp": obj.get("publicIp"),
-            "fleetId": obj.get("fleetId")
+            "fleetId": obj.get("fleetId"),
+            "gpuType": obj.get("gpuType")
         })
         return _obj
 

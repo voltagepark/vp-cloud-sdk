@@ -30,7 +30,8 @@ class ErrorResponse(BaseModel):
     error: StrictStr = Field(description="Error message")
     code: Optional[StrictStr] = Field(default=None, description="Error code")
     timestamp: StrictInt = Field(description="Timestamp when the error occurred (milliseconds since epoch UTC)")
-    __properties: ClassVar[List[str]] = ["error", "code", "timestamp"]
+    details: Optional[Dict[str, Any]] = Field(default=None, description="Optional structured detail, e.g. per-field validation errors")
+    __properties: ClassVar[List[str]] = ["error", "code", "timestamp", "details"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -85,7 +86,8 @@ class ErrorResponse(BaseModel):
         _obj = cls.model_validate({
             "error": obj.get("error"),
             "code": obj.get("code"),
-            "timestamp": obj.get("timestamp")
+            "timestamp": obj.get("timestamp"),
+            "details": obj.get("details")
         })
         return _obj
 

@@ -8,6 +8,7 @@ Name | Type | Description | Notes
 **error** | **str** | Error message | 
 **code** | **str** | Error code | [optional] 
 **timestamp** | **int** | Timestamp when the error occurred (milliseconds since epoch UTC) | 
+**details** | **Dict[str, object]** | Optional structured detail, e.g. per-field validation errors | [optional] 
 
 ## Example
 

@@ -18,13 +18,16 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict, Field, StrictInt, StrictStr, field_validator
+from pydantic import BaseModel, ConfigDict, Field, StrictInt, StrictStr
 from typing import Any, ClassVar, Dict, List, Optional
+from uuid import UUID
 from vpcloud_client.models.bootstrap import Bootstrap
 from vpcloud_client.models.expandable_capacity import ExpandableCapacity
 from vpcloud_client.models.fleet_apps import FleetApps
 from vpcloud_client.models.fleet_compute_footprint import FleetComputeFootprint
+from vpcloud_client.models.fleet_status import FleetStatus
 from vpcloud_client.models.infrastructure import Infrastructure
+from vpcloud_client.models.os_config import OsConfig
 from typing import Optional, Set
 from typing_extensions import Self
 
@@ -34,7 +37,7 @@ class Fleet(BaseModel):
     """ # noqa: E501
     fleet_id: StrictStr = Field(description="Unique identifier for the fleet", alias="fleetId")
     name: StrictStr = Field(description="Human-readable name for the fleet")
-    status: StrictStr = Field(description="Current status of the fleet")
+    status: FleetStatus
     requested_at: StrictInt = Field(description="Timestamp when the fleet was requested (milliseconds since epoch UTC)", alias="requestedAt")
     provisioned_at: Optional[StrictInt] = Field(default=None, description="Timestamp when the fleet was provisioned (milliseconds since epoch UTC)", alias="provisionedAt")
     created_at: StrictInt = Field(description="Timestamp when the fleet was created in DDB (milliseconds since epoch UTC)", alias="createdAt")
@@ -45,14 +48,9 @@ class Fleet(BaseModel):
     infrastructure: Infrastructure
     bootstrap: Bootstrap
     fleet_apps: Optional[FleetApps] = Field(default=None, alias="fleetApps")
-    __properties: ClassVar[List[str]] = ["fleetId", "name", "status", "requestedAt", "provisionedAt", "createdAt", "updatedAt", "computeType", "minimumFootprint", "expandableCapacity", "infrastructure", "bootstrap", "fleetApps"]
-
-    @field_validator('status')
-    def status_validate_enum(cls, value):
-        """Validates the enum"""
-        if value not in set(['ACTIVE', 'INACTIVE', 'PROVISIONING', 'SCALING_UP', 'SCALING_DOWN', 'DECOMMISSIONED', 'TERMINATING', 'TERMINATED']):
-            raise ValueError("must be one of enum values ('ACTIVE', 'INACTIVE', 'PROVISIONING', 'SCALING_UP', 'SCALING_DOWN', 'DECOMMISSIONED', 'TERMINATING', 'TERMINATED')")
-        return value
+    os_config: Optional[OsConfig] = Field(default=None, alias="osConfig")
+    order_id: Optional[UUID] = Field(default=None, description="Linked order ID. Null if this fleet is not associated with an order.", alias="orderId")
+    __properties: ClassVar[List[str]] = ["fleetId", "name", "status", "requestedAt", "provisionedAt", "createdAt", "updatedAt", "computeType", "minimumFootprint", "expandableCapacity", "infrastructure", "bootstrap", "fleetApps", "osConfig", "orderId"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -108,6 +106,14 @@ class Fleet(BaseModel):
         # override the default output from pydantic by calling `to_dict()` of fleet_apps
         if self.fleet_apps:
             _dict['fleetApps'] = self.fleet_apps.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of os_config
+        if self.os_config:
+            _dict['osConfig'] = self.os_config.to_dict()
+        # set to None if order_id (nullable) is None
+        # and model_fields_set contains the field
+        if self.order_id is None and "order_id" in self.model_fields_set:
+            _dict['orderId'] = None
+
         return _dict
 
     @classmethod
@@ -132,7 +138,9 @@ class Fleet(BaseModel):
             "expandableCapacity": ExpandableCapacity.from_dict(obj["expandableCapacity"]) if obj.get("expandableCapacity") is not None else None,
             "infrastructure": Infrastructure.from_dict(obj["infrastructure"]) if obj.get("infrastructure") is not None else None,
             "bootstrap": Bootstrap.from_dict(obj["bootstrap"]) if obj.get("bootstrap") is not None else None,
-            "fleetApps": FleetApps.from_dict(obj["fleetApps"]) if obj.get("fleetApps") is not None else None
+            "fleetApps": FleetApps.from_dict(obj["fleetApps"]) if obj.get("fleetApps") is not None else None,
+            "osConfig": OsConfig.from_dict(obj["osConfig"]) if obj.get("osConfig") is not None else None,
+            "orderId": obj.get("orderId")
         })
         return _obj
 

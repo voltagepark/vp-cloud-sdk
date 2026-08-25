@@ -37,6 +37,7 @@ class TestFleetApps(unittest.TestCase):
         if include_optional:
             return FleetApps(
                 mk8s = 'disabled',
+                mks2 = 'disabled',
                 slurm = 'disabled',
                 mk8s_cluster = vpcloud_client.models.fleet_apps_mks_cluster.FleetAppsMksCluster(
                     cluster_id = 'cluster-123-abc', 
@@ -45,7 +46,6 @@ class TestFleetApps(unittest.TestCase):
                     installation_status = 'ACTIVE', 
                     cluster_status = 'READY', 
                     kubeconfig = 'apiVersion: v1\nkind: Config\n...', 
-                    auth_config_b64 = 'eyJraW5kIjoiQXV0aGVudGljYXRpb25Db25maWd1cmF0aW9uIi4uLn0=', 
                     service_links = vpcloud_client.models.kubernetes_service_links.KubernetesServiceLinks(
                         grafana = 'https://grafana.mks.voltagepark.com/d/abc123/cluster-overview', ), 
                     control_plane_node_count = 3, 
@@ -54,6 +54,21 @@ class TestFleetApps(unittest.TestCase):
                     ready_worker_node_count = 8, 
                     addons = ["prometheus"], 
                     created_at = '2025-01-15T10:30:00Z', ),
+                mks2_cluster = vpcloud_client.models.fleet_apps_mks2_cluster.FleetAppsMks2Cluster(
+                    cluster_id = '11111111-2222-3333-4444-555555555555', 
+                    cluster_name = 'my-fleet-mks2-cluster', 
+                    kubernetes_version = 'v1.35.0', 
+                    cluster_status = 'ready', 
+                    control_plane_replicas = 2, 
+                    control_plane_size = 'medium', 
+                    datastore_type = 'dedicated', 
+                    nvidia_driver_version = '580.126.20', 
+                    created_at = '2026-01-15T10:30Z', 
+                    node_counts = vpcloud_client.models.fleet_apps_mks2_node_counts.FleetAppsMks2NodeCounts(
+                        total = 4, 
+                        ready = 3, 
+                        not_ready = 1, 
+                        pending = 0, ), ),
                 slurm_parameters = vpcloud_client.models.slurm_parameters.SlurmParameters(
                     ssh_keys = [
                         vpcloud_client.models.slurm_parameters_ssh_keys_inner.SlurmParameters_sshKeys_inner(
@@ -64,7 +79,13 @@ class TestFleetApps(unittest.TestCase):
                         ], 
                     external_storage = vpcloud_client.models.external_storage_config.ExternalStorageConfig(
                         mount_path = '/data', 
-                        size = '128GB', ), )
+                        size = '128GB', ), 
+                    control_plane_nodes = [
+                        '0'
+                        ], 
+                    login_nodes = [
+                        '0'
+                        ], )
             )
         else:
             return FleetApps(

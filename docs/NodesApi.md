@@ -5,6 +5,7 @@ All URIs are relative to *https://api.sea1.voltagepark.com*
 Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**get_node_by_fleet_id**](NodesApi.md#get_node_by_fleet_id) | **GET** /v1/fleets/{fleetId}/nodes/{nodeId} | Get node details
+[**get_node_power_state**](NodesApi.md#get_node_power_state) | **GET** /v1/fleets/{fleetId}/nodes/{nodeId}/power | Get node power state
 [**list_nodes_by_fleet_id**](NodesApi.md#list_nodes_by_fleet_id) | **GET** /v1/fleets/{fleetId}/nodes | List nodes in a fleet
 
 
@@ -93,6 +94,90 @@ Name | Type | Description  | Notes
 **200** | Success - returns complete node information |  -  |
 **404** | Node not found |  -  |
 **500** | Internal server error |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **get_node_power_state**
+> NodePowerState get_node_power_state(fleet_id, node_id)
+
+Get node power state
+
+Read the node's live BMC power state via Redfish. Not cached or stored by Harbor - every call reads the BMC directly.
+
+### Example
+
+* Bearer (JWT) Authentication (bearerAuth):
+
+```python
+import vpcloud_client
+from vpcloud_client.models.node_power_state import NodePowerState
+from vpcloud_client.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to https://api.sea1.voltagepark.com
+# See configuration.py for a list of all supported configuration parameters.
+configuration = vpcloud_client.Configuration(
+    host = "https://api.sea1.voltagepark.com"
+)
+
+# The client must configure the authentication and authorization parameters
+# in accordance with the API server security policy.
+# Examples for each auth method are provided below, use the example that
+# satisfies your auth use case.
+
+# Configure Bearer authorization (JWT): bearerAuth
+configuration = vpcloud_client.Configuration(
+    access_token = os.environ["BEARER_TOKEN"]
+)
+
+# Enter a context with an instance of the API client
+with vpcloud_client.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = vpcloud_client.NodesApi(api_client)
+    fleet_id = '900e8eac-2b1f-421f-a635-72556268b41f' # str | Fleet identifier
+    node_id = 'g311' # str | Node identifier (from list nodes response)
+
+    try:
+        # Get node power state
+        api_response = api_instance.get_node_power_state(fleet_id, node_id)
+        print("The response of NodesApi->get_node_power_state:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling NodesApi->get_node_power_state: %s\n" % e)
+```
+
+
+
+### Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **fleet_id** | **str**| Fleet identifier | 
+ **node_id** | **str**| Node identifier (from list nodes response) | 
+
+### Return type
+
+[**NodePowerState**](NodePowerState.md)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | The node&#39;s live power state. |  -  |
+**400** | Fleet has an invalid Thundercat reservation ID, or nodeId is invalid |  -  |
+**404** | Fleet or node not found, or the fleet has no Thundercat reservation yet |  -  |
+**500** | Internal failure before the upstream call |  -  |
+**502** | Upstream Thundercat returned an error, or the node&#39;s BMC is unreachable |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 

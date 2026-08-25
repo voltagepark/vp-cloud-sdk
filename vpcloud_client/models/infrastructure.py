@@ -18,8 +18,9 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict, Field, StrictStr, field_validator
-from typing import Any, ClassVar, Dict, List
+from pydantic import BaseModel, ConfigDict, Field
+from typing import Any, ClassVar, Dict, List, Optional
+from vpcloud_client.models.infrastructure_network import InfrastructureNetwork
 from vpcloud_client.models.storage_config import StorageConfig
 from typing import Optional, Set
 from typing_extensions import Self
@@ -28,16 +29,9 @@ class Infrastructure(BaseModel):
     """
     Infrastructure
     """ # noqa: E501
-    network: StrictStr = Field(description="Network type")
-    vast: List[StorageConfig] = Field(description="Storage configuration")
+    network: InfrastructureNetwork
+    vast: Optional[List[StorageConfig]] = Field(default=None, description="Storage configuration")
     __properties: ClassVar[List[str]] = ["network", "vast"]
-
-    @field_validator('network')
-    def network_validate_enum(cls, value):
-        """Validates the enum"""
-        if value not in set(['infiniband', 'ethernet']):
-            raise ValueError("must be one of enum values ('infiniband', 'ethernet')")
-        return value
 
     model_config = ConfigDict(
         populate_by_name=True,

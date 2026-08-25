@@ -19,10 +19,12 @@ __version__ = "1.0.0"
 
 # Define package exports
 __all__ = [
+    "AuditApi",
     "FleetsApi",
     "MonitoringApi",
     "NodeOperationsApi",
     "NodesApi",
+    "StorageApi",
     "ApiResponse",
     "ApiClient",
     "Configuration",
@@ -36,6 +38,10 @@ __all__ = [
     "ApiKeyError",
     "ApiAttributeError",
     "ApiException",
+    "AddStorageViewRequest",
+    "AuditLogEntry",
+    "AuditLogExportStatusResponse",
+    "AuditLogListResponse",
     "Bootstrap",
     "ErrorResponse",
     "ExpandableCapacity",
@@ -43,31 +49,47 @@ __all__ = [
     "ExternalStorageConfig",
     "Fleet",
     "FleetApps",
+    "FleetAppsMks2Cluster",
+    "FleetAppsMks2NodeCounts",
     "FleetAppsMksCluster",
     "FleetComputeFootprint",
     "FleetHealthResponse",
     "FleetNode",
     "FleetNodeSpec",
+    "FleetStatus",
     "GetFleetHealth422Response",
     "GrafanaDashboardResponse",
+    "GrafanaLogsResponse",
     "Infrastructure",
+    "InfrastructureNetwork",
     "KubernetesServiceLinks",
     "ListFleetsResponse",
     "ListNodesResponse",
     "Node",
     "NodeHealth",
+    "NodePowerOperation",
+    "NodePowerOperationQueued",
+    "NodePowerState",
+    "NodeState",
+    "OsConfig",
     "RemediateNodeRequest",
     "RemediateNodeResponse",
     "SlurmParameters",
     "SlurmParametersSshKeysInner",
     "StorageConfig",
+    "StorageProtectionPolicy",
+    "StorageView",
+    "StorageViewListResponse",
+    "UpdateStorageViewRequest",
 ]
 
 # import apis into sdk package
+from vpcloud_client.api.audit_api import AuditApi as AuditApi
 from vpcloud_client.api.fleets_api import FleetsApi as FleetsApi
 from vpcloud_client.api.monitoring_api import MonitoringApi as MonitoringApi
 from vpcloud_client.api.node_operations_api import NodeOperationsApi as NodeOperationsApi
 from vpcloud_client.api.nodes_api import NodesApi as NodesApi
+from vpcloud_client.api.storage_api import StorageApi as StorageApi
 
 # import ApiClient
 from vpcloud_client.api_response import ApiResponse as ApiResponse
@@ -85,6 +107,10 @@ from vpcloud_client.exceptions import ApiAttributeError as ApiAttributeError
 from vpcloud_client.exceptions import ApiException as ApiException
 
 # import models into sdk package
+from vpcloud_client.models.add_storage_view_request import AddStorageViewRequest as AddStorageViewRequest
+from vpcloud_client.models.audit_log_entry import AuditLogEntry as AuditLogEntry
+from vpcloud_client.models.audit_log_export_status_response import AuditLogExportStatusResponse as AuditLogExportStatusResponse
+from vpcloud_client.models.audit_log_list_response import AuditLogListResponse as AuditLogListResponse
 from vpcloud_client.models.bootstrap import Bootstrap as Bootstrap
 from vpcloud_client.models.error_response import ErrorResponse as ErrorResponse
 from vpcloud_client.models.expandable_capacity import ExpandableCapacity as ExpandableCapacity
@@ -92,22 +118,36 @@ from vpcloud_client.models.expandable_node_spec import ExpandableNodeSpec as Exp
 from vpcloud_client.models.external_storage_config import ExternalStorageConfig as ExternalStorageConfig
 from vpcloud_client.models.fleet import Fleet as Fleet
 from vpcloud_client.models.fleet_apps import FleetApps as FleetApps
+from vpcloud_client.models.fleet_apps_mks2_cluster import FleetAppsMks2Cluster as FleetAppsMks2Cluster
+from vpcloud_client.models.fleet_apps_mks2_node_counts import FleetAppsMks2NodeCounts as FleetAppsMks2NodeCounts
 from vpcloud_client.models.fleet_apps_mks_cluster import FleetAppsMksCluster as FleetAppsMksCluster
 from vpcloud_client.models.fleet_compute_footprint import FleetComputeFootprint as FleetComputeFootprint
 from vpcloud_client.models.fleet_health_response import FleetHealthResponse as FleetHealthResponse
 from vpcloud_client.models.fleet_node import FleetNode as FleetNode
 from vpcloud_client.models.fleet_node_spec import FleetNodeSpec as FleetNodeSpec
+from vpcloud_client.models.fleet_status import FleetStatus as FleetStatus
 from vpcloud_client.models.get_fleet_health422_response import GetFleetHealth422Response as GetFleetHealth422Response
 from vpcloud_client.models.grafana_dashboard_response import GrafanaDashboardResponse as GrafanaDashboardResponse
+from vpcloud_client.models.grafana_logs_response import GrafanaLogsResponse as GrafanaLogsResponse
 from vpcloud_client.models.infrastructure import Infrastructure as Infrastructure
+from vpcloud_client.models.infrastructure_network import InfrastructureNetwork as InfrastructureNetwork
 from vpcloud_client.models.kubernetes_service_links import KubernetesServiceLinks as KubernetesServiceLinks
 from vpcloud_client.models.list_fleets_response import ListFleetsResponse as ListFleetsResponse
 from vpcloud_client.models.list_nodes_response import ListNodesResponse as ListNodesResponse
 from vpcloud_client.models.node import Node as Node
 from vpcloud_client.models.node_health import NodeHealth as NodeHealth
+from vpcloud_client.models.node_power_operation import NodePowerOperation as NodePowerOperation
+from vpcloud_client.models.node_power_operation_queued import NodePowerOperationQueued as NodePowerOperationQueued
+from vpcloud_client.models.node_power_state import NodePowerState as NodePowerState
+from vpcloud_client.models.node_state import NodeState as NodeState
+from vpcloud_client.models.os_config import OsConfig as OsConfig
 from vpcloud_client.models.remediate_node_request import RemediateNodeRequest as RemediateNodeRequest
 from vpcloud_client.models.remediate_node_response import RemediateNodeResponse as RemediateNodeResponse
 from vpcloud_client.models.slurm_parameters import SlurmParameters as SlurmParameters
 from vpcloud_client.models.slurm_parameters_ssh_keys_inner import SlurmParametersSshKeysInner as SlurmParametersSshKeysInner
 from vpcloud_client.models.storage_config import StorageConfig as StorageConfig
+from vpcloud_client.models.storage_protection_policy import StorageProtectionPolicy as StorageProtectionPolicy
+from vpcloud_client.models.storage_view import StorageView as StorageView
+from vpcloud_client.models.storage_view_list_response import StorageViewListResponse as StorageViewListResponse
+from vpcloud_client.models.update_storage_view_request import UpdateStorageViewRequest as UpdateStorageViewRequest
 

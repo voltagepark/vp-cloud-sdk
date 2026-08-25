@@ -66,12 +66,18 @@ class TestFleet(unittest.TestCase):
                     cloud_init = 'sudo ls -a', 
                     machine_image = 'Ubuntu 24.04', 
                     ssh_users = ["john_doe","jane_smith"], 
-                    ssh_pub_keys = ["ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC...","ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIG..."], ),
+                    ssh_pub_keys = ["ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC...","ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIG..."], 
+                    sudo_access = 'enabled', ),
                 fleet_apps = vpcloud_client.models.fleet_apps.FleetApps(
                     mk8s = 'disabled', 
+                    mks2 = 'disabled', 
                     slurm = 'disabled', 
                     mk8s_cluster = null, 
-                    slurm_parameters = null, )
+                    mks2_cluster = null, 
+                    slurm_parameters = null, ),
+                os_config = vpcloud_client.models.os_config.OsConfig(
+                    cpu_profiling = 'disabled', ),
+                order_id = 'a1b2c3d4-e5f6-7890-abcd-ef1234567890'
             )
         else:
             return Fleet(
@@ -99,7 +105,8 @@ class TestFleet(unittest.TestCase):
                     cloud_init = 'sudo ls -a', 
                     machine_image = 'Ubuntu 24.04', 
                     ssh_users = ["john_doe","jane_smith"], 
-                    ssh_pub_keys = ["ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC...","ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIG..."], ),
+                    ssh_pub_keys = ["ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC...","ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIG..."], 
+                    sudo_access = 'enabled', ),
         )
         """
 

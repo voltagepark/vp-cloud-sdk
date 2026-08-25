@@ -45,7 +45,13 @@ class TestSlurmParameters(unittest.TestCase):
                     ],
                 external_storage = vpcloud_client.models.external_storage_config.ExternalStorageConfig(
                     mount_path = '/data', 
-                    size = '128GB', )
+                    size = '128GB', ),
+                control_plane_nodes = [
+                    '0'
+                    ],
+                login_nodes = [
+                    '0'
+                    ]
             )
         else:
             return SlurmParameters(

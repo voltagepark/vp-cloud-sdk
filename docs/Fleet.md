@@ -8,7 +8,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **fleet_id** | **str** | Unique identifier for the fleet | 
 **name** | **str** | Human-readable name for the fleet | 
-**status** | **str** | Current status of the fleet | 
+**status** | [**FleetStatus**](FleetStatus.md) |  | 
 **requested_at** | **int** | Timestamp when the fleet was requested (milliseconds since epoch UTC) | 
 **provisioned_at** | **int** | Timestamp when the fleet was provisioned (milliseconds since epoch UTC) | [optional] 
 **created_at** | **int** | Timestamp when the fleet was created in DDB (milliseconds since epoch UTC) | 
@@ -19,6 +19,8 @@ Name | Type | Description | Notes
 **infrastructure** | [**Infrastructure**](Infrastructure.md) |  | 
 **bootstrap** | [**Bootstrap**](Bootstrap.md) |  | 
 **fleet_apps** | [**FleetApps**](FleetApps.md) |  | [optional] 
+**os_config** | [**OsConfig**](OsConfig.md) |  | [optional] 
+**order_id** | **str** | Linked order ID. Null if this fleet is not associated with an order. | [optional] 
 
 ## Example
 

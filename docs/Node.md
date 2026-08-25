@@ -7,9 +7,10 @@ A node represents an individual compute instance within a fleet
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **node_name** | **str** | Unique identifier for the node | 
-**state** | **str** | Current state of the node | 
+**state** | [**NodeState**](NodeState.md) |  | 
 **public_ip** | **str** | Public IP address of the node | 
 **fleet_id** | **str** | Fleet ID associated with the node, if any | [optional] 
+**gpu_type** | **str** | GPU model installed on this node. Not an enum: new hardware models must reach clients rather than break deserialization. Absent when the model is not known. | [optional] 
 
 ## Example
 

@@ -34,7 +34,6 @@ class FleetAppsMksCluster(BaseModel):
     installation_status: StrictStr = Field(description="MK8s installation status on the fleet", alias="installationStatus")
     cluster_status: Optional[StrictStr] = Field(default=None, description="Current MK8s cluster status from MKS API", alias="clusterStatus")
     kubeconfig: Optional[StrictStr] = Field(default=None, description="The kubeconfig for accessing the cluster (if available)")
-    auth_config_b64: Optional[StrictStr] = Field(default=None, description="Base64-encoded authentication configuration for the cluster", alias="authConfigB64")
     service_links: Optional[KubernetesServiceLinks] = Field(default=None, alias="serviceLinks")
     control_plane_node_count: Optional[StrictInt] = Field(default=None, description="Number of control plane nodes", alias="controlPlaneNodeCount")
     ready_control_plane_node_count: Optional[StrictInt] = Field(default=None, description="Number of ready control plane nodes", alias="readyControlPlaneNodeCount")
@@ -42,7 +41,7 @@ class FleetAppsMksCluster(BaseModel):
     ready_worker_node_count: Optional[StrictInt] = Field(default=None, description="Number of ready worker nodes", alias="readyWorkerNodeCount")
     addons: Optional[List[StrictStr]] = Field(default=None, description="List of installed addons")
     created_at: Optional[StrictStr] = Field(default=None, description="Timestamp when the cluster was created", alias="createdAt")
-    __properties: ClassVar[List[str]] = ["clusterId", "clusterName", "kubernetesVersion", "installationStatus", "clusterStatus", "kubeconfig", "authConfigB64", "serviceLinks", "controlPlaneNodeCount", "readyControlPlaneNodeCount", "workerNodeCount", "readyWorkerNodeCount", "addons", "createdAt"]
+    __properties: ClassVar[List[str]] = ["clusterId", "clusterName", "kubernetesVersion", "installationStatus", "clusterStatus", "kubeconfig", "serviceLinks", "controlPlaneNodeCount", "readyControlPlaneNodeCount", "workerNodeCount", "readyWorkerNodeCount", "addons", "createdAt"]
 
     @field_validator('installation_status')
     def installation_status_validate_enum(cls, value):
@@ -103,11 +102,6 @@ class FleetAppsMksCluster(BaseModel):
         # override the default output from pydantic by calling `to_dict()` of service_links
         if self.service_links:
             _dict['serviceLinks'] = self.service_links.to_dict()
-        # set to None if auth_config_b64 (nullable) is None
-        # and model_fields_set contains the field
-        if self.auth_config_b64 is None and "auth_config_b64" in self.model_fields_set:
-            _dict['authConfigB64'] = None
-
         # set to None if ready_control_plane_node_count (nullable) is None
         # and model_fields_set contains the field
         if self.ready_control_plane_node_count is None and "ready_control_plane_node_count" in self.model_fields_set:
@@ -141,7 +135,6 @@ class FleetAppsMksCluster(BaseModel):
             "installationStatus": obj.get("installationStatus"),
             "clusterStatus": obj.get("clusterStatus"),
             "kubeconfig": obj.get("kubeconfig"),
-            "authConfigB64": obj.get("authConfigB64"),
             "serviceLinks": KubernetesServiceLinks.from_dict(obj["serviceLinks"]) if obj.get("serviceLinks") is not None else None,
             "controlPlaneNodeCount": obj.get("controlPlaneNodeCount"),
             "readyControlPlaneNodeCount": obj.get("readyControlPlaneNodeCount"),

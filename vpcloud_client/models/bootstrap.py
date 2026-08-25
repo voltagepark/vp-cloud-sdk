@@ -18,7 +18,7 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict, Field, StrictStr
+from pydantic import BaseModel, ConfigDict, Field, StrictStr, field_validator
 from typing import Any, ClassVar, Dict, List, Optional
 from typing import Optional, Set
 from typing_extensions import Self
@@ -31,7 +31,18 @@ class Bootstrap(BaseModel):
     machine_image: StrictStr = Field(description="Machine image to use", alias="machineImage")
     ssh_users: Optional[List[StrictStr]] = Field(default=None, description="List of SSH usernames from your organization's SSH key management. Each user's public keys will be added and a corresponding Linux user will be created on each node.", alias="sshUsers")
     ssh_pub_keys: Optional[List[StrictStr]] = Field(default=None, description="DEPRECATED: Use sshUsers instead. Raw keys for backward compatibility only.", alias="ssh-pub-keys")
-    __properties: ClassVar[List[str]] = ["cloudInit", "machineImage", "sshUsers", "ssh-pub-keys"]
+    sudo_access: Optional[StrictStr] = Field(default=None, description="Controls sudo access for the SSH users Harbor creates on every node in the fleet (both sshUsers and the deprecated ssh-pub-keys path). When enabled, each Harbor-managed user is granted passwordless sudo; when disabled, users are created without any Harbor-managed sudo rule. Applies to standalone bare-metal fleets and is fixed at creation time. Defaults to enabled.", alias="sudoAccess")
+    __properties: ClassVar[List[str]] = ["cloudInit", "machineImage", "sshUsers", "ssh-pub-keys", "sudoAccess"]
+
+    @field_validator('sudo_access')
+    def sudo_access_validate_enum(cls, value):
+        """Validates the enum"""
+        if value is None:
+            return value
+
+        if value not in set(['enabled', 'disabled']):
+            raise ValueError("must be one of enum values ('enabled', 'disabled')")
+        return value
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -87,7 +98,8 @@ class Bootstrap(BaseModel):
             "cloudInit": obj.get("cloudInit"),
             "machineImage": obj.get("machineImage"),
             "sshUsers": obj.get("sshUsers"),
-            "ssh-pub-keys": obj.get("ssh-pub-keys")
+            "ssh-pub-keys": obj.get("ssh-pub-keys"),
+            "sudoAccess": obj.get("sudoAccess")
         })
         return _obj
 

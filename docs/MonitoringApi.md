@@ -5,6 +5,7 @@ All URIs are relative to *https://api.sea1.voltagepark.com*
 Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**get_fleet_grafana_dashboards**](MonitoringApi.md#get_fleet_grafana_dashboards) | **GET** /v1/fleets/{fleetId}/services/grafana | Get Grafana dashboards for a specific fleet
+[**get_fleet_logs**](MonitoringApi.md#get_fleet_logs) | **GET** /v1/fleets/{fleetId}/services/logs | Get Grafana Dashboard and Explore links for a fleet&#39;s system logs
 [**list_fleet_grafana_dashboards**](MonitoringApi.md#list_fleet_grafana_dashboards) | **GET** /v1/fleets/services/grafana | List Grafana dashboards for all fleets
 
 
@@ -95,6 +96,96 @@ Name | Type | Description  | Notes
 **200** | Success - returns array of available dashboards (empty if monitoring not configured) |  -  |
 **404** | Fleet not found - check that the fleet ID is correct and belongs to your organization |  -  |
 **401** | Unauthorized - invalid or missing authentication token |  -  |
+**500** | Internal server error |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **get_fleet_logs**
+> List[GrafanaLogsResponse] get_fleet_logs(fleet_id)
+
+Get Grafana Dashboard and Explore links for a fleet's system logs
+
+Returns Grafana Dashboard and Explore deep-links for this fleet's VictoriaLogs datasource when MKS system logging is enabled and the select token has been bridged into Harbor. The datasource display name is `{fleetName}-logs` (UID remains the fleet id).
+
+**When to use:**
+- Fleet Observability / Logs tab in Harbor UI (prefer `dashboardUrl`)
+- Open Dashboard or Explore pre-selected to this fleet's logs (Auth0 SSO)
+
+**Important notes:**
+- Empty array means logs are not available (not MKSv2, no clusterId, or no select token)
+- `available=false` means the link exists but the fleet is not ACTIVE
+- Users authenticate with Auth0 SSO when opening the links
+
+### Example
+
+* Bearer (JWT) Authentication (bearerAuth):
+
+```python
+import vpcloud_client
+from vpcloud_client.models.grafana_logs_response import GrafanaLogsResponse
+from vpcloud_client.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to https://api.sea1.voltagepark.com
+# See configuration.py for a list of all supported configuration parameters.
+configuration = vpcloud_client.Configuration(
+    host = "https://api.sea1.voltagepark.com"
+)
+
+# The client must configure the authentication and authorization parameters
+# in accordance with the API server security policy.
+# Examples for each auth method are provided below, use the example that
+# satisfies your auth use case.
+
+# Configure Bearer authorization (JWT): bearerAuth
+configuration = vpcloud_client.Configuration(
+    access_token = os.environ["BEARER_TOKEN"]
+)
+
+# Enter a context with an instance of the API client
+with vpcloud_client.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = vpcloud_client.MonitoringApi(api_client)
+    fleet_id = '6c0fd1d8-0dda-4e87-bf53-256ba2cb8f57' # str | Fleet identifier
+
+    try:
+        # Get Grafana Dashboard and Explore links for a fleet's system logs
+        api_response = api_instance.get_fleet_logs(fleet_id)
+        print("The response of MonitoringApi->get_fleet_logs:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling MonitoringApi->get_fleet_logs: %s\n" % e)
+```
+
+
+
+### Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **fleet_id** | **str**| Fleet identifier | 
+
+### Return type
+
+[**List[GrafanaLogsResponse]**](GrafanaLogsResponse.md)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Success - returns array with at most one logs link object (empty if logs not configured) |  -  |
+**401** | Unauthorized - invalid or missing authentication token |  -  |
+**404** | Fleet not found - check that the fleet ID is correct and belongs to your organization |  -  |
 **500** | Internal server error |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)

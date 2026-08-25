@@ -7,8 +7,9 @@ A node within a fleet (fleet_id not included as it's redundant in fleet context)
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **node_name** | **str** | Unique identifier for the node | 
-**state** | **str** | Current state of the node | 
+**state** | [**NodeState**](NodeState.md) |  | 
 **public_ip** | **str** | Public IP address of the node | 
+**gpu_type** | **str** | GPU model installed on this node. Not an enum: new hardware models must reach clients rather than break deserialization. Absent when the model is not known. | [optional] 
 
 ## Example
 

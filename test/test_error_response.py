@@ -38,7 +38,8 @@ class TestErrorResponse(unittest.TestCase):
             return ErrorResponse(
                 error = 'Fleet not found',
                 code = 'FLEET_NOT_FOUND',
-                timestamp = 1755817319000
+                timestamp = 1755817319000,
+                details = { }
             )
         else:
             return ErrorResponse(

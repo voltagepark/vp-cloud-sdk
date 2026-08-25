@@ -29,6 +29,30 @@ class TestNodeOperationsApi:
         config = create_test_config()
         return NodeOperationsApi(api_client=ApiClient(config))
 
+    def test_create_node_power_operation_success(self, api_instance):
+        """Test successful create_node_power_operation request.
+        
+        Queue a node power operation
+        """
+        # Mock successful response
+        mock_response = MockResponse(200, data=b'{"result": "success"}')
+        with patch.object(api_instance.api_client.rest_client, 'request', 
+                         return_value=mock_response):
+            # Test implementation
+            pass
+
+    def test_create_node_power_operation_error(self, api_instance):
+        """Test create_node_power_operation error handling.
+        
+        Queue a node power operation
+        """
+        # Mock error response
+        mock_response = MockResponse(400, data=b'{"error": "bad request"}')
+        with patch.object(api_instance.api_client.rest_client, 'request', 
+                         return_value=mock_response):
+            # Test error handling
+            pass
+
     def test_remediate_nodes_success(self, api_instance):
         """Test successful remediate_nodes request.
         

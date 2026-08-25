@@ -28,7 +28,7 @@ class FleetNodeSpec(BaseModel):
     """
     FleetNodeSpec
     """ # noqa: E501
-    instance_type: StrictStr = Field(description="Type of compute instance", alias="instanceType")
+    instance_type: StrictStr = Field(description="Server-derived compute instance type. `mixed` means the nodes have different GPU models; `unknown` means the hardware could not be determined.", alias="instanceType")
     replicas: Optional[StrictInt] = Field(default=None, description="Number of replicas (deprecated: use nodes array instead)")
     reserved_nodes: Optional[List[StrictStr]] = Field(default=None, description="List of reserved node identifiers (deprecated: use nodes array instead)")
     nodes: Optional[List[FleetNode]] = Field(default=None, description="List of actual node details with IPs")

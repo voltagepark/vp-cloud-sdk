@@ -38,7 +38,8 @@ class TestFleetNode(unittest.TestCase):
             return FleetNode(
                 node_name = 'g0388',
                 state = 'ACTIVE',
-                public_ip = '10.9.41.182'
+                public_ip = '10.9.41.182',
+                gpu_type = 'H200_BM'
             )
         else:
             return FleetNode(
