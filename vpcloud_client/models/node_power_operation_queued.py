@@ -37,8 +37,8 @@ class NodePowerOperationQueued(BaseModel):
     @field_validator('reset_type')
     def reset_type_validate_enum(cls, value):
         """Validates the enum"""
-        if value not in set(['On', 'ForceRestart']):
-            raise ValueError("must be one of enum values ('On', 'ForceRestart')")
+        if value not in set(['On', 'ForceOff', 'GracefulShutdown', 'ForceRestart']):
+            raise ValueError("must be one of enum values ('On', 'ForceOff', 'GracefulShutdown', 'ForceRestart')")
         return value
 
     model_config = ConfigDict(

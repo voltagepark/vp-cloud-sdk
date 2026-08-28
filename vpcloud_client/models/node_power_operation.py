@@ -25,7 +25,7 @@ from typing_extensions import Self
 
 class NodePowerOperation(BaseModel):
     """
-    Requests a power transition on a node. Thundercat enforces which transitions are valid given the node's current power state (e.g. `On` is only valid when the node is off). Customers may only request `On` or `ForceRestart`.
+    Requests a power transition on a node. Thundercat enforces which transitions are valid given the node's current power state (e.g. `On` is only valid when the node is off). `On` and `ForceRestart` require `cust:fleets:nodes:power`. `ForceOff` and `GracefulShutdown` also require `cust:fleets:nodes:power-off`.
     """ # noqa: E501
     reset_type: StrictStr = Field(description="Redfish ComputerSystem.Reset type to apply via the node's BMC.", alias="resetType")
     __properties: ClassVar[List[str]] = ["resetType"]
@@ -33,8 +33,8 @@ class NodePowerOperation(BaseModel):
     @field_validator('reset_type')
     def reset_type_validate_enum(cls, value):
         """Validates the enum"""
-        if value not in set(['On', 'ForceRestart']):
-            raise ValueError("must be one of enum values ('On', 'ForceRestart')")
+        if value not in set(['On', 'ForceOff', 'GracefulShutdown', 'ForceRestart']):
+            raise ValueError("must be one of enum values ('On', 'ForceOff', 'GracefulShutdown', 'ForceRestart')")
         return value
 
     model_config = ConfigDict(

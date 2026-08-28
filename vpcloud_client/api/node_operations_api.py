@@ -66,7 +66,7 @@ class NodeOperationsApi:
     ) -> NodePowerOperationQueued:
         """Queue a node power operation
 
-        Queues a power transition on a node via its BMC. Thundercat enforces which transitions are valid given the node's current power state. Customers may only request `On` or `ForceRestart`; other values are rejected before reaching Thundercat.
+        Queues a power transition on a node via its BMC. Thundercat enforces which transitions are valid given the node's current power state. Callers with `cust:fleets:nodes:power` may request `On` or `ForceRestart`. `ForceOff` and `GracefulShutdown` also require `cust:fleets:nodes:power-off` and are otherwise rejected with 403 before reaching Thundercat. Unknown reset types are rejected with 400.
 
         :param fleet_id: Fleet identifier (required)
         :type fleet_id: str
@@ -112,6 +112,7 @@ class NodeOperationsApi:
         _response_types_map: Dict[str, Optional[str]] = {
             '202': "NodePowerOperationQueued",
             '400': "ErrorResponse",
+            '403': "ErrorResponse",
             '404': "ErrorResponse",
             '409': "ErrorResponse",
             '422': "ErrorResponse",
@@ -152,7 +153,7 @@ class NodeOperationsApi:
     ) -> ApiResponse[NodePowerOperationQueued]:
         """Queue a node power operation
 
-        Queues a power transition on a node via its BMC. Thundercat enforces which transitions are valid given the node's current power state. Customers may only request `On` or `ForceRestart`; other values are rejected before reaching Thundercat.
+        Queues a power transition on a node via its BMC. Thundercat enforces which transitions are valid given the node's current power state. Callers with `cust:fleets:nodes:power` may request `On` or `ForceRestart`. `ForceOff` and `GracefulShutdown` also require `cust:fleets:nodes:power-off` and are otherwise rejected with 403 before reaching Thundercat. Unknown reset types are rejected with 400.
 
         :param fleet_id: Fleet identifier (required)
         :type fleet_id: str
@@ -198,6 +199,7 @@ class NodeOperationsApi:
         _response_types_map: Dict[str, Optional[str]] = {
             '202': "NodePowerOperationQueued",
             '400': "ErrorResponse",
+            '403': "ErrorResponse",
             '404': "ErrorResponse",
             '409': "ErrorResponse",
             '422': "ErrorResponse",
@@ -238,7 +240,7 @@ class NodeOperationsApi:
     ) -> RESTResponseType:
         """Queue a node power operation
 
-        Queues a power transition on a node via its BMC. Thundercat enforces which transitions are valid given the node's current power state. Customers may only request `On` or `ForceRestart`; other values are rejected before reaching Thundercat.
+        Queues a power transition on a node via its BMC. Thundercat enforces which transitions are valid given the node's current power state. Callers with `cust:fleets:nodes:power` may request `On` or `ForceRestart`. `ForceOff` and `GracefulShutdown` also require `cust:fleets:nodes:power-off` and are otherwise rejected with 403 before reaching Thundercat. Unknown reset types are rejected with 400.
 
         :param fleet_id: Fleet identifier (required)
         :type fleet_id: str
@@ -284,6 +286,7 @@ class NodeOperationsApi:
         _response_types_map: Dict[str, Optional[str]] = {
             '202': "NodePowerOperationQueued",
             '400': "ErrorResponse",
+            '403': "ErrorResponse",
             '404': "ErrorResponse",
             '409': "ErrorResponse",
             '422': "ErrorResponse",

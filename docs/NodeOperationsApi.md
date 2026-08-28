@@ -13,7 +13,7 @@ Method | HTTP request | Description
 
 Queue a node power operation
 
-Queues a power transition on a node via its BMC. Thundercat enforces which transitions are valid given the node's current power state. Customers may only request `On` or `ForceRestart`; other values are rejected before reaching Thundercat.
+Queues a power transition on a node via its BMC. Thundercat enforces which transitions are valid given the node's current power state. Callers with `cust:fleets:nodes:power` may request `On` or `ForceRestart`. `ForceOff` and `GracefulShutdown` also require `cust:fleets:nodes:power-off` and are otherwise rejected with 403 before reaching Thundercat. Unknown reset types are rejected with 400.
 
 ### Example
 
@@ -90,7 +90,8 @@ Name | Type | Description  | Notes
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **202** | Power operation accepted and queued. |  -  |
-**400** | Invalid request body, or resetType not permitted for this role |  -  |
+**400** | Invalid request body or unknown resetType |  -  |
+**403** | Authenticated but not permitted to queue ForceOff or GracefulShutdown (requires cust:fleets:nodes:power-off) |  -  |
 **404** | Fleet or node not found, or the fleet has no Thundercat reservation yet |  -  |
 **409** | Requested transition conflicts with the node&#39;s current power state, or a request with the same Idempotency-Key is currently in progress |  -  |
 **422** | Idempotency-Key reused with a different request body |  -  |
