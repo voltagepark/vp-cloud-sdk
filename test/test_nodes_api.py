@@ -12,12 +12,31 @@
     Do not edit the class manually.
 """  # noqa: E501
 
+import uuid
+
 import pytest
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import patch
+
 from vpcloud_client.api.nodes_api import NodesApi
 from vpcloud_client.exceptions import ApiException
 from vpcloud_client import ApiClient
-from test.utils import create_test_config, MockResponse
+from vpcloud_client.models.list_nodes_response import ListNodesResponse
+from vpcloud_client.models.node import Node
+from vpcloud_client.models.node_power_state import NodePowerState
+from test.utils import create_test_config, json_response
+
+FLEET_ID = uuid.UUID("12345678-1234-1234-1234-123456789abc")
+NODE_ID = "gpu-001"
+
+NODE = {
+    "nodeName": NODE_ID,
+    "state": "READY",
+    "publicIp": "203.0.113.10",
+    "fleetId": str(FLEET_ID),
+    "gpuType": "H100",
+}
+
+ERROR_BODY = {"error": "bad request", "timestamp": 1710000000000}
 
 
 class TestNodesApi:
@@ -30,74 +49,70 @@ class TestNodesApi:
         return NodesApi(api_client=ApiClient(config))
 
     def test_get_node_by_fleet_id_success(self, api_instance):
-        """Test successful get_node_by_fleet_id request.
-        
-        Get node details
-        """
-        # Mock successful response
-        mock_response = MockResponse(200, data=b'{"result": "success"}')
-        with patch.object(api_instance.api_client.rest_client, 'request', 
-                         return_value=mock_response):
-            # Test implementation
-            pass
+        """Test successful get_node_by_fleet_id request."""
+        mock_response = json_response(200, NODE)
+        with patch.object(
+            api_instance.api_client.rest_client, "request", return_value=mock_response
+        ):
+            result = api_instance.get_node_by_fleet_id(
+                fleet_id=FLEET_ID, node_id=NODE_ID
+            )
+        assert isinstance(result, Node)
+        assert result.node_name == NODE_ID
+        assert result.public_ip == "203.0.113.10"
 
     def test_get_node_by_fleet_id_error(self, api_instance):
-        """Test get_node_by_fleet_id error handling.
-        
-        Get node details
-        """
-        # Mock error response
-        mock_response = MockResponse(400, data=b'{"error": "bad request"}')
-        with patch.object(api_instance.api_client.rest_client, 'request', 
-                         return_value=mock_response):
-            # Test error handling
-            pass
+        """Test get_node_by_fleet_id error handling."""
+        mock_response = json_response(400, ERROR_BODY)
+        with patch.object(
+            api_instance.api_client.rest_client, "request", return_value=mock_response
+        ):
+            with pytest.raises(ApiException) as exc_info:
+                api_instance.get_node_by_fleet_id(fleet_id=FLEET_ID, node_id=NODE_ID)
+        assert exc_info.value.status == 400
 
     def test_get_node_power_state_success(self, api_instance):
-        """Test successful get_node_power_state request.
-        
-        Get node power state
-        """
-        # Mock successful response
-        mock_response = MockResponse(200, data=b'{"result": "success"}')
-        with patch.object(api_instance.api_client.rest_client, 'request', 
-                         return_value=mock_response):
-            # Test implementation
-            pass
+        """Test successful get_node_power_state request."""
+        mock_response = json_response(
+            200, {"nodeId": NODE_ID, "powerState": "On"}
+        )
+        with patch.object(
+            api_instance.api_client.rest_client, "request", return_value=mock_response
+        ):
+            result = api_instance.get_node_power_state(
+                fleet_id=FLEET_ID, node_id=NODE_ID
+            )
+        assert isinstance(result, NodePowerState)
+        assert result.node_id == NODE_ID
+        assert result.power_state == "On"
 
     def test_get_node_power_state_error(self, api_instance):
-        """Test get_node_power_state error handling.
-        
-        Get node power state
-        """
-        # Mock error response
-        mock_response = MockResponse(400, data=b'{"error": "bad request"}')
-        with patch.object(api_instance.api_client.rest_client, 'request', 
-                         return_value=mock_response):
-            # Test error handling
-            pass
+        """Test get_node_power_state error handling."""
+        mock_response = json_response(400, ERROR_BODY)
+        with patch.object(
+            api_instance.api_client.rest_client, "request", return_value=mock_response
+        ):
+            with pytest.raises(ApiException) as exc_info:
+                api_instance.get_node_power_state(fleet_id=FLEET_ID, node_id=NODE_ID)
+        assert exc_info.value.status == 400
 
     def test_list_nodes_by_fleet_id_success(self, api_instance):
-        """Test successful list_nodes_by_fleet_id request.
-        
-        List nodes in a fleet
-        """
-        # Mock successful response
-        mock_response = MockResponse(200, data=b'{"result": "success"}')
-        with patch.object(api_instance.api_client.rest_client, 'request', 
-                         return_value=mock_response):
-            # Test implementation
-            pass
+        """Test successful list_nodes_by_fleet_id request."""
+        mock_response = json_response(200, {"nodes": [NODE], "limit": 100})
+        with patch.object(
+            api_instance.api_client.rest_client, "request", return_value=mock_response
+        ):
+            result = api_instance.list_nodes_by_fleet_id(fleet_id=FLEET_ID)
+        assert isinstance(result, ListNodesResponse)
+        assert len(result.nodes) == 1
+        assert result.nodes[0].node_name == NODE_ID
 
     def test_list_nodes_by_fleet_id_error(self, api_instance):
-        """Test list_nodes_by_fleet_id error handling.
-        
-        List nodes in a fleet
-        """
-        # Mock error response
-        mock_response = MockResponse(400, data=b'{"error": "bad request"}')
-        with patch.object(api_instance.api_client.rest_client, 'request', 
-                         return_value=mock_response):
-            # Test error handling
-            pass
-
+        """Test list_nodes_by_fleet_id error handling."""
+        mock_response = json_response(400, ERROR_BODY)
+        with patch.object(
+            api_instance.api_client.rest_client, "request", return_value=mock_response
+        ):
+            with pytest.raises(ApiException) as exc_info:
+                api_instance.list_nodes_by_fleet_id(fleet_id=FLEET_ID)
+        assert exc_info.value.status == 400

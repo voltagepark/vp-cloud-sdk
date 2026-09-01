@@ -13,11 +13,36 @@
 """  # noqa: E501
 
 import pytest
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import patch
+
 from vpcloud_client.api.audit_api import AuditApi
 from vpcloud_client.exceptions import ApiException
 from vpcloud_client import ApiClient
-from test.utils import create_test_config, MockResponse
+from vpcloud_client.models.audit_log_export_status_response import (
+    AuditLogExportStatusResponse,
+)
+from vpcloud_client.models.audit_log_list_response import AuditLogListResponse
+from test.utils import create_test_config, json_response
+
+EXPORT_STATUS = {
+    "status": "running",
+    "windowStart": "2026-06-03T00:00:00Z",
+    "windowEnd": "2026-09-01T00:00:00Z",
+    "format": "ndjson+gzip",
+    "startedAt": "2026-09-01T00:01:00Z",
+}
+
+AUDIT_LOG = {
+    "timestamp": "2026-08-31T20:00:00Z",
+    "userId": "user-1",
+    "operation": "LIST_FLEETS",
+    "method": "GET",
+    "route": "GET /v1/fleets",
+    "statusCode": 200,
+    "authOutcome": "allowed",
+}
+
+ERROR_BODY = {"error": "unauthorized", "timestamp": 1710000000000}
 
 
 class TestAuditApi:
@@ -30,74 +55,63 @@ class TestAuditApi:
         return AuditApi(api_client=ApiClient(config))
 
     def test_get_audit_log_export_success(self, api_instance):
-        """Test successful get_audit_log_export request.
-        
-        Check the 90-day audit log export and get its download URL
-        """
-        # Mock successful response
-        mock_response = MockResponse(200, data=b'{"result": "success"}')
-        with patch.object(api_instance.api_client.rest_client, 'request', 
-                         return_value=mock_response):
-            # Test implementation
-            pass
+        """Test successful get_audit_log_export request."""
+        mock_response = json_response(200, EXPORT_STATUS)
+        with patch.object(
+            api_instance.api_client.rest_client, "request", return_value=mock_response
+        ):
+            result = api_instance.get_audit_log_export()
+        assert isinstance(result, AuditLogExportStatusResponse)
+        assert result.status == "running"
+        assert result.format == "ndjson+gzip"
 
     def test_get_audit_log_export_error(self, api_instance):
-        """Test get_audit_log_export error handling.
-        
-        Check the 90-day audit log export and get its download URL
-        """
-        # Mock error response
-        mock_response = MockResponse(400, data=b'{"error": "bad request"}')
-        with patch.object(api_instance.api_client.rest_client, 'request', 
-                         return_value=mock_response):
-            # Test error handling
-            pass
+        """Test get_audit_log_export error handling."""
+        mock_response = json_response(401, ERROR_BODY)
+        with patch.object(
+            api_instance.api_client.rest_client, "request", return_value=mock_response
+        ):
+            with pytest.raises(ApiException) as exc_info:
+                api_instance.get_audit_log_export()
+        assert exc_info.value.status == 401
 
     def test_get_audit_logs_success(self, api_instance):
-        """Test successful get_audit_logs request.
-        
-        List recent audit logs for your organization
-        """
-        # Mock successful response
-        mock_response = MockResponse(200, data=b'{"result": "success"}')
-        with patch.object(api_instance.api_client.rest_client, 'request', 
-                         return_value=mock_response):
-            # Test implementation
-            pass
+        """Test successful get_audit_logs request."""
+        mock_response = json_response(200, {"items": [AUDIT_LOG]})
+        with patch.object(
+            api_instance.api_client.rest_client, "request", return_value=mock_response
+        ):
+            result = api_instance.get_audit_logs()
+        assert isinstance(result, AuditLogListResponse)
+        assert len(result.items) == 1
+        assert result.items[0].operation == "LIST_FLEETS"
 
     def test_get_audit_logs_error(self, api_instance):
-        """Test get_audit_logs error handling.
-        
-        List recent audit logs for your organization
-        """
-        # Mock error response
-        mock_response = MockResponse(400, data=b'{"error": "bad request"}')
-        with patch.object(api_instance.api_client.rest_client, 'request', 
-                         return_value=mock_response):
-            # Test error handling
-            pass
+        """Test get_audit_logs error handling."""
+        mock_response = json_response(401, ERROR_BODY)
+        with patch.object(
+            api_instance.api_client.rest_client, "request", return_value=mock_response
+        ):
+            with pytest.raises(ApiException) as exc_info:
+                api_instance.get_audit_logs()
+        assert exc_info.value.status == 401
 
     def test_start_audit_log_export_success(self, api_instance):
-        """Test successful start_audit_log_export request.
-        
-        Start building the 90-day audit log export for your organization
-        """
-        # Mock successful response
-        mock_response = MockResponse(200, data=b'{"result": "success"}')
-        with patch.object(api_instance.api_client.rest_client, 'request', 
-                         return_value=mock_response):
-            # Test implementation
-            pass
+        """Test successful start_audit_log_export request."""
+        mock_response = json_response(202, EXPORT_STATUS)
+        with patch.object(
+            api_instance.api_client.rest_client, "request", return_value=mock_response
+        ):
+            result = api_instance.start_audit_log_export()
+        assert isinstance(result, AuditLogExportStatusResponse)
+        assert result.status == "running"
 
     def test_start_audit_log_export_error(self, api_instance):
-        """Test start_audit_log_export error handling.
-        
-        Start building the 90-day audit log export for your organization
-        """
-        # Mock error response
-        mock_response = MockResponse(400, data=b'{"error": "bad request"}')
-        with patch.object(api_instance.api_client.rest_client, 'request', 
-                         return_value=mock_response):
-            # Test error handling
-            pass
-
+        """Test start_audit_log_export error handling."""
+        mock_response = json_response(401, ERROR_BODY)
+        with patch.object(
+            api_instance.api_client.rest_client, "request", return_value=mock_response
+        ):
+            with pytest.raises(ApiException) as exc_info:
+                api_instance.start_audit_log_export()
+        assert exc_info.value.status == 401
