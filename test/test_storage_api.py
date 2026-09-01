@@ -12,12 +12,32 @@
     Do not edit the class manually.
 """  # noqa: E501
 
+import uuid
+
 import pytest
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import patch
+
 from vpcloud_client.api.storage_api import StorageApi
 from vpcloud_client.exceptions import ApiException
 from vpcloud_client import ApiClient
-from test.utils import create_test_config, MockResponse
+from vpcloud_client.models.add_storage_view_request import AddStorageViewRequest
+from vpcloud_client.models.storage_view import StorageView
+from vpcloud_client.models.storage_view_list_response import StorageViewListResponse
+from vpcloud_client.models.update_storage_view_request import UpdateStorageViewRequest
+from test.utils import create_test_config, json_response
+
+FLEET_ID = uuid.UUID("12345678-1234-1234-1234-123456789abc")
+VIEW_NAME = "data"
+
+STORAGE_VIEW = {
+    "mountPoint": "/data",
+    "size": 536870912000,
+    "softLimit": 53687091200,
+    "hardLimit": 64424509440,
+    "state": "active",
+}
+
+ERROR_BODY = {"error": "bad request", "timestamp": 1710000000000}
 
 
 class TestStorageApi:
@@ -30,122 +50,123 @@ class TestStorageApi:
         return StorageApi(api_client=ApiClient(config))
 
     def test_add_storage_view_success(self, api_instance):
-        """Test successful add_storage_view request.
-        
-        Add a VAST storage view
-        """
-        # Mock successful response
-        mock_response = MockResponse(200, data=b'{"result": "success"}')
-        with patch.object(api_instance.api_client.rest_client, 'request', 
-                         return_value=mock_response):
-            # Test implementation
-            pass
+        """Test successful add_storage_view request."""
+        mock_response = json_response(202, STORAGE_VIEW)
+        request = AddStorageViewRequest(mount_point="/data", size=536870912000)
+        with patch.object(
+            api_instance.api_client.rest_client, "request", return_value=mock_response
+        ):
+            result = api_instance.add_storage_view(
+                fleet_id=FLEET_ID,
+                add_storage_view_request=request,
+            )
+        assert isinstance(result, StorageView)
+        assert result.mount_point == "/data"
+        assert result.state == "active"
 
     def test_add_storage_view_error(self, api_instance):
-        """Test add_storage_view error handling.
-        
-        Add a VAST storage view
-        """
-        # Mock error response
-        mock_response = MockResponse(400, data=b'{"error": "bad request"}')
-        with patch.object(api_instance.api_client.rest_client, 'request', 
-                         return_value=mock_response):
-            # Test error handling
-            pass
+        """Test add_storage_view error handling."""
+        mock_response = json_response(400, ERROR_BODY)
+        request = AddStorageViewRequest(mount_point="/data")
+        with patch.object(
+            api_instance.api_client.rest_client, "request", return_value=mock_response
+        ):
+            with pytest.raises(ApiException) as exc_info:
+                api_instance.add_storage_view(
+                    fleet_id=FLEET_ID,
+                    add_storage_view_request=request,
+                )
+        assert exc_info.value.status == 400
 
     def test_delete_storage_view_success(self, api_instance):
-        """Test successful delete_storage_view request.
-        
-        Delete a VAST storage view
-        """
-        # Mock successful response
-        mock_response = MockResponse(200, data=b'{"result": "success"}')
-        with patch.object(api_instance.api_client.rest_client, 'request', 
-                         return_value=mock_response):
-            # Test implementation
-            pass
+        """Test successful delete_storage_view request."""
+        mock_response = json_response(204)
+        with patch.object(
+            api_instance.api_client.rest_client, "request", return_value=mock_response
+        ):
+            result = api_instance.delete_storage_view(fleet_id=FLEET_ID, view=VIEW_NAME)
+        assert result is None
 
     def test_delete_storage_view_error(self, api_instance):
-        """Test delete_storage_view error handling.
-        
-        Delete a VAST storage view
-        """
-        # Mock error response
-        mock_response = MockResponse(400, data=b'{"error": "bad request"}')
-        with patch.object(api_instance.api_client.rest_client, 'request', 
-                         return_value=mock_response):
-            # Test error handling
-            pass
+        """Test delete_storage_view error handling."""
+        mock_response = json_response(400, ERROR_BODY)
+        with patch.object(
+            api_instance.api_client.rest_client, "request", return_value=mock_response
+        ):
+            with pytest.raises(ApiException) as exc_info:
+                api_instance.delete_storage_view(fleet_id=FLEET_ID, view=VIEW_NAME)
+        assert exc_info.value.status == 400
 
     def test_get_storage_view_success(self, api_instance):
-        """Test successful get_storage_view request.
-        
-        Get a VAST storage view
-        """
-        # Mock successful response
-        mock_response = MockResponse(200, data=b'{"result": "success"}')
-        with patch.object(api_instance.api_client.rest_client, 'request', 
-                         return_value=mock_response):
-            # Test implementation
-            pass
+        """Test successful get_storage_view request."""
+        mock_response = json_response(200, STORAGE_VIEW)
+        with patch.object(
+            api_instance.api_client.rest_client, "request", return_value=mock_response
+        ):
+            result = api_instance.get_storage_view(fleet_id=FLEET_ID, view=VIEW_NAME)
+        assert isinstance(result, StorageView)
+        assert result.mount_point == "/data"
 
     def test_get_storage_view_error(self, api_instance):
-        """Test get_storage_view error handling.
-        
-        Get a VAST storage view
-        """
-        # Mock error response
-        mock_response = MockResponse(400, data=b'{"error": "bad request"}')
-        with patch.object(api_instance.api_client.rest_client, 'request', 
-                         return_value=mock_response):
-            # Test error handling
-            pass
+        """Test get_storage_view error handling."""
+        mock_response = json_response(400, ERROR_BODY)
+        with patch.object(
+            api_instance.api_client.rest_client, "request", return_value=mock_response
+        ):
+            with pytest.raises(ApiException) as exc_info:
+                api_instance.get_storage_view(fleet_id=FLEET_ID, view=VIEW_NAME)
+        assert exc_info.value.status == 400
 
     def test_list_storage_views_success(self, api_instance):
-        """Test successful list_storage_views request.
-        
-        List VAST storage views
-        """
-        # Mock successful response
-        mock_response = MockResponse(200, data=b'{"result": "success"}')
-        with patch.object(api_instance.api_client.rest_client, 'request', 
-                         return_value=mock_response):
-            # Test implementation
-            pass
+        """Test successful list_storage_views request."""
+        mock_response = json_response(
+            200, {"items": [STORAGE_VIEW], "storagePending": False}
+        )
+        with patch.object(
+            api_instance.api_client.rest_client, "request", return_value=mock_response
+        ):
+            result = api_instance.list_storage_views(fleet_id=FLEET_ID)
+        assert isinstance(result, StorageViewListResponse)
+        assert len(result.items) == 1
+        assert result.items[0].mount_point == "/data"
+        assert result.storage_pending is False
 
     def test_list_storage_views_error(self, api_instance):
-        """Test list_storage_views error handling.
-        
-        List VAST storage views
-        """
-        # Mock error response
-        mock_response = MockResponse(400, data=b'{"error": "bad request"}')
-        with patch.object(api_instance.api_client.rest_client, 'request', 
-                         return_value=mock_response):
-            # Test error handling
-            pass
+        """Test list_storage_views error handling."""
+        mock_response = json_response(400, ERROR_BODY)
+        with patch.object(
+            api_instance.api_client.rest_client, "request", return_value=mock_response
+        ):
+            with pytest.raises(ApiException) as exc_info:
+                api_instance.list_storage_views(fleet_id=FLEET_ID)
+        assert exc_info.value.status == 400
 
     def test_update_storage_view_success(self, api_instance):
-        """Test successful update_storage_view request.
-        
-        Update a VAST storage view
-        """
-        # Mock successful response
-        mock_response = MockResponse(200, data=b'{"result": "success"}')
-        with patch.object(api_instance.api_client.rest_client, 'request', 
-                         return_value=mock_response):
-            # Test implementation
-            pass
+        """Test successful update_storage_view request."""
+        mock_response = json_response(202, STORAGE_VIEW)
+        request = UpdateStorageViewRequest(size=644245094400)
+        with patch.object(
+            api_instance.api_client.rest_client, "request", return_value=mock_response
+        ):
+            result = api_instance.update_storage_view(
+                fleet_id=FLEET_ID,
+                view=VIEW_NAME,
+                update_storage_view_request=request,
+            )
+        assert isinstance(result, StorageView)
+        assert result.mount_point == "/data"
 
     def test_update_storage_view_error(self, api_instance):
-        """Test update_storage_view error handling.
-        
-        Update a VAST storage view
-        """
-        # Mock error response
-        mock_response = MockResponse(400, data=b'{"error": "bad request"}')
-        with patch.object(api_instance.api_client.rest_client, 'request', 
-                         return_value=mock_response):
-            # Test error handling
-            pass
-
+        """Test update_storage_view error handling."""
+        mock_response = json_response(400, ERROR_BODY)
+        request = UpdateStorageViewRequest(size=1)
+        with patch.object(
+            api_instance.api_client.rest_client, "request", return_value=mock_response
+        ):
+            with pytest.raises(ApiException) as exc_info:
+                api_instance.update_storage_view(
+                    fleet_id=FLEET_ID,
+                    view=VIEW_NAME,
+                    update_storage_view_request=request,
+                )
+        assert exc_info.value.status == 400
