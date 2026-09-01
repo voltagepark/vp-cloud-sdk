@@ -25,7 +25,7 @@ from typing_extensions import Self
 
 class NodePowerState(BaseModel):
     """
-    Live BMC power state for a node, read from Thundercat/Redfish on every call - not cached or stored by Harbor.
+    Live BMC power state for a node, read on every call - not cached or stored by Harbor.
     """ # noqa: E501
     node_id: StrictStr = Field(description="Node identifier.", alias="nodeId")
     power_state: StrictStr = Field(description="Live power state as reported by the BMC.", alias="powerState")

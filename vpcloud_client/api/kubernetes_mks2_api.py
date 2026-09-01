@@ -68,7 +68,7 @@ class KubernetesMKS2Api:
     ) -> Mks2CordonNodeResponse:
         """Cordon an MKS-2 worker node
 
-        Marks the node unschedulable so the scheduler stops placing new pods on it. Existing pods are left running (use drain to evict them). Org-scoped: the caller's JWT org must own the fleet. The node must be joined to the cluster; MKS-2 returns 400 otherwise. Idempotency: pass `Idempotency-Key` to make this safely retryable.
+        Marks the node unschedulable so the scheduler stops placing new pods on it. Existing pods are left running (use drain to evict them). Org-scoped: the caller's JWT org must own the fleet. The node must be joined to the cluster; otherwise the request is rejected with 400. Idempotency: pass `Idempotency-Key` to make this safely retryable.
 
         :param fleet_id: Fleet identifier (required)
         :type fleet_id: str
@@ -148,7 +148,7 @@ class KubernetesMKS2Api:
     ) -> ApiResponse[Mks2CordonNodeResponse]:
         """Cordon an MKS-2 worker node
 
-        Marks the node unschedulable so the scheduler stops placing new pods on it. Existing pods are left running (use drain to evict them). Org-scoped: the caller's JWT org must own the fleet. The node must be joined to the cluster; MKS-2 returns 400 otherwise. Idempotency: pass `Idempotency-Key` to make this safely retryable.
+        Marks the node unschedulable so the scheduler stops placing new pods on it. Existing pods are left running (use drain to evict them). Org-scoped: the caller's JWT org must own the fleet. The node must be joined to the cluster; otherwise the request is rejected with 400. Idempotency: pass `Idempotency-Key` to make this safely retryable.
 
         :param fleet_id: Fleet identifier (required)
         :type fleet_id: str
@@ -228,7 +228,7 @@ class KubernetesMKS2Api:
     ) -> RESTResponseType:
         """Cordon an MKS-2 worker node
 
-        Marks the node unschedulable so the scheduler stops placing new pods on it. Existing pods are left running (use drain to evict them). Org-scoped: the caller's JWT org must own the fleet. The node must be joined to the cluster; MKS-2 returns 400 otherwise. Idempotency: pass `Idempotency-Key` to make this safely retryable.
+        Marks the node unschedulable so the scheduler stops placing new pods on it. Existing pods are left running (use drain to evict them). Org-scoped: the caller's JWT org must own the fleet. The node must be joined to the cluster; otherwise the request is rejected with 400. Idempotency: pass `Idempotency-Key` to make this safely retryable.
 
         :param fleet_id: Fleet identifier (required)
         :type fleet_id: str
@@ -384,7 +384,7 @@ class KubernetesMKS2Api:
     ) -> Mks2DrainNodeResponse:
         """Drain an MKS-2 worker node
 
-        Cordons the node and then evicts its pods (respecting PodDisruptionBudgets). Org-scoped: the caller's JWT org must own the fleet. The node must be joined to the cluster; MKS-2 returns 400 otherwise, and 409 if the cluster is currently restoring or deleting. The request body is optional; omit it to use the MKS-2 defaults. Idempotency: pass `Idempotency-Key` to make this safely retryable.
+        Cordons the node and then evicts its pods (respecting PodDisruptionBudgets). Org-scoped: the caller's JWT org must own the fleet. The node must be joined to the cluster; otherwise the request is rejected with 400, or 409 if the cluster is currently restoring or deleting. The request body is optional; omit it to use the defaults. Idempotency: pass `Idempotency-Key` to make this safely retryable.
 
         :param fleet_id: Fleet identifier (required)
         :type fleet_id: str
@@ -469,7 +469,7 @@ class KubernetesMKS2Api:
     ) -> ApiResponse[Mks2DrainNodeResponse]:
         """Drain an MKS-2 worker node
 
-        Cordons the node and then evicts its pods (respecting PodDisruptionBudgets). Org-scoped: the caller's JWT org must own the fleet. The node must be joined to the cluster; MKS-2 returns 400 otherwise, and 409 if the cluster is currently restoring or deleting. The request body is optional; omit it to use the MKS-2 defaults. Idempotency: pass `Idempotency-Key` to make this safely retryable.
+        Cordons the node and then evicts its pods (respecting PodDisruptionBudgets). Org-scoped: the caller's JWT org must own the fleet. The node must be joined to the cluster; otherwise the request is rejected with 400, or 409 if the cluster is currently restoring or deleting. The request body is optional; omit it to use the defaults. Idempotency: pass `Idempotency-Key` to make this safely retryable.
 
         :param fleet_id: Fleet identifier (required)
         :type fleet_id: str
@@ -554,7 +554,7 @@ class KubernetesMKS2Api:
     ) -> RESTResponseType:
         """Drain an MKS-2 worker node
 
-        Cordons the node and then evicts its pods (respecting PodDisruptionBudgets). Org-scoped: the caller's JWT org must own the fleet. The node must be joined to the cluster; MKS-2 returns 400 otherwise, and 409 if the cluster is currently restoring or deleting. The request body is optional; omit it to use the MKS-2 defaults. Idempotency: pass `Idempotency-Key` to make this safely retryable.
+        Cordons the node and then evicts its pods (respecting PodDisruptionBudgets). Org-scoped: the caller's JWT org must own the fleet. The node must be joined to the cluster; otherwise the request is rejected with 400, or 409 if the cluster is currently restoring or deleting. The request body is optional; omit it to use the defaults. Idempotency: pass `Idempotency-Key` to make this safely retryable.
 
         :param fleet_id: Fleet identifier (required)
         :type fleet_id: str
@@ -1684,7 +1684,7 @@ class KubernetesMKS2Api:
     ) -> Mks2CordonNodeResponse:
         """Uncordon an MKS-2 worker node
 
-        Marks the node schedulable again (reverses cordon), allowing the scheduler to place new pods on it. Org-scoped: the caller's JWT org must own the fleet. The node must be joined to the cluster; MKS-2 returns 400 otherwise. Idempotency: pass `Idempotency-Key` to make this safely retryable.
+        Marks the node schedulable again (reverses cordon), allowing the scheduler to place new pods on it. Org-scoped: the caller's JWT org must own the fleet. The node must be joined to the cluster; otherwise the request is rejected with 400. Idempotency: pass `Idempotency-Key` to make this safely retryable.
 
         :param fleet_id: Fleet identifier (required)
         :type fleet_id: str
@@ -1764,7 +1764,7 @@ class KubernetesMKS2Api:
     ) -> ApiResponse[Mks2CordonNodeResponse]:
         """Uncordon an MKS-2 worker node
 
-        Marks the node schedulable again (reverses cordon), allowing the scheduler to place new pods on it. Org-scoped: the caller's JWT org must own the fleet. The node must be joined to the cluster; MKS-2 returns 400 otherwise. Idempotency: pass `Idempotency-Key` to make this safely retryable.
+        Marks the node schedulable again (reverses cordon), allowing the scheduler to place new pods on it. Org-scoped: the caller's JWT org must own the fleet. The node must be joined to the cluster; otherwise the request is rejected with 400. Idempotency: pass `Idempotency-Key` to make this safely retryable.
 
         :param fleet_id: Fleet identifier (required)
         :type fleet_id: str
@@ -1844,7 +1844,7 @@ class KubernetesMKS2Api:
     ) -> RESTResponseType:
         """Uncordon an MKS-2 worker node
 
-        Marks the node schedulable again (reverses cordon), allowing the scheduler to place new pods on it. Org-scoped: the caller's JWT org must own the fleet. The node must be joined to the cluster; MKS-2 returns 400 otherwise. Idempotency: pass `Idempotency-Key` to make this safely retryable.
+        Marks the node schedulable again (reverses cordon), allowing the scheduler to place new pods on it. Org-scoped: the caller's JWT org must own the fleet. The node must be joined to the cluster; otherwise the request is rejected with 400. Idempotency: pass `Idempotency-Key` to make this safely retryable.
 
         :param fleet_id: Fleet identifier (required)
         :type fleet_id: str

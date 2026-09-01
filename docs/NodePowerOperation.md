@@ -1,12 +1,12 @@
 # NodePowerOperation
 
-Requests a power transition on a node. Thundercat enforces which transitions are valid given the node's current power state (e.g. `On` is only valid when the node is off). `On` and `ForceRestart` require `cust:fleets:nodes:power`. `ForceOff` and `GracefulShutdown` also require `cust:fleets:nodes:power-off`.
+Requests a power transition on a node. Valid transitions depend on the node's current power state (e.g. `On` is only valid when the node is off). `On` and `ForceRestart` require `cust:fleets:nodes:power`. `ForceOff` and `GracefulShutdown` also require `cust:fleets:nodes:power-off`.
 
 ## Properties
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**reset_type** | **str** | Redfish ComputerSystem.Reset type to apply via the node&#39;s BMC. | 
+**reset_type** | **str** | Power action to apply. &#x60;On&#x60; powers the node on. &#x60;ForceOff&#x60; cuts power immediately and leaves the node off. &#x60;GracefulShutdown&#x60; requests an OS shutdown and leaves the node off. &#x60;ForceRestart&#x60; reboots immediately. | 
 
 ## Example
 

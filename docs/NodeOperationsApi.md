@@ -13,7 +13,7 @@ Method | HTTP request | Description
 
 Queue a node power operation
 
-Queues a power transition on a node via its BMC. Thundercat enforces which transitions are valid given the node's current power state. Callers with `cust:fleets:nodes:power` may request `On` or `ForceRestart`. `ForceOff` and `GracefulShutdown` also require `cust:fleets:nodes:power-off` and are otherwise rejected with 403 before reaching Thundercat. Unknown reset types are rejected with 400.
+Queues a power transition on a node via its BMC. Valid transitions depend on the node's current power state. Callers with `cust:fleets:nodes:power` may request `On` or `ForceRestart`. `ForceOff` and `GracefulShutdown` also require `cust:fleets:nodes:power-off` and are otherwise rejected with 403. Unknown reset types are rejected with 400.
 
 ### Example
 

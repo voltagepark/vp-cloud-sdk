@@ -28,7 +28,7 @@ class NodePowerOperationQueued(BaseModel):
     Confirmation that a power operation was accepted and queued. The operation is asynchronous - use `taskId` to correlate with logs, and re-`GET` the node's power state to observe the outcome.
     """ # noqa: E501
     node_id: StrictStr = Field(description="Node identifier.", alias="nodeId")
-    reset_type: StrictStr = Field(description="The queued Redfish ComputerSystem.Reset type.", alias="resetType")
+    reset_type: StrictStr = Field(description="Power action that was queued. One of `On`, `ForceOff`, `GracefulShutdown`, or `ForceRestart`.", alias="resetType")
     power_state_before: StrictStr = Field(description="Live BMC power state read immediately before queueing the operation.", alias="powerStateBefore")
     status: StrictStr = Field(description="Queue status for the requested operation.")
     task_id: StrictStr = Field(description="Identifier for the queued power operation, for log correlation.", alias="taskId")

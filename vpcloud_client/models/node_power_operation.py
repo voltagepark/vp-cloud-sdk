@@ -25,9 +25,9 @@ from typing_extensions import Self
 
 class NodePowerOperation(BaseModel):
     """
-    Requests a power transition on a node. Thundercat enforces which transitions are valid given the node's current power state (e.g. `On` is only valid when the node is off). `On` and `ForceRestart` require `cust:fleets:nodes:power`. `ForceOff` and `GracefulShutdown` also require `cust:fleets:nodes:power-off`.
+    Requests a power transition on a node. Valid transitions depend on the node's current power state (e.g. `On` is only valid when the node is off). `On` and `ForceRestart` require `cust:fleets:nodes:power`. `ForceOff` and `GracefulShutdown` also require `cust:fleets:nodes:power-off`.
     """ # noqa: E501
-    reset_type: StrictStr = Field(description="Redfish ComputerSystem.Reset type to apply via the node's BMC.", alias="resetType")
+    reset_type: StrictStr = Field(description="Power action to apply. `On` powers the node on. `ForceOff` cuts power immediately and leaves the node off. `GracefulShutdown` requests an OS shutdown and leaves the node off. `ForceRestart` reboots immediately.", alias="resetType")
     __properties: ClassVar[List[str]] = ["resetType"]
 
     @field_validator('reset_type')

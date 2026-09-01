@@ -1,6 +1,6 @@
 # NodePowerState
 
-Live BMC power state for a node, read from Thundercat/Redfish on every call - not cached or stored by Harbor.
+Live BMC power state for a node, read on every call - not cached or stored by Harbor.
 
 ## Properties
 
