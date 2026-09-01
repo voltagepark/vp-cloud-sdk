@@ -76,7 +76,8 @@ class TestFleet(unittest.TestCase):
                     mks2_cluster = null, 
                     slurm_parameters = null, ),
                 os_config = vpcloud_client.models.os_config.OsConfig(
-                    cpu_profiling = 'disabled', ),
+                    cpu_profiling = 'disabled', 
+                    gpu_profiling = 'disabled', ),
                 order_id = 'a1b2c3d4-e5f6-7890-abcd-ef1234567890'
             )
         else:

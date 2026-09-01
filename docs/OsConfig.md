@@ -7,6 +7,7 @@ Declarative, intent-based OS tuning applied to the operating system of every nod
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **cpu_profiling** | **str** | Enable non-root, system-wide CPU profiling on every node (e.g. &#x60;perf top&#x60;, &#x60;perf stat -a&#x60;). When enabled, Harbor applies the required node kernel settings automatically. Defaults to disabled. | [optional] 
+**gpu_profiling** | **str** | Enable non-root GPU performance-counter profiling on every node (e.g. NVIDIA Nsight Compute &#x60;ncu&#x60;). When enabled, Harbor applies the required NVIDIA driver settings automatically. The profiler itself must already be present in the node image; Harbor only grants access to the counters. Defaults to disabled. | [optional] 
 
 ## Example
 

@@ -36,7 +36,8 @@ class TestOsConfig(unittest.TestCase):
         model = OsConfig()
         if include_optional:
             return OsConfig(
-                cpu_profiling = 'disabled'
+                cpu_profiling = 'disabled',
+                gpu_profiling = 'disabled'
             )
         else:
             return OsConfig(
