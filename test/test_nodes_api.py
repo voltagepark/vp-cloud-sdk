@@ -63,13 +63,13 @@ class TestNodesApi:
 
     def test_get_node_by_fleet_id_error(self, api_instance):
         """Test get_node_by_fleet_id error handling."""
-        mock_response = json_response(400, ERROR_BODY)
+        mock_response = json_response(404, ERROR_BODY)
         with patch.object(
             api_instance.api_client.rest_client, "request", return_value=mock_response
         ):
             with pytest.raises(ApiException) as exc_info:
                 api_instance.get_node_by_fleet_id(fleet_id=FLEET_ID, node_id=NODE_ID)
-        assert exc_info.value.status == 400
+        assert exc_info.value.status == 404
 
     def test_get_node_power_state_success(self, api_instance):
         """Test successful get_node_power_state request."""
