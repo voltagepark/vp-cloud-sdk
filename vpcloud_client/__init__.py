@@ -21,6 +21,7 @@ __version__ = "1.0.0"
 __all__ = [
     "AuditApi",
     "FleetsApi",
+    "KubernetesMKS2Api",
     "MonitoringApi",
     "NodeOperationsApi",
     "NodesApi",
@@ -65,13 +66,36 @@ __all__ = [
     "KubernetesServiceLinks",
     "ListFleetsResponse",
     "ListNodesResponse",
+    "Mks2CordonNodeResponse",
+    "Mks2DrainNodeRequest",
+    "Mks2DrainNodeResponse",
+    "Mks2GpuInfo",
+    "Mks2NodeCondition",
+    "Mks2NodeTaint",
+    "Mks2Pod",
+    "Mks2PodCondition",
+    "Mks2PodConditionStatus",
+    "Mks2PodContainerState",
+    "Mks2PodContainerStatus",
+    "Mks2PodList",
+    "Mks2PodListMeta",
+    "Mks2PodPhase",
+    "Mks2WorkerNode",
+    "Mks2WorkerNodeDetail",
+    "Mks2WorkerNodeKubernetesStatus",
+    "Mks2WorkerNodeList",
+    "Mks2WorkerNodeListMeta",
+    "Mks2WorkerNodeRegistrationStatus",
     "Node",
+    "NodeDetails",
     "NodeHealth",
+    "NodeManagedServices",
     "NodePowerOperation",
     "NodePowerOperationQueued",
     "NodePowerState",
     "NodeState",
     "OsConfig",
+    "PowerActionReadiness",
     "RemediateNodeRequest",
     "RemediateNodeResponse",
     "SlurmParameters",
@@ -86,6 +110,7 @@ __all__ = [
 # import apis into sdk package
 from vpcloud_client.api.audit_api import AuditApi as AuditApi
 from vpcloud_client.api.fleets_api import FleetsApi as FleetsApi
+from vpcloud_client.api.kubernetes_mks2_api import KubernetesMKS2Api as KubernetesMKS2Api
 from vpcloud_client.api.monitoring_api import MonitoringApi as MonitoringApi
 from vpcloud_client.api.node_operations_api import NodeOperationsApi as NodeOperationsApi
 from vpcloud_client.api.nodes_api import NodesApi as NodesApi
@@ -134,13 +159,36 @@ from vpcloud_client.models.infrastructure_network import InfrastructureNetwork a
 from vpcloud_client.models.kubernetes_service_links import KubernetesServiceLinks as KubernetesServiceLinks
 from vpcloud_client.models.list_fleets_response import ListFleetsResponse as ListFleetsResponse
 from vpcloud_client.models.list_nodes_response import ListNodesResponse as ListNodesResponse
+from vpcloud_client.models.mks2_cordon_node_response import Mks2CordonNodeResponse as Mks2CordonNodeResponse
+from vpcloud_client.models.mks2_drain_node_request import Mks2DrainNodeRequest as Mks2DrainNodeRequest
+from vpcloud_client.models.mks2_drain_node_response import Mks2DrainNodeResponse as Mks2DrainNodeResponse
+from vpcloud_client.models.mks2_gpu_info import Mks2GpuInfo as Mks2GpuInfo
+from vpcloud_client.models.mks2_node_condition import Mks2NodeCondition as Mks2NodeCondition
+from vpcloud_client.models.mks2_node_taint import Mks2NodeTaint as Mks2NodeTaint
+from vpcloud_client.models.mks2_pod import Mks2Pod as Mks2Pod
+from vpcloud_client.models.mks2_pod_condition import Mks2PodCondition as Mks2PodCondition
+from vpcloud_client.models.mks2_pod_condition_status import Mks2PodConditionStatus as Mks2PodConditionStatus
+from vpcloud_client.models.mks2_pod_container_state import Mks2PodContainerState as Mks2PodContainerState
+from vpcloud_client.models.mks2_pod_container_status import Mks2PodContainerStatus as Mks2PodContainerStatus
+from vpcloud_client.models.mks2_pod_list import Mks2PodList as Mks2PodList
+from vpcloud_client.models.mks2_pod_list_meta import Mks2PodListMeta as Mks2PodListMeta
+from vpcloud_client.models.mks2_pod_phase import Mks2PodPhase as Mks2PodPhase
+from vpcloud_client.models.mks2_worker_node import Mks2WorkerNode as Mks2WorkerNode
+from vpcloud_client.models.mks2_worker_node_detail import Mks2WorkerNodeDetail as Mks2WorkerNodeDetail
+from vpcloud_client.models.mks2_worker_node_kubernetes_status import Mks2WorkerNodeKubernetesStatus as Mks2WorkerNodeKubernetesStatus
+from vpcloud_client.models.mks2_worker_node_list import Mks2WorkerNodeList as Mks2WorkerNodeList
+from vpcloud_client.models.mks2_worker_node_list_meta import Mks2WorkerNodeListMeta as Mks2WorkerNodeListMeta
+from vpcloud_client.models.mks2_worker_node_registration_status import Mks2WorkerNodeRegistrationStatus as Mks2WorkerNodeRegistrationStatus
 from vpcloud_client.models.node import Node as Node
+from vpcloud_client.models.node_details import NodeDetails as NodeDetails
 from vpcloud_client.models.node_health import NodeHealth as NodeHealth
+from vpcloud_client.models.node_managed_services import NodeManagedServices as NodeManagedServices
 from vpcloud_client.models.node_power_operation import NodePowerOperation as NodePowerOperation
 from vpcloud_client.models.node_power_operation_queued import NodePowerOperationQueued as NodePowerOperationQueued
 from vpcloud_client.models.node_power_state import NodePowerState as NodePowerState
 from vpcloud_client.models.node_state import NodeState as NodeState
 from vpcloud_client.models.os_config import OsConfig as OsConfig
+from vpcloud_client.models.power_action_readiness import PowerActionReadiness as PowerActionReadiness
 from vpcloud_client.models.remediate_node_request import RemediateNodeRequest as RemediateNodeRequest
 from vpcloud_client.models.remediate_node_response import RemediateNodeResponse as RemediateNodeResponse
 from vpcloud_client.models.slurm_parameters import SlurmParameters as SlurmParameters

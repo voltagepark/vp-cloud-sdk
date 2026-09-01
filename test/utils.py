@@ -7,7 +7,6 @@
     Do not edit the class manually.
 """  # noqa: E501
 
-import json
 import uuid
 from typing import Optional, Dict, Any
 from unittest.mock import Mock, MagicMock
@@ -43,16 +42,6 @@ class MockResponse:
     def read(self) -> bytes:
         """Read response data."""
         return self.data
-
-
-def json_response(status_code: int, payload: Optional[Dict[str, Any]] = None) -> MockResponse:
-    """Build a mock HTTP response with a JSON body."""
-    data = b"" if payload is None else json.dumps(payload).encode("utf-8")
-    return MockResponse(
-        status_code,
-        headers={"content-type": "application/json"},
-        data=data,
-    )
 
 
 def create_test_config(

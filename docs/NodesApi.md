@@ -4,10 +4,97 @@ All URIs are relative to *https://api.sea1.voltagepark.com*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
+[**get_fleet_node_details**](NodesApi.md#get_fleet_node_details) | **GET** /v1/fleets/{fleetId}/nodes/{nodeId}/details | Get consolidated node details
 [**get_node_by_fleet_id**](NodesApi.md#get_node_by_fleet_id) | **GET** /v1/fleets/{fleetId}/nodes/{nodeId} | Get node details
 [**get_node_power_state**](NodesApi.md#get_node_power_state) | **GET** /v1/fleets/{fleetId}/nodes/{nodeId}/power | Get node power state
 [**list_nodes_by_fleet_id**](NodesApi.md#list_nodes_by_fleet_id) | **GET** /v1/fleets/{fleetId}/nodes | List nodes in a fleet
 
+
+# **get_fleet_node_details**
+> NodeDetails get_fleet_node_details(fleet_id, node_id)
+
+Get consolidated node details
+
+Returns consolidated single-node details for the node-details page: base physical fields (publicIp only), advisory powerActionReadiness, and optional managed-service data. privateIp and topology are admin-only (see AdminNodeDetails). Org-scoped: the caller's JWT org must own the fleet and the node must belong to that fleet.
+
+Net-new endpoint — does not replace GET /v1/fleets/{fleetId}/nodes/{nodeId}.
+
+### Example
+
+* Bearer (JWT) Authentication (bearerAuth):
+
+```python
+import vpcloud_client
+from vpcloud_client.models.node_details import NodeDetails
+from vpcloud_client.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to https://api.sea1.voltagepark.com
+# See configuration.py for a list of all supported configuration parameters.
+configuration = vpcloud_client.Configuration(
+    host = "https://api.sea1.voltagepark.com"
+)
+
+# The client must configure the authentication and authorization parameters
+# in accordance with the API server security policy.
+# Examples for each auth method are provided below, use the example that
+# satisfies your auth use case.
+
+# Configure Bearer authorization (JWT): bearerAuth
+configuration = vpcloud_client.Configuration(
+    access_token = os.environ["BEARER_TOKEN"]
+)
+
+# Enter a context with an instance of the API client
+with vpcloud_client.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = vpcloud_client.NodesApi(api_client)
+    fleet_id = 'fleet_id_example' # str | Fleet identifier
+    node_id = 'g0546' # str | Node identifier (ThunderCat node name / fleet node id)
+
+    try:
+        # Get consolidated node details
+        api_response = api_instance.get_fleet_node_details(fleet_id, node_id)
+        print("The response of NodesApi->get_fleet_node_details:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling NodesApi->get_fleet_node_details: %s\n" % e)
+```
+
+
+
+### Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **fleet_id** | **str**| Fleet identifier | 
+ **node_id** | **str**| Node identifier (ThunderCat node name / fleet node id) | 
+
+### Return type
+
+[**NodeDetails**](NodeDetails.md)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Success - returns consolidated node details |  -  |
+**401** | Authentication required |  -  |
+**404** | Fleet or node not found, or node not in the caller&#39;s org/fleet |  -  |
+**500** | Internal server error |  -  |
+**502** | Upstream ThunderCat failure |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_node_by_fleet_id**
 > Node get_node_by_fleet_id(fleet_id, node_id)

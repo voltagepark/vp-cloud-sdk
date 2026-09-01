@@ -100,11 +100,18 @@ Class | Method | HTTP request | Description
 *FleetsApi* | [**get_fleet**](docs/FleetsApi.md#get_fleet) | **GET** /v1/fleets/{fleetId} | Get fleet details
 *FleetsApi* | [**get_fleet_health**](docs/FleetsApi.md#get_fleet_health) | **GET** /v1/fleets/{fleetId}/health | Get fleet health metrics
 *FleetsApi* | [**list_fleets**](docs/FleetsApi.md#list_fleets) | **GET** /v1/fleets | List your fleets
+*KubernetesMKS2Api* | [**cordon_customer_mks2_worker_node**](docs/KubernetesMKS2Api.md#cordon_customer_mks2_worker_node) | **POST** /v1/fleets/{fleetId}/kubernetes-v2/nodes/{nodeId}/cordon | Cordon an MKS-2 worker node
+*KubernetesMKS2Api* | [**drain_customer_mks2_worker_node**](docs/KubernetesMKS2Api.md#drain_customer_mks2_worker_node) | **POST** /v1/fleets/{fleetId}/kubernetes-v2/nodes/{nodeId}/drain | Drain an MKS-2 worker node
+*KubernetesMKS2Api* | [**get_customer_mks2_worker_node**](docs/KubernetesMKS2Api.md#get_customer_mks2_worker_node) | **GET** /v1/fleets/{fleetId}/kubernetes-v2/nodes/{nodeId} | Get MKS-2 worker node detail
+*KubernetesMKS2Api* | [**list_customer_mks2_pods**](docs/KubernetesMKS2Api.md#list_customer_mks2_pods) | **GET** /v1/fleets/{fleetId}/kubernetes-v2/pods | List MKS-2 pods
+*KubernetesMKS2Api* | [**list_customer_mks2_worker_nodes**](docs/KubernetesMKS2Api.md#list_customer_mks2_worker_nodes) | **GET** /v1/fleets/{fleetId}/kubernetes-v2/nodes | List MKS-2 worker nodes
+*KubernetesMKS2Api* | [**uncordon_customer_mks2_worker_node**](docs/KubernetesMKS2Api.md#uncordon_customer_mks2_worker_node) | **POST** /v1/fleets/{fleetId}/kubernetes-v2/nodes/{nodeId}/uncordon | Uncordon an MKS-2 worker node
 *MonitoringApi* | [**get_fleet_grafana_dashboards**](docs/MonitoringApi.md#get_fleet_grafana_dashboards) | **GET** /v1/fleets/{fleetId}/services/grafana | Get Grafana dashboards for a specific fleet
 *MonitoringApi* | [**get_fleet_logs**](docs/MonitoringApi.md#get_fleet_logs) | **GET** /v1/fleets/{fleetId}/services/logs | Get Grafana Dashboard and Explore links for a fleet&#39;s system logs
 *MonitoringApi* | [**list_fleet_grafana_dashboards**](docs/MonitoringApi.md#list_fleet_grafana_dashboards) | **GET** /v1/fleets/services/grafana | List Grafana dashboards for all fleets
 *NodeOperationsApi* | [**create_node_power_operation**](docs/NodeOperationsApi.md#create_node_power_operation) | **POST** /v1/fleets/{fleetId}/nodes/{nodeId}/power | Queue a node power operation
 *NodeOperationsApi* | [**remediate_nodes**](docs/NodeOperationsApi.md#remediate_nodes) | **POST** /v1/fleets/{fleetId}/nodes/remediate | Fix unhealthy nodes
+*NodesApi* | [**get_fleet_node_details**](docs/NodesApi.md#get_fleet_node_details) | **GET** /v1/fleets/{fleetId}/nodes/{nodeId}/details | Get consolidated node details
 *NodesApi* | [**get_node_by_fleet_id**](docs/NodesApi.md#get_node_by_fleet_id) | **GET** /v1/fleets/{fleetId}/nodes/{nodeId} | Get node details
 *NodesApi* | [**get_node_power_state**](docs/NodesApi.md#get_node_power_state) | **GET** /v1/fleets/{fleetId}/nodes/{nodeId}/power | Get node power state
 *NodesApi* | [**list_nodes_by_fleet_id**](docs/NodesApi.md#list_nodes_by_fleet_id) | **GET** /v1/fleets/{fleetId}/nodes | List nodes in a fleet
@@ -144,13 +151,36 @@ Class | Method | HTTP request | Description
  - [KubernetesServiceLinks](docs/KubernetesServiceLinks.md)
  - [ListFleetsResponse](docs/ListFleetsResponse.md)
  - [ListNodesResponse](docs/ListNodesResponse.md)
+ - [Mks2CordonNodeResponse](docs/Mks2CordonNodeResponse.md)
+ - [Mks2DrainNodeRequest](docs/Mks2DrainNodeRequest.md)
+ - [Mks2DrainNodeResponse](docs/Mks2DrainNodeResponse.md)
+ - [Mks2GpuInfo](docs/Mks2GpuInfo.md)
+ - [Mks2NodeCondition](docs/Mks2NodeCondition.md)
+ - [Mks2NodeTaint](docs/Mks2NodeTaint.md)
+ - [Mks2Pod](docs/Mks2Pod.md)
+ - [Mks2PodCondition](docs/Mks2PodCondition.md)
+ - [Mks2PodConditionStatus](docs/Mks2PodConditionStatus.md)
+ - [Mks2PodContainerState](docs/Mks2PodContainerState.md)
+ - [Mks2PodContainerStatus](docs/Mks2PodContainerStatus.md)
+ - [Mks2PodList](docs/Mks2PodList.md)
+ - [Mks2PodListMeta](docs/Mks2PodListMeta.md)
+ - [Mks2PodPhase](docs/Mks2PodPhase.md)
+ - [Mks2WorkerNode](docs/Mks2WorkerNode.md)
+ - [Mks2WorkerNodeDetail](docs/Mks2WorkerNodeDetail.md)
+ - [Mks2WorkerNodeKubernetesStatus](docs/Mks2WorkerNodeKubernetesStatus.md)
+ - [Mks2WorkerNodeList](docs/Mks2WorkerNodeList.md)
+ - [Mks2WorkerNodeListMeta](docs/Mks2WorkerNodeListMeta.md)
+ - [Mks2WorkerNodeRegistrationStatus](docs/Mks2WorkerNodeRegistrationStatus.md)
  - [Node](docs/Node.md)
+ - [NodeDetails](docs/NodeDetails.md)
  - [NodeHealth](docs/NodeHealth.md)
+ - [NodeManagedServices](docs/NodeManagedServices.md)
  - [NodePowerOperation](docs/NodePowerOperation.md)
  - [NodePowerOperationQueued](docs/NodePowerOperationQueued.md)
  - [NodePowerState](docs/NodePowerState.md)
  - [NodeState](docs/NodeState.md)
  - [OsConfig](docs/OsConfig.md)
+ - [PowerActionReadiness](docs/PowerActionReadiness.md)
  - [RemediateNodeRequest](docs/RemediateNodeRequest.md)
  - [RemediateNodeResponse](docs/RemediateNodeResponse.md)
  - [SlurmParameters](docs/SlurmParameters.md)
