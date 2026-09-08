@@ -28,7 +28,7 @@ class OsConfig(BaseModel):
     Declarative, intent-based OS tuning applied to the operating system of every node in the fleet. Each capability is requested by name; Harbor owns the known-good translation to node-level configuration and re-applies it on scale-up so new nodes inherit the same tuning. All capabilities are optional; omit the whole object to keep node OS defaults.
     """ # noqa: E501
     cpu_profiling: Optional[StrictStr] = Field(default=None, description="Enable non-root, system-wide CPU profiling on every node (e.g. `perf top`, `perf stat -a`). When enabled, Harbor applies the required node kernel settings automatically. Defaults to disabled.", alias="cpuProfiling")
-    gpu_profiling: Optional[StrictStr] = Field(default=None, description="Enable non-root GPU performance-counter profiling on every node (e.g. NVIDIA Nsight Compute `ncu`). When enabled, Harbor applies the required NVIDIA driver settings automatically. The profiler itself must already be present in the node image; Harbor only grants access to the counters. Defaults to disabled.", alias="gpuProfiling")
+    gpu_profiling: Optional[StrictStr] = Field(default=None, description="Enable non-root GPU performance-counter profiling on every node (e.g. NVIDIA Nsight Compute `ncu`). When enabled, Harbor applies the required NVIDIA driver settings automatically. The profiler itself must already be present in the node image; Harbor only grants access to the counters. Bare-metal fleets only: on MKS-2 the NVIDIA driver is managed by the GPU operator rather than by node cloud-init, so enabling it there is rejected. Defaults to disabled.", alias="gpuProfiling")
     __properties: ClassVar[List[str]] = ["cpuProfiling", "gpuProfiling"]
 
     @field_validator('cpu_profiling')
