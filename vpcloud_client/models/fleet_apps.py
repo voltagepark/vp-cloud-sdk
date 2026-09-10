@@ -28,13 +28,13 @@ from typing_extensions import Self
 
 class FleetApps(BaseModel):
     """
-    Fleet applications configuration. mk8s (legacy MKS-1) and mks2 are mutually exclusive: at most one of them may be 'enabled' on the same fleet.
+    Fleet applications configuration. Legacy managed Kubernetes (`mk8s`) and mks2 are mutually exclusive: at most one of them may be 'enabled' on the same fleet.
     """ # noqa: E501
-    mk8s: Optional[StrictStr] = Field(default=None, description="Enable or disable MK8s (managed Kubernetes, MKS-1) for this fleet. Mutually exclusive with mks2.")
-    mks2: Optional[StrictStr] = Field(default=None, description="Enable or disable MKS-2 (Kamaji-based managed Kubernetes) for this fleet. Mutually exclusive with mk8s.")
+    mk8s: Optional[StrictStr] = Field(default=None, description="Enable or disable legacy managed Kubernetes for this fleet. Mutually exclusive with mks2.")
+    mks2: Optional[StrictStr] = Field(default=None, description="Enable or disable managed Kubernetes for this fleet. Mutually exclusive with mk8s.")
     slurm: Optional[StrictStr] = Field(default=None, description="Enable or disable Slurm for this fleet")
-    mk8s_cluster: Optional[FleetAppsMksCluster] = Field(default=None, description="MK8s (MKS-1) cluster information (only present when mk8s is enabled)", alias="mk8sCluster")
-    mks2_cluster: Optional[FleetAppsMks2Cluster] = Field(default=None, description="MKS-2 cluster information (only present when mks2 is enabled)", alias="mks2Cluster")
+    mk8s_cluster: Optional[FleetAppsMksCluster] = Field(default=None, description="Legacy managed Kubernetes cluster information (only present when mk8s is enabled)", alias="mk8sCluster")
+    mks2_cluster: Optional[FleetAppsMks2Cluster] = Field(default=None, description="Managed Kubernetes cluster information (only present when mks2 is enabled)", alias="mks2Cluster")
     slurm_parameters: Optional[SlurmParameters] = Field(default=None, description="Slurm configuration (only present when slurm is enabled)", alias="slurmParameters")
     __properties: ClassVar[List[str]] = ["mk8s", "mks2", "slurm", "mk8sCluster", "mks2Cluster", "slurmParameters"]
 

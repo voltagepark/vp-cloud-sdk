@@ -6,7 +6,7 @@ Result of a node drain. `evicted` and `failed` are included when reported.
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**node_id** | **str** | MKS-2 worker-node identifier (registry id) the drain targeted. | 
+**node_id** | **str** | Managed Kubernetes worker-node identifier (registry id) the drain targeted. | 
 **evicted** | **int** | Number of pods evicted from the node, when reported. | [optional] 
 **failed** | **List[str]** | Identifiers of pods that could not be evicted, when reported. | [optional] 
 

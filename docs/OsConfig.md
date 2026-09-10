@@ -1,13 +1,13 @@
 # OsConfig
 
-Declarative, intent-based OS tuning applied to the operating system of every node in the fleet. Each capability is requested by name; Harbor owns the known-good translation to node-level configuration and re-applies it on scale-up so new nodes inherit the same tuning. All capabilities are optional; omit the whole object to keep node OS defaults.
+Declarative, intent-based OS tuning applied to the operating system of every node in the fleet. Each capability is requested by name; the API owns the known-good translation to node-level configuration and re-applies it on scale-up so new nodes inherit the same tuning. All capabilities are optional; omit the whole object to keep node OS defaults.
 
 ## Properties
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**cpu_profiling** | **str** | Enable non-root, system-wide CPU profiling on every node (e.g. &#x60;perf top&#x60;, &#x60;perf stat -a&#x60;). When enabled, Harbor applies the required node kernel settings automatically. Defaults to disabled. | [optional] 
-**gpu_profiling** | **str** | Enable non-root GPU performance-counter profiling on every node (e.g. NVIDIA Nsight Compute &#x60;ncu&#x60;). When enabled, Harbor applies the required NVIDIA driver settings automatically. The profiler itself must already be present in the node image; Harbor only grants access to the counters. Bare-metal fleets only: on MKS-2 the NVIDIA driver is managed by the GPU operator rather than by node cloud-init, so enabling it there is rejected. Defaults to disabled. | [optional] 
+**cpu_profiling** | **str** | Enable non-root, system-wide CPU profiling on every node (e.g. &#x60;perf top&#x60;, &#x60;perf stat -a&#x60;). When enabled, the API applies the required node kernel settings automatically. Defaults to disabled. | [optional] 
+**gpu_profiling** | **str** | Enable non-root GPU performance-counter profiling on every node (e.g. NVIDIA Nsight Compute &#x60;ncu&#x60;). When enabled, the API applies the required NVIDIA driver settings automatically. The profiler itself must already be present in the node image; the API only grants access to the counters. Bare-metal fleets only: on managed Kubernetes the NVIDIA driver is managed by the GPU operator rather than by node startup configuration, so enabling it there is rejected. Defaults to disabled. | [optional] 
 
 ## Example
 

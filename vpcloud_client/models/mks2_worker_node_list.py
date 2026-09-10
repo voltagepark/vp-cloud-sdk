@@ -27,7 +27,7 @@ from typing_extensions import Self
 
 class Mks2WorkerNodeList(BaseModel):
     """
-    Worker-node list response. Mirrors mks2sdk.ListNodes200Response: `items` carries the page contents and `meta.nextCursor` carries the opaque continuation token for the next page (null when there are no more pages). The upstream service paginates; harbor is currently a passthrough and does not aggregate pages.
+    Worker-node list response. `items` carries the page contents and `meta.nextCursor` carries the opaque continuation token for the next page (null when there are no more pages). The upstream service paginates; the API is currently a passthrough and does not aggregate pages.
     """ # noqa: E501
     items: Optional[List[Mks2WorkerNode]] = Field(default=None, description="Worker nodes in the current page. Empty array (not null) when the cluster has no nodes registered.")
     meta: Optional[Mks2WorkerNodeListMeta] = None

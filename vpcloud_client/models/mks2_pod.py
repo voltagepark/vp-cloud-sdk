@@ -29,7 +29,7 @@ from typing_extensions import Self
 
 class Mks2Pod(BaseModel):
     """
-    A pod in the fleet's MKS-2 cluster. `phase` is the raw Kubernetes pod phase; `status` is a derived human-readable status (e.g. Running, CrashLoopBackOff, Terminating).
+    A pod in the fleet's managed Kubernetes cluster. `phase` is the raw Kubernetes pod phase; `status` is a derived human-readable status (e.g. Running, CrashLoopBackOff, Terminating).
     """ # noqa: E501
     name: StrictStr = Field(description="Pod name.")
     namespace: StrictStr = Field(description="Pod namespace.")

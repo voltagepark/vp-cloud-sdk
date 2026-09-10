@@ -30,7 +30,7 @@ class NodeDetails(BaseModel):
     """
     Consolidated single-node details for the customer node-details page. Composes base physical-node fields (publicIp only — no privateIp / reservationId / nodeResourceName), advisory powerActionReadiness, and optional managedServices. Customer power readiness checks cluster join, cordon, and drain state. Topology, privateIp, reservationId, and nodeResourceName are admin-only (see AdminNodeDetails). Existing list/detail endpoints are unchanged.
     """ # noqa: E501
-    node_name: StrictStr = Field(description="Unique identifier for the node (ThunderCat Node.Name / MKS registry id).", alias="nodeName")
+    node_name: StrictStr = Field(description="Unique identifier for the node (cluster registry id).", alias="nodeName")
     state: NodeState
     public_ip: StrictStr = Field(description="Public IP address of the node", alias="publicIp")
     fleet_id: Optional[StrictStr] = Field(default=None, description="Fleet ID associated with the node, if any", alias="fleetId")

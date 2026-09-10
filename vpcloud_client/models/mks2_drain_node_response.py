@@ -27,7 +27,7 @@ class Mks2DrainNodeResponse(BaseModel):
     """
     Result of a node drain. `evicted` and `failed` are included when reported.
     """ # noqa: E501
-    node_id: StrictStr = Field(description="MKS-2 worker-node identifier (registry id) the drain targeted.", alias="nodeId")
+    node_id: StrictStr = Field(description="Managed Kubernetes worker-node identifier (registry id) the drain targeted.", alias="nodeId")
     evicted: Optional[StrictInt] = Field(default=None, description="Number of pods evicted from the node, when reported.")
     failed: Optional[List[StrictStr]] = Field(default=None, description="Identifiers of pods that could not be evicted, when reported.")
     __properties: ClassVar[List[str]] = ["nodeId", "evicted", "failed"]

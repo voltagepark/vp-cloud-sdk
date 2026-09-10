@@ -27,17 +27,17 @@ from typing_extensions import Self
 
 class FleetAppsMks2Cluster(BaseModel):
     """
-    MKS-2 (Kamaji-based managed Kubernetes) cluster information for this fleet. Distinct from FleetAppsMksCluster (legacy MKS-1) so the two contracts can evolve independently. Sensitive fields (kubeconfig) are intentionally not surfaced here; they are fetched via a separate endpoint.  Atomic populate-or-omit: when this object is present in a fleet response, every field is populated from a successful live MKS-2 GetCluster call. If MKS-2 is unreachable, this object is omitted from the parent FleetApps entirely - the response then has no mks2Cluster key at all. Clients should treat absent and present-but-incomplete as the same state (cluster details unavailable).
+    Managed Kubernetes cluster information for this fleet. Sensitive fields (kubeconfig) are intentionally not surfaced here; they are fetched via a separate endpoint.  Atomic populate-or-omit: when this object is present in a fleet response, every field is populated from a successful live cluster lookup. If managed Kubernetes is unreachable, this object is omitted from the parent applications object entirely - the response then has no mks2Cluster key at all. Clients should treat absent and present-but-incomplete as the same state (cluster details unavailable).
     """ # noqa: E501
-    cluster_id: StrictStr = Field(description="MKS-2 cluster ID (sourced from DDB; stable across enrichment results)", alias="clusterId")
-    cluster_name: StrictStr = Field(description="MKS-2 cluster name as reported by MKS-2", alias="clusterName")
+    cluster_id: StrictStr = Field(description="Managed Kubernetes cluster ID (stable across enrichment results)", alias="clusterId")
+    cluster_name: StrictStr = Field(description="Managed Kubernetes cluster name as reported by managed Kubernetes", alias="clusterName")
     kubernetes_version: StrictStr = Field(description="Kubernetes version running on the cluster (e.g. v1.35.0)", alias="kubernetesVersion")
-    cluster_status: StrictStr = Field(description="Live cluster status reported by MKS-2 (lowercase, mirrors mks2sdk.ClusterStatus).", alias="clusterStatus")
+    cluster_status: StrictStr = Field(description="Live cluster status reported by managed Kubernetes (lowercase).", alias="clusterStatus")
     control_plane_replicas: StrictInt = Field(description="Desired number of control plane replicas", alias="controlPlaneReplicas")
     control_plane_size: Optional[StrictStr] = Field(default=None, description="Control plane resource tier, which determines the CPU and memory allocated to the Kubernetes API server. Omitted while the cluster's control plane is still being provisioned.", alias="controlPlaneSize")
     datastore_type: Optional[StrictStr] = Field(default=None, description="Whether the cluster runs on shared multi-tenant etcd or its own dedicated etcd cluster. Omitted when the cluster's etcd configuration is temporarily unavailable.", alias="datastoreType")
     nvidia_driver_version: StrictStr = Field(description="NVIDIA driver version installed via the GPU operator", alias="nvidiaDriverVersion")
-    created_at: datetime = Field(description="Timestamp when the MKS-2 cluster was created", alias="createdAt")
+    created_at: datetime = Field(description="Timestamp when the managed Kubernetes cluster was created", alias="createdAt")
     node_counts: FleetAppsMks2NodeCounts = Field(alias="nodeCounts")
     __properties: ClassVar[List[str]] = ["clusterId", "clusterName", "kubernetesVersion", "clusterStatus", "controlPlaneReplicas", "controlPlaneSize", "datastoreType", "nvidiaDriverVersion", "createdAt", "nodeCounts"]
 

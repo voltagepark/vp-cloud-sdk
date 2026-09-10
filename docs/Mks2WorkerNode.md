@@ -1,16 +1,16 @@
 # Mks2WorkerNode
 
-Minimal MKS-2 worker-node info for list responses. The list payload is intentionally small; use the per-node detail endpoint (GET .../kubernetes-v2/nodes/{nodeId}) for the full node object with conditions, GPU info, and labels/annotations.
+Minimal managed Kubernetes worker-node info for list responses. The list payload is intentionally small; use the per-node detail endpoint (GET .../kubernetes-v2/nodes/{nodeId}) for the full node object with conditions, GPU info, and labels/annotations.
 
 ## Properties
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**id** | **str** | MKS-2 worker-node identifier (registry id). Stable for the lifetime of the registry entry. | 
+**id** | **str** | Managed Kubernetes worker-node identifier (registry id). Stable for the lifetime of the registry entry. | 
 **registration_status** | [**Mks2WorkerNodeRegistrationStatus**](Mks2WorkerNodeRegistrationStatus.md) |  | 
 **kubernetes_status** | [**Mks2WorkerNodeKubernetesStatus**](Mks2WorkerNodeKubernetesStatus.md) |  | [optional] 
 **schedulable** | **bool** | Whether pods can be scheduled on this node (i.e. uncordoned). Absent when the node has not joined yet. | [optional] 
-**gpu_validated** | **bool** | Whether MKS-2 has run GPU validation against this node and it passed. Absent when no validation has run. | [optional] 
+**gpu_validated** | **bool** | Whether managed Kubernetes has run GPU validation against this node and it passed. Absent when no validation has run. | [optional] 
 
 ## Example
 

@@ -21,14 +21,14 @@ from typing_extensions import Self
 
 class Mks2WorkerNodeRegistrationStatus(str, Enum):
     """
-    MKS-2 node registration status. `registered` means the node is in the MKS-2 worker registry but has not yet completed bootstrap; `joined` means the node has bootstrapped and joined the Kubernetes cluster. Mirrors mks2sdk.NodeRegistrationStatus.
+    Managed Kubernetes node registration status. `registered` means the node is in the managed Kubernetes worker registry but has not yet completed bootstrap; `joined` means the node has bootstrapped and joined the Kubernetes cluster. Mirrors the Kubernetes API.
     """
 
     """
     allowed enum values
     """
-    Mks2WorkerNodeRegistrationStatusRegistered = 'registered'
-    Mks2WorkerNodeRegistrationStatusJoined = 'joined'
+    REGISTERED = 'registered'
+    JOINED = 'joined'
 
     @classmethod
     def from_json(cls, json_str: str) -> Self:

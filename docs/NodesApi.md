@@ -50,7 +50,7 @@ with vpcloud_client.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = vpcloud_client.NodesApi(api_client)
     fleet_id = 'fleet_id_example' # str | Fleet identifier
-    node_id = 'g0546' # str | Node identifier (ThunderCat node name / fleet node id)
+    node_id = 'g0546' # str | Node identifier (fleet node id)
 
     try:
         # Get consolidated node details
@@ -69,7 +69,7 @@ with vpcloud_client.ApiClient(configuration) as api_client:
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **fleet_id** | **str**| Fleet identifier | 
- **node_id** | **str**| Node identifier (ThunderCat node name / fleet node id) | 
+ **node_id** | **str**| Node identifier (fleet node id) | 
 
 ### Return type
 
@@ -92,7 +92,7 @@ Name | Type | Description  | Notes
 **401** | Authentication required |  -  |
 **404** | Fleet or node not found, or node not in the caller&#39;s org/fleet |  -  |
 **500** | Internal server error |  -  |
-**502** | Upstream ThunderCat failure |  -  |
+**502** | Upstream infrastructure failure |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
@@ -189,7 +189,7 @@ Name | Type | Description  | Notes
 
 Get node power state
 
-Read the node's live BMC power state via Redfish. Not cached or stored by Harbor - every call reads the BMC directly.
+Read the node's live BMC power state via Redfish. Not cached or stored by the API - every call reads the BMC directly.
 
 ### Example
 
@@ -261,10 +261,10 @@ Name | Type | Description  | Notes
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | The node&#39;s live power state. |  -  |
-**400** | Fleet has an invalid Thundercat reservation ID, or nodeId is invalid |  -  |
-**404** | Fleet or node not found, or the fleet has no Thundercat reservation yet |  -  |
+**400** | Fleet has an invalid reservation ID, or nodeId is invalid |  -  |
+**404** | Fleet or node not found, or the fleet has no reservation yet |  -  |
 **500** | Internal failure before the upstream call |  -  |
-**502** | Upstream Thundercat returned an error, or the node&#39;s BMC is unreachable |  -  |
+**502** | Upstream infrastructure service returned an error, or the node&#39;s BMC is unreachable |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 

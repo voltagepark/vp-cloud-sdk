@@ -27,11 +27,11 @@ class Mks2PodPhase(str, Enum):
     """
     allowed enum values
     """
-    Mks2PodPhasePending = 'Pending'
-    Mks2PodPhaseRunning = 'Running'
-    Mks2PodPhaseSucceeded = 'Succeeded'
-    Mks2PodPhaseFailed = 'Failed'
-    Mks2PodPhaseUnknown = 'Unknown'
+    PENDING = 'Pending'
+    RUNNING = 'Running'
+    SUCCEEDED = 'Succeeded'
+    FAILED = 'Failed'
+    UNKNOWN = 'Unknown'
 
     @classmethod
     def from_json(cls, json_str: str) -> Self:

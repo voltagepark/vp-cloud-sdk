@@ -25,12 +25,12 @@ from typing_extensions import Self
 
 class GrafanaLogsResponse(BaseModel):
     """
-    Dashboard and Explore deep-links for a fleet's VictoriaLogs datasource in Harbor Grafana.
+    Dashboard and Explore deep-links for a fleet's logs datasource in Grafana.
     """ # noqa: E501
     fleet_id: StrictStr = Field(description="Fleet identifier these logs belong to", alias="fleetId")
     available: StrictBool = Field(description="Indicates if logs links can be used. `false` means the fleet is not ACTIVE (links may still be returned for transitional states).")
-    datasource_name: StrictStr = Field(description="Grafana datasource display name for this fleet's VictoriaLogs datasource (`{fleetName}-logs`). UID remains the fleet id.", alias="datasourceName")
-    dashboard_url: StrictStr = Field(description="Direct link to the Harbor K8s system-logs Dashboard with this fleet's Logs datasource pre-selected. Prefer this over Explore for the default UX.", alias="dashboardUrl")
+    datasource_name: StrictStr = Field(description="Grafana datasource display name for this fleet's logs datasource (`{fleetName}-logs`). UID remains the fleet id.", alias="datasourceName")
+    dashboard_url: StrictStr = Field(description="Direct link to the Kubernetes system-logs Dashboard with this fleet's Logs datasource pre-selected. Prefer this over Explore for the default UX.", alias="dashboardUrl")
     explore_url: StrictStr = Field(description="Direct link to Grafana Explore pre-selecting this fleet's Logs datasource. Users authenticate via Auth0 SSO when opening the link.", alias="exploreUrl")
     __properties: ClassVar[List[str]] = ["fleetId", "available", "datasourceName", "dashboardUrl", "exploreUrl"]
 

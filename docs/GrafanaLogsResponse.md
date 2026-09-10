@@ -1,6 +1,6 @@
 # GrafanaLogsResponse
 
-Dashboard and Explore deep-links for a fleet's VictoriaLogs datasource in Harbor Grafana.
+Dashboard and Explore deep-links for a fleet's logs datasource in Grafana.
 
 ## Properties
 
@@ -8,8 +8,8 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **fleet_id** | **str** | Fleet identifier these logs belong to | 
 **available** | **bool** | Indicates if logs links can be used. &#x60;false&#x60; means the fleet is not ACTIVE (links may still be returned for transitional states). | 
-**datasource_name** | **str** | Grafana datasource display name for this fleet&#39;s VictoriaLogs datasource (&#x60;{fleetName}-logs&#x60;). UID remains the fleet id. | 
-**dashboard_url** | **str** | Direct link to the Harbor K8s system-logs Dashboard with this fleet&#39;s Logs datasource pre-selected. Prefer this over Explore for the default UX. | 
+**datasource_name** | **str** | Grafana datasource display name for this fleet&#39;s logs datasource (&#x60;{fleetName}-logs&#x60;). UID remains the fleet id. | 
+**dashboard_url** | **str** | Direct link to the Kubernetes system-logs Dashboard with this fleet&#39;s Logs datasource pre-selected. Prefer this over Explore for the default UX. | 
 **explore_url** | **str** | Direct link to Grafana Explore pre-selecting this fleet&#39;s Logs datasource. Users authenticate via Auth0 SSO when opening the link. | 
 
 ## Example

@@ -1,6 +1,6 @@
 # Mks2Pod
 
-A pod in the fleet's MKS-2 cluster. `phase` is the raw Kubernetes pod phase; `status` is a derived human-readable status (e.g. Running, CrashLoopBackOff, Terminating).
+A pod in the fleet's managed Kubernetes cluster. `phase` is the raw Kubernetes pod phase; `status` is a derived human-readable status (e.g. Running, CrashLoopBackOff, Terminating).
 
 ## Properties
 

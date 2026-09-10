@@ -1,6 +1,6 @@
 # NodeState
 
-Current Harbor lifecycle state of a physical / fleet node.
+Current lifecycle state of a physical / fleet node.
 
 ## Enum
 

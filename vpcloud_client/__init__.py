@@ -21,7 +21,7 @@ __version__ = "1.0.0"
 __all__ = [
     "AuditApi",
     "FleetsApi",
-    "KubernetesMKS2Api",
+    "KubernetesApi",
     "MonitoringApi",
     "NodeOperationsApi",
     "NodesApi",
@@ -110,7 +110,7 @@ __all__ = [
 # import apis into sdk package
 from vpcloud_client.api.audit_api import AuditApi as AuditApi
 from vpcloud_client.api.fleets_api import FleetsApi as FleetsApi
-from vpcloud_client.api.kubernetes_mks2_api import KubernetesMKS2Api as KubernetesMKS2Api
+from vpcloud_client.api.kubernetes_api import KubernetesApi as KubernetesApi
 from vpcloud_client.api.monitoring_api import MonitoringApi as MonitoringApi
 from vpcloud_client.api.node_operations_api import NodeOperationsApi as NodeOperationsApi
 from vpcloud_client.api.nodes_api import NodesApi as NodesApi

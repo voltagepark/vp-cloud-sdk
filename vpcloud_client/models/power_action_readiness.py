@@ -25,11 +25,11 @@ from typing_extensions import Self
 
 class PowerActionReadiness(BaseModel):
     """
-    Advisory readiness for disruptive power actions (ForceOff, GracefulShutdown, ForceRestart, GracefulRestart). Power On from Off is never gated by this object. `ready` means Harbor found no known blocker; warnings do not change readiness. The policy and user-facing copy are selected by API plane, while machine-readable blocker and warning codes remain internal for structured logging. Clients should not re-derive readiness from registrationStatus, schedulable, taints, or drained.
+    Advisory readiness for disruptive power actions (ForceOff, GracefulShutdown, ForceRestart, GracefulRestart). Power On from Off is never gated by this object. `ready` means the API found no known blocker; warnings do not change readiness. The policy and user-facing copy are selected by API plane, while machine-readable blocker and warning codes remain internal for structured logging. Clients should not re-derive readiness from registrationStatus, schedulable, taints, or drained.
     """ # noqa: E501
-    ready: StrictBool = Field(description="True when Harbor found no known blocker. A non-empty warningMessage remains advisory and does not change this value.")
+    ready: StrictBool = Field(description="True when the API found no known blocker. A non-empty warningMessage remains advisory and does not change this value.")
     blocker_message: StrictStr = Field(description="Empty when ready. Otherwise contains the backend-owned, plane-appropriate explanation for the active blocker. Clients should display this complete sentence without parsing it.", alias="blockerMessage")
-    warning_message: StrictStr = Field(description="Empty when there are no warnings. Harbor composes active warning messages as complete sentences in deterministic order. Warnings are advisory and do not change ready.", alias="warningMessage")
+    warning_message: StrictStr = Field(description="Empty when there are no warnings. The API composes active warning messages as complete sentences in deterministic order. Warnings are advisory and do not change ready.", alias="warningMessage")
     __properties: ClassVar[List[str]] = ["ready", "blockerMessage", "warningMessage"]
 
     model_config = ConfigDict(

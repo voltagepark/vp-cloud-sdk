@@ -340,7 +340,7 @@ class MonitoringApi:
     ) -> List[GrafanaLogsResponse]:
         """Get Grafana Dashboard and Explore links for a fleet's system logs
 
-        Returns Grafana Dashboard and Explore deep-links for this fleet's VictoriaLogs datasource when MKS system logging is enabled and the select token has been bridged into Harbor. The datasource display name is `{fleetName}-logs` (UID remains the fleet id).  **When to use:** - Fleet Observability / Logs tab in Harbor UI (prefer `dashboardUrl`) - Open Dashboard or Explore pre-selected to this fleet's logs (Auth0 SSO)  **Important notes:** - Empty array means logs are not available (not MKSv2, no clusterId, or no select token) - `available=false` means the link exists but the fleet is not ACTIVE - Users authenticate with Auth0 SSO when opening the links
+        Returns Grafana Dashboard and Explore deep-links for this fleet's logs datasource when system logging is enabled and the select token has been bridged into the API. The datasource display name is `{fleetName}-logs` (UID remains the fleet id).  **When to use:** - Fleet Observability / Logs tab in console (prefer `dashboardUrl`) - Open Dashboard or Explore pre-selected to this fleet's logs (Auth0 SSO)  **Important notes:** - Empty array means logs are not available (not a Kubernetes fleet, no clusterId, or no select token) - `available=false` means the link exists but the fleet is not ACTIVE - Users authenticate with Auth0 SSO when opening the links
 
         :param fleet_id: Fleet identifier (required)
         :type fleet_id: str
@@ -410,7 +410,7 @@ class MonitoringApi:
     ) -> ApiResponse[List[GrafanaLogsResponse]]:
         """Get Grafana Dashboard and Explore links for a fleet's system logs
 
-        Returns Grafana Dashboard and Explore deep-links for this fleet's VictoriaLogs datasource when MKS system logging is enabled and the select token has been bridged into Harbor. The datasource display name is `{fleetName}-logs` (UID remains the fleet id).  **When to use:** - Fleet Observability / Logs tab in Harbor UI (prefer `dashboardUrl`) - Open Dashboard or Explore pre-selected to this fleet's logs (Auth0 SSO)  **Important notes:** - Empty array means logs are not available (not MKSv2, no clusterId, or no select token) - `available=false` means the link exists but the fleet is not ACTIVE - Users authenticate with Auth0 SSO when opening the links
+        Returns Grafana Dashboard and Explore deep-links for this fleet's logs datasource when system logging is enabled and the select token has been bridged into the API. The datasource display name is `{fleetName}-logs` (UID remains the fleet id).  **When to use:** - Fleet Observability / Logs tab in console (prefer `dashboardUrl`) - Open Dashboard or Explore pre-selected to this fleet's logs (Auth0 SSO)  **Important notes:** - Empty array means logs are not available (not a Kubernetes fleet, no clusterId, or no select token) - `available=false` means the link exists but the fleet is not ACTIVE - Users authenticate with Auth0 SSO when opening the links
 
         :param fleet_id: Fleet identifier (required)
         :type fleet_id: str
@@ -480,7 +480,7 @@ class MonitoringApi:
     ) -> RESTResponseType:
         """Get Grafana Dashboard and Explore links for a fleet's system logs
 
-        Returns Grafana Dashboard and Explore deep-links for this fleet's VictoriaLogs datasource when MKS system logging is enabled and the select token has been bridged into Harbor. The datasource display name is `{fleetName}-logs` (UID remains the fleet id).  **When to use:** - Fleet Observability / Logs tab in Harbor UI (prefer `dashboardUrl`) - Open Dashboard or Explore pre-selected to this fleet's logs (Auth0 SSO)  **Important notes:** - Empty array means logs are not available (not MKSv2, no clusterId, or no select token) - `available=false` means the link exists but the fleet is not ACTIVE - Users authenticate with Auth0 SSO when opening the links
+        Returns Grafana Dashboard and Explore deep-links for this fleet's logs datasource when system logging is enabled and the select token has been bridged into the API. The datasource display name is `{fleetName}-logs` (UID remains the fleet id).  **When to use:** - Fleet Observability / Logs tab in console (prefer `dashboardUrl`) - Open Dashboard or Explore pre-selected to this fleet's logs (Auth0 SSO)  **Important notes:** - Empty array means logs are not available (not a Kubernetes fleet, no clusterId, or no select token) - `available=false` means the link exists but the fleet is not ACTIVE - Users authenticate with Auth0 SSO when opening the links
 
         :param fleet_id: Fleet identifier (required)
         :type fleet_id: str

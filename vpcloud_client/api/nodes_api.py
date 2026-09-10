@@ -48,7 +48,7 @@ class NodesApi:
     def get_fleet_node_details(
         self,
         fleet_id: Annotated[UUID, Field(description="Fleet identifier")],
-        node_id: Annotated[StrictStr, Field(description="Node identifier (ThunderCat node name / fleet node id)")],
+        node_id: Annotated[StrictStr, Field(description="Node identifier (fleet node id)")],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -68,7 +68,7 @@ class NodesApi:
 
         :param fleet_id: Fleet identifier (required)
         :type fleet_id: str
-        :param node_id: Node identifier (ThunderCat node name / fleet node id) (required)
+        :param node_id: Node identifier (fleet node id) (required)
         :type node_id: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
@@ -123,7 +123,7 @@ class NodesApi:
     def get_fleet_node_details_with_http_info(
         self,
         fleet_id: Annotated[UUID, Field(description="Fleet identifier")],
-        node_id: Annotated[StrictStr, Field(description="Node identifier (ThunderCat node name / fleet node id)")],
+        node_id: Annotated[StrictStr, Field(description="Node identifier (fleet node id)")],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -143,7 +143,7 @@ class NodesApi:
 
         :param fleet_id: Fleet identifier (required)
         :type fleet_id: str
-        :param node_id: Node identifier (ThunderCat node name / fleet node id) (required)
+        :param node_id: Node identifier (fleet node id) (required)
         :type node_id: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
@@ -198,7 +198,7 @@ class NodesApi:
     def get_fleet_node_details_without_preload_content(
         self,
         fleet_id: Annotated[UUID, Field(description="Fleet identifier")],
-        node_id: Annotated[StrictStr, Field(description="Node identifier (ThunderCat node name / fleet node id)")],
+        node_id: Annotated[StrictStr, Field(description="Node identifier (fleet node id)")],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -218,7 +218,7 @@ class NodesApi:
 
         :param fleet_id: Fleet identifier (required)
         :type fleet_id: str
-        :param node_id: Node identifier (ThunderCat node name / fleet node id) (required)
+        :param node_id: Node identifier (fleet node id) (required)
         :type node_id: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
@@ -652,7 +652,7 @@ class NodesApi:
     ) -> NodePowerState:
         """Get node power state
 
-        Read the node's live BMC power state via Redfish. Not cached or stored by Harbor - every call reads the BMC directly.
+        Read the node's live BMC power state via Redfish. Not cached or stored by the API - every call reads the BMC directly.
 
         :param fleet_id: Fleet identifier (required)
         :type fleet_id: str
@@ -727,7 +727,7 @@ class NodesApi:
     ) -> ApiResponse[NodePowerState]:
         """Get node power state
 
-        Read the node's live BMC power state via Redfish. Not cached or stored by Harbor - every call reads the BMC directly.
+        Read the node's live BMC power state via Redfish. Not cached or stored by the API - every call reads the BMC directly.
 
         :param fleet_id: Fleet identifier (required)
         :type fleet_id: str
@@ -802,7 +802,7 @@ class NodesApi:
     ) -> RESTResponseType:
         """Get node power state
 
-        Read the node's live BMC power state via Redfish. Not cached or stored by Harbor - every call reads the BMC directly.
+        Read the node's live BMC power state via Redfish. Not cached or stored by the API - every call reads the BMC directly.
 
         :param fleet_id: Fleet identifier (required)
         :type fleet_id: str

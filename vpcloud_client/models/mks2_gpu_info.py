@@ -25,7 +25,7 @@ from typing_extensions import Self
 
 class Mks2GpuInfo(BaseModel):
     """
-    GPU information for an MKS-2 worker node.
+    GPU information for a managed Kubernetes worker node.
     """ # noqa: E501
     count: Optional[StrictInt] = Field(default=None, description="Number of GPUs on the node.")
     model: Optional[StrictStr] = Field(default=None, description="GPU model name.")

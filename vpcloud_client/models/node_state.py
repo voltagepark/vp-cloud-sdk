@@ -21,7 +21,7 @@ from typing_extensions import Self
 
 class NodeState(str, Enum):
     """
-    Current Harbor lifecycle state of a physical / fleet node.
+    Current lifecycle state of a physical / fleet node.
     """
 
     """

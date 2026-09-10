@@ -31,18 +31,18 @@ from typing_extensions import Self
 
 class Mks2WorkerNodeDetail(BaseModel):
     """
-    Full MKS-2 worker-node detail: a superset of the list summary (Mks2WorkerNode) that adds per-node conditions, GPU info, labels/annotations, registration timestamps, and a live drain observation. Unlike the list (which only includes joined nodes), the per-node detail endpoint also resolves nodes that are registered but not yet joined. `gpuValidated` is a convenience mirror of `gpu.validated`.
+    Full managed Kubernetes worker-node detail: a superset of the list summary (Mks2WorkerNode) that adds per-node conditions, GPU info, labels/annotations, registration timestamps, and a live drain observation. Unlike the list (which only includes joined nodes), the per-node detail endpoint also resolves nodes that are registered but not yet joined. `gpuValidated` is a convenience mirror of `gpu.validated`.
     """ # noqa: E501
-    id: StrictStr = Field(description="MKS-2 worker-node identifier (registry id). Stable for the lifetime of the registry entry.")
+    id: StrictStr = Field(description="Managed Kubernetes worker-node identifier (registry id). Stable for the lifetime of the registry entry.")
     name: Optional[StrictStr] = Field(default=None, description="Kubernetes node name. Absent until the node has joined the cluster.")
     registration_status: Mks2WorkerNodeRegistrationStatus = Field(alias="registrationStatus")
     kubernetes_status: Optional[Mks2WorkerNodeKubernetesStatus] = Field(default=None, alias="kubernetesStatus")
     schedulable: Optional[StrictBool] = Field(default=None, description="Whether pods can be scheduled on this node (i.e. uncordoned). Absent when the node has not joined yet.")
     drained: Optional[StrictBool] = Field(default=None, description="Live Kubernetes control-plane observation of whether workloads have drained from this node. True when every Pod currently bound to the node is terminal, a mirror Pod, or owned by a live DaemonSet. False when any other Pod remains. Omitted before the node joins or when the tenant cluster cannot be fully observed. This field is independent from `schedulable`; callers preparing maintenance must also verify the node is cordoned. The observation is point-in-time and does not prove that no out-of-band process is running on the host.")
-    gpu_validated: Optional[StrictBool] = Field(default=None, description="Whether MKS-2 has run GPU validation against this node and it passed. Convenience mirror of gpu.validated; absent when no GPU info is available.", alias="gpuValidated")
-    conditions: Optional[List[Mks2NodeCondition]] = Field(default=None, description="Node conditions passed through from the tenant Kubernetes node, including custom MKS conditions. Absent until the node has joined.")
+    gpu_validated: Optional[StrictBool] = Field(default=None, description="Whether managed Kubernetes has run GPU validation against this node and it passed. Convenience mirror of gpu.validated; absent when no GPU info is available.", alias="gpuValidated")
+    conditions: Optional[List[Mks2NodeCondition]] = Field(default=None, description="Node conditions passed through from the tenant Kubernetes node, including custom node conditions. Absent until the node has joined.")
     gpu: Optional[Mks2GpuInfo] = None
-    registered_at: Optional[datetime] = Field(default=None, description="When the node was added to the MKS-2 worker registry.", alias="registeredAt")
+    registered_at: Optional[datetime] = Field(default=None, description="When the node was added to the managed Kubernetes worker registry.", alias="registeredAt")
     joined_at: Optional[datetime] = Field(default=None, description="When the node joined the Kubernetes cluster. Null/absent for registered-but-not-yet-joined nodes.", alias="joinedAt")
     labels: Optional[Dict[str, StrictStr]] = Field(default=None, description="Kubernetes node labels. Absent until the node has joined.")
     annotations: Optional[Dict[str, StrictStr]] = Field(default=None, description="Kubernetes node annotations. Absent until the node has joined.")

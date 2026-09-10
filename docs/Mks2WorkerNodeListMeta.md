@@ -1,6 +1,6 @@
 # Mks2WorkerNodeListMeta
 
-Pagination metadata for worker-node list responses. Mirrors mks2sdk.ListMeta.
+Pagination metadata for worker-node list responses. Mirrors the Kubernetes API.
 
 ## Properties
 

@@ -25,7 +25,7 @@ from typing_extensions import Self
 
 class Mks2DrainNodeRequest(BaseModel):
     """
-    Optional tuning for a node drain. Every field is optional; omit the body (or any field) to use the defaults below. These defaults are owned and applied by Harbor, so an omitted, empty ({}), or partial body all behave identically.
+    Optional tuning for a node drain. Every field is optional; omit the body (or any field) to use the defaults below. These defaults are owned and applied by the API, so an omitted, empty ({}), or partial body all behave identically.
     """ # noqa: E501
     grace_period_seconds: Optional[StrictInt] = Field(default=30, description="Grace period (seconds) granted to evicted pods before they are forcibly terminated. Maps to the eviction grace period.", alias="gracePeriodSeconds")
     delete_local_data: Optional[StrictBool] = Field(default=False, description="Whether to evict pods backed by emptyDir / local storage (their data is lost). Not currently honored; accepted for forward compatibility and has no effect yet.", alias="deleteLocalData")

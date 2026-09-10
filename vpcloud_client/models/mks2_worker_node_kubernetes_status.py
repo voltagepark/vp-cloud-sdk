@@ -21,15 +21,15 @@ from typing_extensions import Self
 
 class Mks2WorkerNodeKubernetesStatus(str, Enum):
     """
-    Kubernetes node status (only set when `registrationStatus = joined`). Mirrors mks2sdk.NodeKubernetesStatus.
+    Kubernetes node status (only set when `registrationStatus = joined`). Mirrors the Kubernetes API.
     """
 
     """
     allowed enum values
     """
-    Mks2WorkerNodeKubernetesStatusReady = 'Ready'
-    Mks2WorkerNodeKubernetesStatusNotReady = 'NotReady'
-    Mks2WorkerNodeKubernetesStatusUnknown = 'Unknown'
+    READY = 'Ready'
+    NOTREADY = 'NotReady'
+    UNKNOWN = 'Unknown'
 
     @classmethod
     def from_json(cls, json_str: str) -> Self:

@@ -27,7 +27,7 @@ from typing_extensions import Self
 
 class Mks2PodCondition(BaseModel):
     """
-    A single condition on an MKS-2 pod, reported from the pod's Kubernetes status.
+    A single condition on a managed Kubernetes pod, reported from the pod's Kubernetes status.
     """ # noqa: E501
     type: Optional[StrictStr] = Field(default=None, description="Condition type (e.g. PodScheduled, Initialized, ContainersReady, Ready, PodReadyToStartContainers).")
     status: Optional[Mks2PodConditionStatus] = Field(default=None, description="Condition status.")

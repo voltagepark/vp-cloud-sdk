@@ -26,7 +26,7 @@ from typing_extensions import Self
 
 class Mks2NodeCondition(BaseModel):
     """
-    A single condition on an MKS-2 worker node. Reported from the node's Kubernetes status; includes standard Kubernetes node conditions (Ready, MemoryPressure, DiskPressure, PIDPressure, NetworkUnavailable) and additional GPU/health conditions (e.g. GPUValidated).
+    A single condition on a managed Kubernetes worker node. Reported from the node's Kubernetes status; includes standard Kubernetes node conditions (Ready, MemoryPressure, DiskPressure, PIDPressure, NetworkUnavailable) and additional GPU/health conditions (e.g. GPUValidated).
     """ # noqa: E501
     type: Optional[StrictStr] = Field(default=None, description="Condition type (e.g. Ready, MemoryPressure, DiskPressure, PIDPressure, NetworkUnavailable, GPUValidated).")
     status: Optional[StrictStr] = Field(default=None, description="Condition status. One of True, False, Unknown.")

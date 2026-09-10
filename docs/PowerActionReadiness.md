@@ -1,14 +1,14 @@
 # PowerActionReadiness
 
-Advisory readiness for disruptive power actions (ForceOff, GracefulShutdown, ForceRestart, GracefulRestart). Power On from Off is never gated by this object. `ready` means Harbor found no known blocker; warnings do not change readiness. The policy and user-facing copy are selected by API plane, while machine-readable blocker and warning codes remain internal for structured logging. Clients should not re-derive readiness from registrationStatus, schedulable, taints, or drained.
+Advisory readiness for disruptive power actions (ForceOff, GracefulShutdown, ForceRestart, GracefulRestart). Power On from Off is never gated by this object. `ready` means the API found no known blocker; warnings do not change readiness. The policy and user-facing copy are selected by API plane, while machine-readable blocker and warning codes remain internal for structured logging. Clients should not re-derive readiness from registrationStatus, schedulable, taints, or drained.
 
 ## Properties
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**ready** | **bool** | True when Harbor found no known blocker. A non-empty warningMessage remains advisory and does not change this value. | 
+**ready** | **bool** | True when the API found no known blocker. A non-empty warningMessage remains advisory and does not change this value. | 
 **blocker_message** | **str** | Empty when ready. Otherwise contains the backend-owned, plane-appropriate explanation for the active blocker. Clients should display this complete sentence without parsing it. | 
-**warning_message** | **str** | Empty when there are no warnings. Harbor composes active warning messages as complete sentences in deterministic order. Warnings are advisory and do not change ready. | 
+**warning_message** | **str** | Empty when there are no warnings. The API composes active warning messages as complete sentences in deterministic order. Warnings are advisory and do not change ready. | 
 
 ## Example
 

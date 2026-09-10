@@ -14,25 +14,25 @@
 
 import pytest
 from unittest.mock import Mock, patch, MagicMock
-from vpcloud_client.api.kubernetes_mks2_api import KubernetesMKS2Api
+from vpcloud_client.api.kubernetes_api import KubernetesApi
 from vpcloud_client.exceptions import ApiException
 from vpcloud_client import ApiClient
 from test.utils import create_test_config, MockResponse
 
 
-class TestKubernetesMKS2Api:
-    """KubernetesMKS2Api unit tests"""
+class TestKubernetesApi:
+    """KubernetesApi unit tests"""
 
     @pytest.fixture
     def api_instance(self):
         """Create API instance for testing."""
         config = create_test_config()
-        return KubernetesMKS2Api(api_client=ApiClient(config))
+        return KubernetesApi(api_client=ApiClient(config))
 
     def test_cordon_customer_mks2_worker_node_success(self, api_instance):
         """Test successful cordon_customer_mks2_worker_node request.
         
-        Cordon an MKS-2 worker node
+        Cordon a managed Kubernetes worker node
         """
         # Mock successful response
         mock_response = MockResponse(200, data=b'{"result": "success"}')
@@ -44,7 +44,7 @@ class TestKubernetesMKS2Api:
     def test_cordon_customer_mks2_worker_node_error(self, api_instance):
         """Test cordon_customer_mks2_worker_node error handling.
         
-        Cordon an MKS-2 worker node
+        Cordon a managed Kubernetes worker node
         """
         # Mock error response
         mock_response = MockResponse(400, data=b'{"error": "bad request"}')
@@ -56,7 +56,7 @@ class TestKubernetesMKS2Api:
     def test_drain_customer_mks2_worker_node_success(self, api_instance):
         """Test successful drain_customer_mks2_worker_node request.
         
-        Drain an MKS-2 worker node
+        Drain a managed Kubernetes worker node
         """
         # Mock successful response
         mock_response = MockResponse(200, data=b'{"result": "success"}')
@@ -68,7 +68,7 @@ class TestKubernetesMKS2Api:
     def test_drain_customer_mks2_worker_node_error(self, api_instance):
         """Test drain_customer_mks2_worker_node error handling.
         
-        Drain an MKS-2 worker node
+        Drain a managed Kubernetes worker node
         """
         # Mock error response
         mock_response = MockResponse(400, data=b'{"error": "bad request"}')
@@ -80,7 +80,7 @@ class TestKubernetesMKS2Api:
     def test_get_customer_mks2_worker_node_success(self, api_instance):
         """Test successful get_customer_mks2_worker_node request.
         
-        Get MKS-2 worker node detail
+        Get managed Kubernetes worker node detail
         """
         # Mock successful response
         mock_response = MockResponse(200, data=b'{"result": "success"}')
@@ -92,7 +92,7 @@ class TestKubernetesMKS2Api:
     def test_get_customer_mks2_worker_node_error(self, api_instance):
         """Test get_customer_mks2_worker_node error handling.
         
-        Get MKS-2 worker node detail
+        Get managed Kubernetes worker node detail
         """
         # Mock error response
         mock_response = MockResponse(400, data=b'{"error": "bad request"}')
@@ -104,7 +104,7 @@ class TestKubernetesMKS2Api:
     def test_list_customer_mks2_pods_success(self, api_instance):
         """Test successful list_customer_mks2_pods request.
         
-        List MKS-2 pods
+        List managed Kubernetes pods
         """
         # Mock successful response
         mock_response = MockResponse(200, data=b'{"result": "success"}')
@@ -116,7 +116,7 @@ class TestKubernetesMKS2Api:
     def test_list_customer_mks2_pods_error(self, api_instance):
         """Test list_customer_mks2_pods error handling.
         
-        List MKS-2 pods
+        List managed Kubernetes pods
         """
         # Mock error response
         mock_response = MockResponse(400, data=b'{"error": "bad request"}')
@@ -128,7 +128,7 @@ class TestKubernetesMKS2Api:
     def test_list_customer_mks2_worker_nodes_success(self, api_instance):
         """Test successful list_customer_mks2_worker_nodes request.
         
-        List MKS-2 worker nodes
+        List managed Kubernetes worker nodes
         """
         # Mock successful response
         mock_response = MockResponse(200, data=b'{"result": "success"}')
@@ -140,7 +140,7 @@ class TestKubernetesMKS2Api:
     def test_list_customer_mks2_worker_nodes_error(self, api_instance):
         """Test list_customer_mks2_worker_nodes error handling.
         
-        List MKS-2 worker nodes
+        List managed Kubernetes worker nodes
         """
         # Mock error response
         mock_response = MockResponse(400, data=b'{"error": "bad request"}')
@@ -152,7 +152,7 @@ class TestKubernetesMKS2Api:
     def test_uncordon_customer_mks2_worker_node_success(self, api_instance):
         """Test successful uncordon_customer_mks2_worker_node request.
         
-        Uncordon an MKS-2 worker node
+        Uncordon a managed Kubernetes worker node
         """
         # Mock successful response
         mock_response = MockResponse(200, data=b'{"result": "success"}')
@@ -164,7 +164,7 @@ class TestKubernetesMKS2Api:
     def test_uncordon_customer_mks2_worker_node_error(self, api_instance):
         """Test uncordon_customer_mks2_worker_node error handling.
         
-        Uncordon an MKS-2 worker node
+        Uncordon a managed Kubernetes worker node
         """
         # Mock error response
         mock_response = MockResponse(400, data=b'{"error": "bad request"}')

@@ -1,6 +1,6 @@
 # Mks2WorkerNodeList
 
-Worker-node list response. Mirrors mks2sdk.ListNodes200Response: `items` carries the page contents and `meta.nextCursor` carries the opaque continuation token for the next page (null when there are no more pages). The upstream service paginates; harbor is currently a passthrough and does not aggregate pages.
+Worker-node list response. `items` carries the page contents and `meta.nextCursor` carries the opaque continuation token for the next page (null when there are no more pages). The upstream service paginates; the API is currently a passthrough and does not aggregate pages.
 
 ## Properties
 

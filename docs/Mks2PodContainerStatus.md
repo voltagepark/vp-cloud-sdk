@@ -1,6 +1,6 @@
 # Mks2PodContainerStatus
 
-Status of a single container in an MKS-2 pod.
+Status of a single container in a managed Kubernetes pod.
 
 ## Properties
 

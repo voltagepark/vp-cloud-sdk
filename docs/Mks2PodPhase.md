@@ -4,15 +4,15 @@ Kubernetes pod lifecycle phase.
 
 ## Enum
 
-* `Mks2PodPhasePending` (value: `'Pending'`)
+* `PENDING` (value: `'Pending'`)
 
-* `Mks2PodPhaseRunning` (value: `'Running'`)
+* `RUNNING` (value: `'Running'`)
 
-* `Mks2PodPhaseSucceeded` (value: `'Succeeded'`)
+* `SUCCEEDED` (value: `'Succeeded'`)
 
-* `Mks2PodPhaseFailed` (value: `'Failed'`)
+* `FAILED` (value: `'Failed'`)
 
-* `Mks2PodPhaseUnknown` (value: `'Unknown'`)
+* `UNKNOWN` (value: `'Unknown'`)
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

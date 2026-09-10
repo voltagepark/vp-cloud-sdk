@@ -37,7 +37,7 @@ class TestFleetAppsMks2Cluster(unittest.TestCase):
         if include_optional:
             return FleetAppsMks2Cluster(
                 cluster_id = '11111111-2222-3333-4444-555555555555',
-                cluster_name = 'my-fleet-mks2-cluster',
+                cluster_name = 'my-fleet-k8s-cluster',
                 kubernetes_version = 'v1.35.0',
                 cluster_status = 'ready',
                 control_plane_replicas = 2,
@@ -54,7 +54,7 @@ class TestFleetAppsMks2Cluster(unittest.TestCase):
         else:
             return FleetAppsMks2Cluster(
                 cluster_id = '11111111-2222-3333-4444-555555555555',
-                cluster_name = 'my-fleet-mks2-cluster',
+                cluster_name = 'my-fleet-k8s-cluster',
                 kubernetes_version = 'v1.35.0',
                 cluster_status = 'ready',
                 control_plane_replicas = 2,

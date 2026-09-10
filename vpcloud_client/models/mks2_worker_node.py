@@ -27,13 +27,13 @@ from typing_extensions import Self
 
 class Mks2WorkerNode(BaseModel):
     """
-    Minimal MKS-2 worker-node info for list responses. The list payload is intentionally small; use the per-node detail endpoint (GET .../kubernetes-v2/nodes/{nodeId}) for the full node object with conditions, GPU info, and labels/annotations.
+    Minimal managed Kubernetes worker-node info for list responses. The list payload is intentionally small; use the per-node detail endpoint (GET .../kubernetes-v2/nodes/{nodeId}) for the full node object with conditions, GPU info, and labels/annotations.
     """ # noqa: E501
-    id: StrictStr = Field(description="MKS-2 worker-node identifier (registry id). Stable for the lifetime of the registry entry.")
+    id: StrictStr = Field(description="Managed Kubernetes worker-node identifier (registry id). Stable for the lifetime of the registry entry.")
     registration_status: Mks2WorkerNodeRegistrationStatus = Field(alias="registrationStatus")
     kubernetes_status: Optional[Mks2WorkerNodeKubernetesStatus] = Field(default=None, alias="kubernetesStatus")
     schedulable: Optional[StrictBool] = Field(default=None, description="Whether pods can be scheduled on this node (i.e. uncordoned). Absent when the node has not joined yet.")
-    gpu_validated: Optional[StrictBool] = Field(default=None, description="Whether MKS-2 has run GPU validation against this node and it passed. Absent when no validation has run.", alias="gpuValidated")
+    gpu_validated: Optional[StrictBool] = Field(default=None, description="Whether managed Kubernetes has run GPU validation against this node and it passed. Absent when no validation has run.", alias="gpuValidated")
     __properties: ClassVar[List[str]] = ["id", "registrationStatus", "kubernetesStatus", "schedulable", "gpuValidated"]
 
     model_config = ConfigDict(

@@ -30,7 +30,7 @@ docs/GrafanaDashboardResponse.md
 docs/GrafanaLogsResponse.md
 docs/Infrastructure.md
 docs/InfrastructureNetwork.md
-docs/KubernetesMKS2Api.md
+docs/KubernetesApi.md
 docs/KubernetesServiceLinks.md
 docs/ListFleetsResponse.md
 docs/ListNodesResponse.md
@@ -110,7 +110,7 @@ test/test_grafana_dashboard_response.py
 test/test_grafana_logs_response.py
 test/test_infrastructure.py
 test/test_infrastructure_network.py
-test/test_kubernetes_mks2_api.py
+test/test_kubernetes_api.py
 test/test_kubernetes_service_links.py
 test/test_list_fleets_response.py
 test/test_list_nodes_response.py
@@ -162,7 +162,7 @@ vpcloud_client/__init__.py
 vpcloud_client/api/__init__.py
 vpcloud_client/api/audit_api.py
 vpcloud_client/api/fleets_api.py
-vpcloud_client/api/kubernetes_mks2_api.py
+vpcloud_client/api/kubernetes_api.py
 vpcloud_client/api/monitoring_api.py
 vpcloud_client/api/node_operations_api.py
 vpcloud_client/api/nodes_api.py

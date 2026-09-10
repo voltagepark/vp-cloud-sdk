@@ -27,9 +27,9 @@ class Mks2PodConditionStatus(str, Enum):
     """
     allowed enum values
     """
-    Mks2PodConditionStatusTrue = 'True'
-    Mks2PodConditionStatusFalse = 'False'
-    Mks2PodConditionStatusUnknown = 'Unknown'
+    TRUE = 'True'
+    FALSE = 'False'
+    UNKNOWN = 'Unknown'
 
     @classmethod
     def from_json(cls, json_str: str) -> Self:

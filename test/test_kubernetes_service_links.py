@@ -36,7 +36,7 @@ class TestKubernetesServiceLinks(unittest.TestCase):
         model = KubernetesServiceLinks()
         if include_optional:
             return KubernetesServiceLinks(
-                grafana = 'https://grafana.mks.voltagepark.com/d/abc123/cluster-overview'
+                grafana = 'https://grafana.voltagepark.com/d/abc123/cluster-overview'
             )
         else:
             return KubernetesServiceLinks(

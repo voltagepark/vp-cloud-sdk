@@ -27,9 +27,9 @@ class Mks2PodContainerState(str, Enum):
     """
     allowed enum values
     """
-    Mks2PodContainerStateRunning = 'running'
-    Mks2PodContainerStateWaiting = 'waiting'
-    Mks2PodContainerStateTerminated = 'terminated'
+    RUNNING = 'running'
+    WAITING = 'waiting'
+    TERMINATED = 'terminated'
 
     @classmethod
     def from_json(cls, json_str: str) -> Self:

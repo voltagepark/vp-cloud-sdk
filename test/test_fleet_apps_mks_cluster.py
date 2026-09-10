@@ -37,13 +37,13 @@ class TestFleetAppsMksCluster(unittest.TestCase):
         if include_optional:
             return FleetAppsMksCluster(
                 cluster_id = 'cluster-123-abc',
-                cluster_name = 'my-fleet-mk8s-cluster',
+                cluster_name = 'my-fleet-k8s-cluster',
                 kubernetes_version = '1.32',
                 installation_status = 'ACTIVE',
                 cluster_status = 'READY',
                 kubeconfig = 'apiVersion: v1\nkind: Config\n...',
                 service_links = vpcloud_client.models.kubernetes_service_links.KubernetesServiceLinks(
-                    grafana = 'https://grafana.mks.voltagepark.com/d/abc123/cluster-overview', ),
+                    grafana = 'https://grafana.voltagepark.com/d/abc123/cluster-overview', ),
                 control_plane_node_count = 3,
                 ready_control_plane_node_count = 3,
                 worker_node_count = 8,
@@ -54,7 +54,7 @@ class TestFleetAppsMksCluster(unittest.TestCase):
         else:
             return FleetAppsMksCluster(
                 cluster_id = 'cluster-123-abc',
-                cluster_name = 'my-fleet-mk8s-cluster',
+                cluster_name = 'my-fleet-k8s-cluster',
                 installation_status = 'ACTIVE',
         )
         """

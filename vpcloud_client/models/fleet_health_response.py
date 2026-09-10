@@ -30,7 +30,7 @@ class FleetHealthResponse(BaseModel):
     """ # noqa: E501
     fleet_id: StrictStr = Field(description="Unique identifier for the fleet", alias="fleetId")
     status: Optional[StrictStr] = Field(default=None, description="Overall health status of the fleet")
-    kubernetes_health: Optional[Dict[str, Any]] = Field(default=None, description="MK8s cluster health information")
+    kubernetes_health: Optional[Dict[str, Any]] = Field(default=None, description="Legacy managed Kubernetes cluster health information")
     node_health: Optional[List[NodeHealth]] = Field(default=None, description="Health information for each node in the fleet")
     __properties: ClassVar[List[str]] = ["fleetId", "status", "kubernetes_health", "node_health"]
 

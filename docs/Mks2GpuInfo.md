@@ -1,6 +1,6 @@
 # Mks2GpuInfo
 
-GPU information for an MKS-2 worker node.
+GPU information for a managed Kubernetes worker node.
 
 ## Properties
 

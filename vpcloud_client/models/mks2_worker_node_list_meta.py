@@ -25,7 +25,7 @@ from typing_extensions import Self
 
 class Mks2WorkerNodeListMeta(BaseModel):
     """
-    Pagination metadata for worker-node list responses. Mirrors mks2sdk.ListMeta.
+    Pagination metadata for worker-node list responses. Mirrors the Kubernetes API.
     """ # noqa: E501
     next_cursor: Optional[StrictStr] = Field(default=None, description="Opaque cursor for the next page (null when there are no more pages).", alias="nextCursor")
     __properties: ClassVar[List[str]] = ["nextCursor"]

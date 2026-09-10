@@ -7,7 +7,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **fleet_id** | **str** | Unique identifier for the fleet | 
 **status** | **str** | Overall health status of the fleet | [optional] 
-**kubernetes_health** | **Dict[str, object]** | MK8s cluster health information | [optional] 
+**kubernetes_health** | **Dict[str, object]** | Legacy managed Kubernetes cluster health information | [optional] 
 **node_health** | [**List[NodeHealth]**](NodeHealth.md) | Health information for each node in the fleet | [optional] 
 
 ## Example

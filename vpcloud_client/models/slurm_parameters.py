@@ -32,8 +32,8 @@ class SlurmParameters(BaseModel):
     """ # noqa: E501
     ssh_keys: Annotated[List[SlurmParametersSshKeysInner], Field(min_length=1)] = Field(description="SSH user configurations with multiple keys per user", alias="sshKeys")
     external_storage: ExternalStorageConfig = Field(alias="externalStorage")
-    control_plane_nodes: Optional[List[Annotated[str, Field(min_length=1, strict=True)]]] = Field(default=None, description="Node IDs of the Slurm control-plane nodes. MKS labels these with slurm.voltagepark.io/node-role=control-plane before activating the Helm chart. Install-only — optional at fleet creation; ignored if empty.", alias="controlPlaneNodes")
-    login_nodes: Optional[List[Annotated[str, Field(min_length=1, strict=True)]]] = Field(default=None, description="Node IDs of the Slurm login nodes. MKS labels these with slurm.voltagepark.io/login-node=true. Kept separate from controlPlaneNodes so a rogue login pod cannot disrupt slurmctld/slurmdbd.", alias="loginNodes")
+    control_plane_nodes: Optional[List[Annotated[str, Field(min_length=1, strict=True)]]] = Field(default=None, description="Node IDs of the Slurm control-plane nodes. These nodes are labeled with slurm.voltagepark.io/node-role=control-plane before activating the Helm chart. Install-only — optional at fleet creation; ignored if empty.", alias="controlPlaneNodes")
+    login_nodes: Optional[List[Annotated[str, Field(min_length=1, strict=True)]]] = Field(default=None, description="Node IDs of the Slurm login nodes. These nodes are labeled with slurm.voltagepark.io/login-node=true. Kept separate from controlPlaneNodes so a rogue login pod cannot disrupt slurmctld/slurmdbd.", alias="loginNodes")
     __properties: ClassVar[List[str]] = ["sshKeys", "externalStorage", "controlPlaneNodes", "loginNodes"]
 
     model_config = ConfigDict(

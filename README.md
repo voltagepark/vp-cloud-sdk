@@ -100,12 +100,12 @@ Class | Method | HTTP request | Description
 *FleetsApi* | [**get_fleet**](docs/FleetsApi.md#get_fleet) | **GET** /v1/fleets/{fleetId} | Get fleet details
 *FleetsApi* | [**get_fleet_health**](docs/FleetsApi.md#get_fleet_health) | **GET** /v1/fleets/{fleetId}/health | Get fleet health metrics
 *FleetsApi* | [**list_fleets**](docs/FleetsApi.md#list_fleets) | **GET** /v1/fleets | List your fleets
-*KubernetesMKS2Api* | [**cordon_customer_mks2_worker_node**](docs/KubernetesMKS2Api.md#cordon_customer_mks2_worker_node) | **POST** /v1/fleets/{fleetId}/kubernetes-v2/nodes/{nodeId}/cordon | Cordon an MKS-2 worker node
-*KubernetesMKS2Api* | [**drain_customer_mks2_worker_node**](docs/KubernetesMKS2Api.md#drain_customer_mks2_worker_node) | **POST** /v1/fleets/{fleetId}/kubernetes-v2/nodes/{nodeId}/drain | Drain an MKS-2 worker node
-*KubernetesMKS2Api* | [**get_customer_mks2_worker_node**](docs/KubernetesMKS2Api.md#get_customer_mks2_worker_node) | **GET** /v1/fleets/{fleetId}/kubernetes-v2/nodes/{nodeId} | Get MKS-2 worker node detail
-*KubernetesMKS2Api* | [**list_customer_mks2_pods**](docs/KubernetesMKS2Api.md#list_customer_mks2_pods) | **GET** /v1/fleets/{fleetId}/kubernetes-v2/pods | List MKS-2 pods
-*KubernetesMKS2Api* | [**list_customer_mks2_worker_nodes**](docs/KubernetesMKS2Api.md#list_customer_mks2_worker_nodes) | **GET** /v1/fleets/{fleetId}/kubernetes-v2/nodes | List MKS-2 worker nodes
-*KubernetesMKS2Api* | [**uncordon_customer_mks2_worker_node**](docs/KubernetesMKS2Api.md#uncordon_customer_mks2_worker_node) | **POST** /v1/fleets/{fleetId}/kubernetes-v2/nodes/{nodeId}/uncordon | Uncordon an MKS-2 worker node
+*KubernetesApi* | [**cordon_customer_mks2_worker_node**](docs/KubernetesApi.md#cordon_customer_mks2_worker_node) | **POST** /v1/fleets/{fleetId}/kubernetes-v2/nodes/{nodeId}/cordon | Cordon a managed Kubernetes worker node
+*KubernetesApi* | [**drain_customer_mks2_worker_node**](docs/KubernetesApi.md#drain_customer_mks2_worker_node) | **POST** /v1/fleets/{fleetId}/kubernetes-v2/nodes/{nodeId}/drain | Drain a managed Kubernetes worker node
+*KubernetesApi* | [**get_customer_mks2_worker_node**](docs/KubernetesApi.md#get_customer_mks2_worker_node) | **GET** /v1/fleets/{fleetId}/kubernetes-v2/nodes/{nodeId} | Get managed Kubernetes worker node detail
+*KubernetesApi* | [**list_customer_mks2_pods**](docs/KubernetesApi.md#list_customer_mks2_pods) | **GET** /v1/fleets/{fleetId}/kubernetes-v2/pods | List managed Kubernetes pods
+*KubernetesApi* | [**list_customer_mks2_worker_nodes**](docs/KubernetesApi.md#list_customer_mks2_worker_nodes) | **GET** /v1/fleets/{fleetId}/kubernetes-v2/nodes | List managed Kubernetes worker nodes
+*KubernetesApi* | [**uncordon_customer_mks2_worker_node**](docs/KubernetesApi.md#uncordon_customer_mks2_worker_node) | **POST** /v1/fleets/{fleetId}/kubernetes-v2/nodes/{nodeId}/uncordon | Uncordon a managed Kubernetes worker node
 *MonitoringApi* | [**get_fleet_grafana_dashboards**](docs/MonitoringApi.md#get_fleet_grafana_dashboards) | **GET** /v1/fleets/{fleetId}/services/grafana | Get Grafana dashboards for a specific fleet
 *MonitoringApi* | [**get_fleet_logs**](docs/MonitoringApi.md#get_fleet_logs) | **GET** /v1/fleets/{fleetId}/services/logs | Get Grafana Dashboard and Explore links for a fleet&#39;s system logs
 *MonitoringApi* | [**list_fleet_grafana_dashboards**](docs/MonitoringApi.md#list_fleet_grafana_dashboards) | **GET** /v1/fleets/services/grafana | List Grafana dashboards for all fleets

@@ -1,6 +1,6 @@
 # FleetAppsMks2NodeCounts
 
-Aggregate count summary of worker node status in the MKS-2 cluster. Mirrors mks2sdk.NodeCounts. All counters are required to keep the parent FleetAppsMks2Cluster atomic-or-absent.
+Aggregate count summary of worker node status in the managed Kubernetes cluster. Mirrors the Kubernetes API. All counters are required to keep the parent FleetAppsMks2Cluster atomic-or-absent.
 
 ## Properties
 
@@ -9,7 +9,7 @@ Name | Type | Description | Notes
 **total** | **int** | Total number of registered nodes | 
 **ready** | **int** | Nodes that are Ready in the Kubernetes sense | 
 **not_ready** | **int** | Nodes that are registered but not Ready | 
-**pending** | **int** | Nodes registered in MKS but not yet joined to Kubernetes | 
+**pending** | **int** | Nodes registered but not yet joined to Kubernetes | 
 
 ## Example
 

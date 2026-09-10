@@ -39,16 +39,16 @@ class TestGrafanaLogsResponse(unittest.TestCase):
                 fleet_id = '6c0fd1d8-0dda-4e87-bf53-256ba2cb8f57',
                 available = True,
                 datasource_name = 'my-fleet-logs',
-                dashboard_url = 'https://grafana.sea1.beta.voltagepark.com/d/harbor-k8s-system-logs?var-datasource=6c0fd1d8-0dda-4e87-bf53-256ba2cb8f57&from=now-1h&to=now',
-                explore_url = 'https://grafana.sea1.beta.voltagepark.com/explore?schemaVersion=1&panes=%7B%22log%22%3A%7B%22datasource%22%3A%226c0fd1d8-0dda-4e87-bf53-256ba2cb8f57%22%7D%7D'
+                dashboard_url = 'https://grafana.sea1.voltagepark.com/d/k8s-system-logs?var-datasource=6c0fd1d8-0dda-4e87-bf53-256ba2cb8f57&from=now-1h&to=now',
+                explore_url = 'https://grafana.sea1.voltagepark.com/explore?schemaVersion=1&panes=%7B%22log%22%3A%7B%22datasource%22%3A%226c0fd1d8-0dda-4e87-bf53-256ba2cb8f57%22%7D%7D'
             )
         else:
             return GrafanaLogsResponse(
                 fleet_id = '6c0fd1d8-0dda-4e87-bf53-256ba2cb8f57',
                 available = True,
                 datasource_name = 'my-fleet-logs',
-                dashboard_url = 'https://grafana.sea1.beta.voltagepark.com/d/harbor-k8s-system-logs?var-datasource=6c0fd1d8-0dda-4e87-bf53-256ba2cb8f57&from=now-1h&to=now',
-                explore_url = 'https://grafana.sea1.beta.voltagepark.com/explore?schemaVersion=1&panes=%7B%22log%22%3A%7B%22datasource%22%3A%226c0fd1d8-0dda-4e87-bf53-256ba2cb8f57%22%7D%7D',
+                dashboard_url = 'https://grafana.sea1.voltagepark.com/d/k8s-system-logs?var-datasource=6c0fd1d8-0dda-4e87-bf53-256ba2cb8f57&from=now-1h&to=now',
+                explore_url = 'https://grafana.sea1.voltagepark.com/explore?schemaVersion=1&panes=%7B%22log%22%3A%7B%22datasource%22%3A%226c0fd1d8-0dda-4e87-bf53-256ba2cb8f57%22%7D%7D',
         )
         """
 

@@ -25,12 +25,12 @@ from typing_extensions import Self
 
 class FleetAppsMks2NodeCounts(BaseModel):
     """
-    Aggregate count summary of worker node status in the MKS-2 cluster. Mirrors mks2sdk.NodeCounts. All counters are required to keep the parent FleetAppsMks2Cluster atomic-or-absent.
+    Aggregate count summary of worker node status in the managed Kubernetes cluster. Mirrors the Kubernetes API. All counters are required to keep the parent FleetAppsMks2Cluster atomic-or-absent.
     """ # noqa: E501
     total: StrictInt = Field(description="Total number of registered nodes")
     ready: StrictInt = Field(description="Nodes that are Ready in the Kubernetes sense")
     not_ready: StrictInt = Field(description="Nodes that are registered but not Ready", alias="notReady")
-    pending: StrictInt = Field(description="Nodes registered in MKS but not yet joined to Kubernetes")
+    pending: StrictInt = Field(description="Nodes registered but not yet joined to Kubernetes")
     __properties: ClassVar[List[str]] = ["total", "ready", "notReady", "pending"]
 
     model_config = ConfigDict(

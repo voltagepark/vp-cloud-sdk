@@ -1,14 +1,14 @@
 # Mks2WorkerNodeKubernetesStatus
 
-Kubernetes node status (only set when `registrationStatus = joined`). Mirrors mks2sdk.NodeKubernetesStatus.
+Kubernetes node status (only set when `registrationStatus = joined`). Mirrors the Kubernetes API.
 
 ## Enum
 
-* `Mks2WorkerNodeKubernetesStatusReady` (value: `'Ready'`)
+* `READY` (value: `'Ready'`)
 
-* `Mks2WorkerNodeKubernetesStatusNotReady` (value: `'NotReady'`)
+* `NOTREADY` (value: `'NotReady'`)
 
-* `Mks2WorkerNodeKubernetesStatusUnknown` (value: `'Unknown'`)
+* `UNKNOWN` (value: `'Unknown'`)
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

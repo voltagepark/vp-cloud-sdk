@@ -1,6 +1,6 @@
 # NodeManagedServices
 
-Managed-service overlays for this physical node. Omit the entire object when no managed service resolves (e.g. non-MKS fleet or name-lookup miss).
+Managed-service overlays for this physical node. Omit the entire object when no managed service resolves (e.g. non-Kubernetes fleet or name-lookup miss).
 
 ## Properties
 

@@ -1,16 +1,16 @@
 # FleetAppsMksCluster
 
-MK8s (managed Kubernetes) cluster information for this fleet
+Legacy managed Kubernetes cluster information for this fleet
 
 ## Properties
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**cluster_id** | **str** | MK8s cluster ID | 
-**cluster_name** | **str** | MK8s cluster name | 
+**cluster_id** | **str** | Legacy managed Kubernetes cluster ID | 
+**cluster_name** | **str** | Legacy managed Kubernetes cluster name | 
 **kubernetes_version** | **str** | Kubernetes version running on the cluster | [optional] 
-**installation_status** | **str** | MK8s installation status on the fleet | 
-**cluster_status** | **str** | Current MK8s cluster status from MKS API | [optional] 
+**installation_status** | **str** | Legacy managed Kubernetes installation status on the fleet | 
+**cluster_status** | **str** | Current legacy managed Kubernetes cluster status from Kubernetes API | [optional] 
 **kubeconfig** | **str** | The kubeconfig for accessing the cluster (if available) | [optional] 
 **service_links** | [**KubernetesServiceLinks**](KubernetesServiceLinks.md) |  | [optional] 
 **control_plane_node_count** | **int** | Number of control plane nodes | [optional] 

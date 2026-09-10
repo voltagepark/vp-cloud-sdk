@@ -11,8 +11,8 @@ Name | Type | Description | Notes
 **status** | [**FleetStatus**](FleetStatus.md) |  | 
 **requested_at** | **int** | Timestamp when the fleet was requested (milliseconds since epoch UTC) | 
 **provisioned_at** | **int** | Timestamp when the fleet was provisioned (milliseconds since epoch UTC) | [optional] 
-**created_at** | **int** | Timestamp when the fleet was created in DDB (milliseconds since epoch UTC) | 
-**updated_at** | **int** | Timestamp when the fleet was last updated in DDB (milliseconds since epoch UTC) | 
+**created_at** | **int** | Timestamp when the fleet was created (milliseconds since epoch UTC) | 
+**updated_at** | **int** | Timestamp when the fleet was last updated (milliseconds since epoch UTC) | 
 **compute_type** | **str** | Type of compute resources | 
 **minimum_footprint** | [**FleetComputeFootprint**](FleetComputeFootprint.md) |  | 
 **expandable_capacity** | [**ExpandableCapacity**](ExpandableCapacity.md) |  | [optional] 

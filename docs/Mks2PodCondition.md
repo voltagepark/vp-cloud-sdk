@@ -1,6 +1,6 @@
 # Mks2PodCondition
 
-A single condition on an MKS-2 pod, reported from the pod's Kubernetes status.
+A single condition on a managed Kubernetes pod, reported from the pod's Kubernetes status.
 
 ## Properties
 

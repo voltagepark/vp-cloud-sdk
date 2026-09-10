@@ -1,6 +1,6 @@
 # Mks2DrainNodeRequest
 
-Optional tuning for a node drain. Every field is optional; omit the body (or any field) to use the defaults below. These defaults are owned and applied by Harbor, so an omitted, empty ({}), or partial body all behave identically.
+Optional tuning for a node drain. Every field is optional; omit the body (or any field) to use the defaults below. These defaults are owned and applied by the API, so an omitted, empty ({}), or partial body all behave identically.
 
 ## Properties
 

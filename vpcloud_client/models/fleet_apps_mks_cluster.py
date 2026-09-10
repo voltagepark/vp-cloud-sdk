@@ -26,13 +26,13 @@ from typing_extensions import Self
 
 class FleetAppsMksCluster(BaseModel):
     """
-    MK8s (managed Kubernetes) cluster information for this fleet
+    Legacy managed Kubernetes cluster information for this fleet
     """ # noqa: E501
-    cluster_id: StrictStr = Field(description="MK8s cluster ID", alias="clusterId")
-    cluster_name: StrictStr = Field(description="MK8s cluster name", alias="clusterName")
+    cluster_id: StrictStr = Field(description="Legacy managed Kubernetes cluster ID", alias="clusterId")
+    cluster_name: StrictStr = Field(description="Legacy managed Kubernetes cluster name", alias="clusterName")
     kubernetes_version: Optional[StrictStr] = Field(default=None, description="Kubernetes version running on the cluster", alias="kubernetesVersion")
-    installation_status: StrictStr = Field(description="MK8s installation status on the fleet", alias="installationStatus")
-    cluster_status: Optional[StrictStr] = Field(default=None, description="Current MK8s cluster status from MKS API", alias="clusterStatus")
+    installation_status: StrictStr = Field(description="Legacy managed Kubernetes installation status on the fleet", alias="installationStatus")
+    cluster_status: Optional[StrictStr] = Field(default=None, description="Current legacy managed Kubernetes cluster status from Kubernetes API", alias="clusterStatus")
     kubeconfig: Optional[StrictStr] = Field(default=None, description="The kubeconfig for accessing the cluster (if available)")
     service_links: Optional[KubernetesServiceLinks] = Field(default=None, alias="serviceLinks")
     control_plane_node_count: Optional[StrictInt] = Field(default=None, description="Number of control plane nodes", alias="controlPlaneNodeCount")

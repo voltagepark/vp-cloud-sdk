@@ -26,7 +26,7 @@ from typing_extensions import Self
 
 class NodeManagedServices(BaseModel):
     """
-    Managed-service overlays for this physical node. Omit the entire object when no managed service resolves (e.g. non-MKS fleet or name-lookup miss).
+    Managed-service overlays for this physical node. Omit the entire object when no managed service resolves (e.g. non-Kubernetes fleet or name-lookup miss).
     """ # noqa: E501
     kubernetes: Optional[Mks2WorkerNodeDetail] = None
     __properties: ClassVar[List[str]] = ["kubernetes"]

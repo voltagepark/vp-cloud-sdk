@@ -6,7 +6,7 @@ Result of a cordon or uncordon operation. `schedulable` reflects the node's sche
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**node_id** | **str** | MKS-2 worker-node identifier (registry id) the operation targeted. | 
+**node_id** | **str** | Managed Kubernetes worker-node identifier (registry id) the operation targeted. | 
 **schedulable** | **bool** | Whether pods can be scheduled on the node after the operation. false after cordon, true after uncordon. | 
 **message** | **str** | Human-readable status message describing the result, when available. | [optional] 
 

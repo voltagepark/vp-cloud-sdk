@@ -41,13 +41,13 @@ class TestFleetApps(unittest.TestCase):
                 slurm = 'disabled',
                 mk8s_cluster = vpcloud_client.models.fleet_apps_mks_cluster.FleetAppsMksCluster(
                     cluster_id = 'cluster-123-abc', 
-                    cluster_name = 'my-fleet-mk8s-cluster', 
+                    cluster_name = 'my-fleet-k8s-cluster', 
                     kubernetes_version = '1.32', 
                     installation_status = 'ACTIVE', 
                     cluster_status = 'READY', 
                     kubeconfig = 'apiVersion: v1\nkind: Config\n...', 
                     service_links = vpcloud_client.models.kubernetes_service_links.KubernetesServiceLinks(
-                        grafana = 'https://grafana.mks.voltagepark.com/d/abc123/cluster-overview', ), 
+                        grafana = 'https://grafana.voltagepark.com/d/abc123/cluster-overview', ), 
                     control_plane_node_count = 3, 
                     ready_control_plane_node_count = 3, 
                     worker_node_count = 8, 
@@ -56,7 +56,7 @@ class TestFleetApps(unittest.TestCase):
                     created_at = '2025-01-15T10:30:00Z', ),
                 mks2_cluster = vpcloud_client.models.fleet_apps_mks2_cluster.FleetAppsMks2Cluster(
                     cluster_id = '11111111-2222-3333-4444-555555555555', 
-                    cluster_name = 'my-fleet-mks2-cluster', 
+                    cluster_name = 'my-fleet-k8s-cluster', 
                     kubernetes_version = 'v1.35.0', 
                     cluster_status = 'ready', 
                     control_plane_replicas = 2, 

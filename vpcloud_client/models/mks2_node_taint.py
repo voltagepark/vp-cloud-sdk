@@ -25,11 +25,11 @@ from typing_extensions import Self
 
 class Mks2NodeTaint(BaseModel):
     """
-    A taint on a live Kubernetes node (from MKS Spec.Taints). Identity is key+effect.
+    A taint on a live Kubernetes node (from the Kubernetes node spec). Identity is key+effect.
     """ # noqa: E501
     key: StrictStr = Field(description="Taint key. Maintenance uses voltagepark.io/maintenance.")
     value: Optional[StrictStr] = Field(default=None, description="Optional taint value. Maintenance convention is \"true\".")
-    effect: StrictStr = Field(description="Taint effect. NoExecute is not exposed on the Harbor write path.")
+    effect: StrictStr = Field(description="Taint effect. NoExecute is not exposed on the API write path.")
     __properties: ClassVar[List[str]] = ["key", "value", "effect"]
 
     @field_validator('effect')

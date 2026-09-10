@@ -27,7 +27,7 @@ from typing_extensions import Self
 
 class Mks2PodContainerStatus(BaseModel):
     """
-    Status of a single container in an MKS-2 pod.
+    Status of a single container in a managed Kubernetes pod.
     """ # noqa: E501
     name: Optional[StrictStr] = Field(default=None, description="Container name.")
     ready: Optional[StrictBool] = Field(default=None, description="Whether the container passed its readiness probe.")

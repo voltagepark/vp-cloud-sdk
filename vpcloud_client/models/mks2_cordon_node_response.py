@@ -27,7 +27,7 @@ class Mks2CordonNodeResponse(BaseModel):
     """
     Result of a cordon or uncordon operation. `schedulable` reflects the node's scheduling state after the operation (false after cordon, true after uncordon).
     """ # noqa: E501
-    node_id: StrictStr = Field(description="MKS-2 worker-node identifier (registry id) the operation targeted.", alias="nodeId")
+    node_id: StrictStr = Field(description="Managed Kubernetes worker-node identifier (registry id) the operation targeted.", alias="nodeId")
     schedulable: StrictBool = Field(description="Whether pods can be scheduled on the node after the operation. false after cordon, true after uncordon.")
     message: Optional[StrictStr] = Field(default=None, description="Human-readable status message describing the result, when available.")
     __properties: ClassVar[List[str]] = ["nodeId", "schedulable", "message"]

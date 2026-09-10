@@ -1,6 +1,6 @@
 # Mks2NodeCondition
 
-A single condition on an MKS-2 worker node. Reported from the node's Kubernetes status; includes standard Kubernetes node conditions (Ready, MemoryPressure, DiskPressure, PIDPressure, NetworkUnavailable) and additional GPU/health conditions (e.g. GPUValidated).
+A single condition on a managed Kubernetes worker node. Reported from the node's Kubernetes status; includes standard Kubernetes node conditions (Ready, MemoryPressure, DiskPressure, PIDPressure, NetworkUnavailable) and additional GPU/health conditions (e.g. GPUValidated).
 
 ## Properties
 

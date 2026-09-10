@@ -6,7 +6,7 @@ Consolidated single-node details for the customer node-details page. Composes ba
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**node_name** | **str** | Unique identifier for the node (ThunderCat Node.Name / MKS registry id). | 
+**node_name** | **str** | Unique identifier for the node (cluster registry id). | 
 **state** | [**NodeState**](NodeState.md) |  | 
 **public_ip** | **str** | Public IP address of the node | 
 **fleet_id** | **str** | Fleet ID associated with the node, if any | [optional] 

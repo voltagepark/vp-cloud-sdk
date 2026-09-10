@@ -1,6 +1,6 @@
 # Mks2NodeTaint
 
-A taint on a live Kubernetes node (from MKS Spec.Taints). Identity is key+effect.
+A taint on a live Kubernetes node (from the Kubernetes node spec). Identity is key+effect.
 
 ## Properties
 
@@ -8,7 +8,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **key** | **str** | Taint key. Maintenance uses voltagepark.io/maintenance. | 
 **value** | **str** | Optional taint value. Maintenance convention is \&quot;true\&quot;. | [optional] 
-**effect** | **str** | Taint effect. NoExecute is not exposed on the Harbor write path. | 
+**effect** | **str** | Taint effect. NoExecute is not exposed on the API write path. | 
 
 ## Example
 

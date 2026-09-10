@@ -40,8 +40,8 @@ class Fleet(BaseModel):
     status: FleetStatus
     requested_at: StrictInt = Field(description="Timestamp when the fleet was requested (milliseconds since epoch UTC)", alias="requestedAt")
     provisioned_at: Optional[StrictInt] = Field(default=None, description="Timestamp when the fleet was provisioned (milliseconds since epoch UTC)", alias="provisionedAt")
-    created_at: StrictInt = Field(description="Timestamp when the fleet was created in DDB (milliseconds since epoch UTC)", alias="createdAt")
-    updated_at: StrictInt = Field(description="Timestamp when the fleet was last updated in DDB (milliseconds since epoch UTC)", alias="updatedAt")
+    created_at: StrictInt = Field(description="Timestamp when the fleet was created (milliseconds since epoch UTC)", alias="createdAt")
+    updated_at: StrictInt = Field(description="Timestamp when the fleet was last updated (milliseconds since epoch UTC)", alias="updatedAt")
     compute_type: StrictStr = Field(description="Type of compute resources", alias="computeType")
     minimum_footprint: FleetComputeFootprint = Field(alias="minimumFootprint")
     expandable_capacity: Optional[ExpandableCapacity] = Field(default=None, alias="expandableCapacity")
