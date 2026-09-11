@@ -205,7 +205,7 @@ Authentication schemes defined for the API:
 
 ## Author
 
-support@voltagepark.com
+
 
 
 ## License

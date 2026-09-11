@@ -3,7 +3,7 @@ name = "vpcloud_client"
 version = "1.0.0"
 description = "Voltage Park Cloud API"
 authors = [
-  {name = "Voltage Park",email = "support@voltagepark.com"},
+  {name = "Voltage Park Customer Support",email = "team@openapitools.org"},
 ]
 license = { text = "Apache 2.0" }
 readme = "README.md"
