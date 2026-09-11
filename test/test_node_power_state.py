@@ -36,7 +36,18 @@ class TestNodePowerState(unittest.TestCase):
         if include_optional:
             return NodePowerState(
                 node_id = 'g311',
-                power_state = 'On'
+                power_state = 'On',
+                last_operation = vpcloud_client.models.node_power_last_operation.NodePowerLastOperation(
+                    operation_id = '', 
+                    reset_type = 'ForceRestart', 
+                    status = 'ACCEPTED', 
+                    queued_at = 56, 
+                    completed_at = 56, 
+                    verified_power_state = '', 
+                    error = vpcloud_client.models.node_power_operation_error.NodePowerOperationError(
+                        code = '', 
+                        message = '', 
+                        reset_issued = 'yes', ), )
             )
         else:
             return NodePowerState(

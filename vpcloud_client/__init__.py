@@ -89,7 +89,9 @@ __all__ = [
     "NodeDetails",
     "NodeHealth",
     "NodeManagedServices",
+    "NodePowerLastOperation",
     "NodePowerOperation",
+    "NodePowerOperationError",
     "NodePowerOperationQueued",
     "NodePowerState",
     "NodeState",
@@ -182,7 +184,9 @@ from vpcloud_client.models.node import Node as Node
 from vpcloud_client.models.node_details import NodeDetails as NodeDetails
 from vpcloud_client.models.node_health import NodeHealth as NodeHealth
 from vpcloud_client.models.node_managed_services import NodeManagedServices as NodeManagedServices
+from vpcloud_client.models.node_power_last_operation import NodePowerLastOperation as NodePowerLastOperation
 from vpcloud_client.models.node_power_operation import NodePowerOperation as NodePowerOperation
+from vpcloud_client.models.node_power_operation_error import NodePowerOperationError as NodePowerOperationError
 from vpcloud_client.models.node_power_operation_queued import NodePowerOperationQueued as NodePowerOperationQueued
 from vpcloud_client.models.node_power_state import NodePowerState as NodePowerState
 from vpcloud_client.models.node_state import NodeState as NodeState

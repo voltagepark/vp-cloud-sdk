@@ -60,7 +60,9 @@ docs/NodeDetails.md
 docs/NodeHealth.md
 docs/NodeManagedServices.md
 docs/NodeOperationsApi.md
+docs/NodePowerLastOperation.md
 docs/NodePowerOperation.md
+docs/NodePowerOperationError.md
 docs/NodePowerOperationQueued.md
 docs/NodePowerState.md
 docs/NodeState.md
@@ -140,7 +142,9 @@ test/test_node_details.py
 test/test_node_health.py
 test/test_node_managed_services.py
 test/test_node_operations_api.py
+test/test_node_power_last_operation.py
 test/test_node_power_operation.py
+test/test_node_power_operation_error.py
 test/test_node_power_operation_queued.py
 test/test_node_power_state.py
 test/test_node_state.py
@@ -223,7 +227,9 @@ vpcloud_client/models/node.py
 vpcloud_client/models/node_details.py
 vpcloud_client/models/node_health.py
 vpcloud_client/models/node_managed_services.py
+vpcloud_client/models/node_power_last_operation.py
 vpcloud_client/models/node_power_operation.py
+vpcloud_client/models/node_power_operation_error.py
 vpcloud_client/models/node_power_operation_queued.py
 vpcloud_client/models/node_power_state.py
 vpcloud_client/models/node_state.py

@@ -17,20 +17,26 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict, Field, StrictStr
-from typing import Any, ClassVar, Dict, List, Optional
-from vpcloud_client.models.node_power_last_operation import NodePowerLastOperation
+from pydantic import BaseModel, ConfigDict, Field, StrictStr, field_validator
+from typing import Any, ClassVar, Dict, List
 from typing import Optional, Set
 from typing_extensions import Self
 
-class NodePowerState(BaseModel):
+class NodePowerOperationError(BaseModel):
     """
-    Live BMC power state for a node. When a power operation is tracked, lastOperation shows its status.
+    Error details on FAILURE or TIMED_OUT. Null on success or non-terminal.
     """ # noqa: E501
-    node_id: StrictStr = Field(description="Node identifier.", alias="nodeId")
-    power_state: StrictStr = Field(description="Live power state as reported by the BMC.", alias="powerState")
-    last_operation: Optional[NodePowerLastOperation] = Field(default=None, alias="lastOperation")
-    __properties: ClassVar[List[str]] = ["nodeId", "powerState", "lastOperation"]
+    code: StrictStr = Field(description="Machine-readable error code.")
+    message: StrictStr = Field(description="Human-readable error description.")
+    reset_issued: StrictStr = Field(description="Whether the reset command was actually sent to the hardware.", alias="resetIssued")
+    __properties: ClassVar[List[str]] = ["code", "message", "resetIssued"]
+
+    @field_validator('reset_issued')
+    def reset_issued_validate_enum(cls, value):
+        """Validates the enum"""
+        if value not in set(['yes', 'no', 'unknown']):
+            raise ValueError("must be one of enum values ('yes', 'no', 'unknown')")
+        return value
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -50,7 +56,7 @@ class NodePowerState(BaseModel):
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:
-        """Create an instance of NodePowerState from a JSON string"""
+        """Create an instance of NodePowerOperationError from a JSON string"""
         return cls.from_dict(json.loads(json_str))
 
     def to_dict(self) -> Dict[str, Any]:
@@ -71,14 +77,11 @@ class NodePowerState(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
-        # override the default output from pydantic by calling `to_dict()` of last_operation
-        if self.last_operation:
-            _dict['lastOperation'] = self.last_operation.to_dict()
         return _dict
 
     @classmethod
     def from_dict(cls, obj: Optional[Dict[str, Any]]) -> Optional[Self]:
-        """Create an instance of NodePowerState from a dict"""
+        """Create an instance of NodePowerOperationError from a dict"""
         if obj is None:
             return None
 
@@ -86,9 +89,9 @@ class NodePowerState(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
-            "nodeId": obj.get("nodeId"),
-            "powerState": obj.get("powerState"),
-            "lastOperation": NodePowerLastOperation.from_dict(obj["lastOperation"]) if obj.get("lastOperation") is not None else None
+            "code": obj.get("code"),
+            "message": obj.get("message"),
+            "resetIssued": obj.get("resetIssued")
         })
         return _obj
 

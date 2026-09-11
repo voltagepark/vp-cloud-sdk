@@ -1,6 +1,6 @@
 # NodePowerState
 
-Live BMC power state for a node, read on every call - not cached or stored by the API.
+Live BMC power state for a node. When a power operation is tracked, lastOperation shows its status.
 
 ## Properties
 
@@ -8,6 +8,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **node_id** | **str** | Node identifier. | 
 **power_state** | **str** | Live power state as reported by the BMC. | 
+**last_operation** | [**NodePowerLastOperation**](NodePowerLastOperation.md) |  | [optional] 
 
 ## Example
 

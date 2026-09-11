@@ -189,7 +189,7 @@ Name | Type | Description  | Notes
 
 Get node power state
 
-Read the node's live BMC power state via Redfish. Not cached or stored by the API - every call reads the BMC directly.
+Returns the node's live power state and, when available, the most recent power operation status. The powerState field is read from the hardware on every call. The optional lastOperation field is backed by stored state and may poll the upstream service for non-terminal operations.
 
 ### Example
 

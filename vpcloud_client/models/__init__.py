@@ -64,7 +64,9 @@ from vpcloud_client.models.node import Node
 from vpcloud_client.models.node_details import NodeDetails
 from vpcloud_client.models.node_health import NodeHealth
 from vpcloud_client.models.node_managed_services import NodeManagedServices
+from vpcloud_client.models.node_power_last_operation import NodePowerLastOperation
 from vpcloud_client.models.node_power_operation import NodePowerOperation
+from vpcloud_client.models.node_power_operation_error import NodePowerOperationError
 from vpcloud_client.models.node_power_operation_queued import NodePowerOperationQueued
 from vpcloud_client.models.node_power_state import NodePowerState
 from vpcloud_client.models.node_state import NodeState
