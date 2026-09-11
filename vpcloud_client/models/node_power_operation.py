@@ -24,7 +24,7 @@ from typing_extensions import Self
 
 class NodePowerOperation(BaseModel):
     """
-    Requests a power transition on a node. Valid transitions depend on the node's current power state (e.g. `On` is only valid when the node is off). `On` and `ForceRestart` require `cust:fleets:nodes:power`. `ForceOff` and `GracefulShutdown` also require `cust:fleets:nodes:power-off`.
+    Requests a power transition on a node. Valid transitions depend on the node's current power state (e.g. `On` is only valid when the node is off). All reset types require both `cust:fleets:nodes:power` and `cust:fleets:nodes:power-off` (cust-admin).
     """ # noqa: E501
     reset_type: StrictStr = Field(description="Power action to apply. `On` powers the node on. `ForceOff` cuts power immediately and leaves the node off. `GracefulShutdown` requests an OS shutdown and leaves the node off. `ForceRestart` reboots immediately.", alias="resetType")
     __properties: ClassVar[List[str]] = ["resetType"]

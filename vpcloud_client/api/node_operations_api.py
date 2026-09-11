@@ -65,7 +65,7 @@ class NodeOperationsApi:
     ) -> NodePowerOperationQueued:
         """Queue a node power operation
 
-        Queues a power transition on a node via its BMC. Valid transitions depend on the node's current power state. Callers with `cust:fleets:nodes:power` may request `On` or `ForceRestart`. `ForceOff` and `GracefulShutdown` also require `cust:fleets:nodes:power-off` and are otherwise rejected with 403. Unknown reset types are rejected with 400.
+        Queues a power transition on a node via its BMC. Valid transitions depend on the node's current power state. All reset types require both `cust:fleets:nodes:power` (route gate) and `cust:fleets:nodes:power-off` (handler gate, cust-admin). Requests missing the `power-off` permission are rejected with 403. Unknown reset types are rejected with 400.
 
         :param fleet_id: Fleet identifier (required)
         :type fleet_id: str
@@ -152,7 +152,7 @@ class NodeOperationsApi:
     ) -> ApiResponse[NodePowerOperationQueued]:
         """Queue a node power operation
 
-        Queues a power transition on a node via its BMC. Valid transitions depend on the node's current power state. Callers with `cust:fleets:nodes:power` may request `On` or `ForceRestart`. `ForceOff` and `GracefulShutdown` also require `cust:fleets:nodes:power-off` and are otherwise rejected with 403. Unknown reset types are rejected with 400.
+        Queues a power transition on a node via its BMC. Valid transitions depend on the node's current power state. All reset types require both `cust:fleets:nodes:power` (route gate) and `cust:fleets:nodes:power-off` (handler gate, cust-admin). Requests missing the `power-off` permission are rejected with 403. Unknown reset types are rejected with 400.
 
         :param fleet_id: Fleet identifier (required)
         :type fleet_id: str
@@ -239,7 +239,7 @@ class NodeOperationsApi:
     ) -> RESTResponseType:
         """Queue a node power operation
 
-        Queues a power transition on a node via its BMC. Valid transitions depend on the node's current power state. Callers with `cust:fleets:nodes:power` may request `On` or `ForceRestart`. `ForceOff` and `GracefulShutdown` also require `cust:fleets:nodes:power-off` and are otherwise rejected with 403. Unknown reset types are rejected with 400.
+        Queues a power transition on a node via its BMC. Valid transitions depend on the node's current power state. All reset types require both `cust:fleets:nodes:power` (route gate) and `cust:fleets:nodes:power-off` (handler gate, cust-admin). Requests missing the `power-off` permission are rejected with 403. Unknown reset types are rejected with 400.
 
         :param fleet_id: Fleet identifier (required)
         :type fleet_id: str

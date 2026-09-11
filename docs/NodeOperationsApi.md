@@ -13,7 +13,7 @@ Method | HTTP request | Description
 
 Queue a node power operation
 
-Queues a power transition on a node via its BMC. Valid transitions depend on the node's current power state. Callers with `cust:fleets:nodes:power` may request `On` or `ForceRestart`. `ForceOff` and `GracefulShutdown` also require `cust:fleets:nodes:power-off` and are otherwise rejected with 403. Unknown reset types are rejected with 400.
+Queues a power transition on a node via its BMC. Valid transitions depend on the node's current power state. All reset types require both `cust:fleets:nodes:power` (route gate) and `cust:fleets:nodes:power-off` (handler gate, cust-admin). Requests missing the `power-off` permission are rejected with 403. Unknown reset types are rejected with 400.
 
 ### Example
 
@@ -91,7 +91,7 @@ Name | Type | Description  | Notes
 |-------------|-------------|------------------|
 **202** | Power operation accepted and queued. |  -  |
 **400** | Invalid request body or unknown resetType |  -  |
-**403** | Authenticated but not permitted to queue ForceOff or GracefulShutdown (requires cust:fleets:nodes:power-off) |  -  |
+**403** | Authenticated but missing the required cust:fleets:nodes:power-off permission |  -  |
 **404** | Fleet or node not found, or the fleet has no reservation yet |  -  |
 **409** | Requested transition conflicts with the node&#39;s current power state, or a request with the same Idempotency-Key is currently in progress |  -  |
 **422** | Idempotency-Key reused with a different request body |  -  |

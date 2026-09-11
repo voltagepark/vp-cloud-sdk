@@ -1,6 +1,6 @@
 # NodePowerOperation
 
-Requests a power transition on a node. Valid transitions depend on the node's current power state (e.g. `On` is only valid when the node is off). `On` and `ForceRestart` require `cust:fleets:nodes:power`. `ForceOff` and `GracefulShutdown` also require `cust:fleets:nodes:power-off`.
+Requests a power transition on a node. Valid transitions depend on the node's current power state (e.g. `On` is only valid when the node is off). All reset types require both `cust:fleets:nodes:power` and `cust:fleets:nodes:power-off` (cust-admin).
 
 ## Properties
 
