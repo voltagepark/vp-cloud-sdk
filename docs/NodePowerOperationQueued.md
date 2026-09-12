@@ -1,6 +1,6 @@
 # NodePowerOperationQueued
 
-Confirmation that a power operation was accepted and queued. The operation is asynchronous - use `taskId` to correlate with logs, and re-`GET` the node's power state to observe the outcome.
+Confirmation that a power operation was accepted and queued. The operation is asynchronous - use `operationId` to track operation status via GET.
 
 ## Properties
 
@@ -10,7 +10,7 @@ Name | Type | Description | Notes
 **reset_type** | **str** | Power action that was queued. One of &#x60;On&#x60;, &#x60;ForceOff&#x60;, &#x60;GracefulShutdown&#x60;, or &#x60;ForceRestart&#x60;. | 
 **power_state_before** | **str** | Live BMC power state read immediately before queueing the operation. | 
 **status** | **str** | Queue status for the requested operation. | 
-**task_id** | **str** | Identifier for the queued power operation, for log correlation. | 
+**operation_id** | **str** | Unique identifier for the power operation. Use this to track operation status via GET. | 
 
 ## Example
 

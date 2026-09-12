@@ -24,14 +24,14 @@ from typing_extensions import Self
 
 class NodePowerOperationQueued(BaseModel):
     """
-    Confirmation that a power operation was accepted and queued. The operation is asynchronous - use `taskId` to correlate with logs, and re-`GET` the node's power state to observe the outcome.
+    Confirmation that a power operation was accepted and queued. The operation is asynchronous - use `operationId` to track operation status via GET.
     """ # noqa: E501
     node_id: StrictStr = Field(description="Node identifier.", alias="nodeId")
     reset_type: StrictStr = Field(description="Power action that was queued. One of `On`, `ForceOff`, `GracefulShutdown`, or `ForceRestart`.", alias="resetType")
     power_state_before: StrictStr = Field(description="Live BMC power state read immediately before queueing the operation.", alias="powerStateBefore")
     status: StrictStr = Field(description="Queue status for the requested operation.")
-    task_id: StrictStr = Field(description="Identifier for the queued power operation, for log correlation.", alias="taskId")
-    __properties: ClassVar[List[str]] = ["nodeId", "resetType", "powerStateBefore", "status", "taskId"]
+    operation_id: StrictStr = Field(description="Unique identifier for the power operation. Use this to track operation status via GET.", alias="operationId")
+    __properties: ClassVar[List[str]] = ["nodeId", "resetType", "powerStateBefore", "status", "operationId"]
 
     @field_validator('reset_type')
     def reset_type_validate_enum(cls, value):
@@ -95,7 +95,7 @@ class NodePowerOperationQueued(BaseModel):
             "resetType": obj.get("resetType"),
             "powerStateBefore": obj.get("powerStateBefore"),
             "status": obj.get("status"),
-            "taskId": obj.get("taskId")
+            "operationId": obj.get("operationId")
         })
         return _obj
 

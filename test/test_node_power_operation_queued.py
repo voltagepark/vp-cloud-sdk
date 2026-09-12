@@ -39,7 +39,7 @@ class TestNodePowerOperationQueued(unittest.TestCase):
                 reset_type = 'ForceRestart',
                 power_state_before = 'On',
                 status = 'queued',
-                task_id = ''
+                operation_id = ''
             )
         else:
             return NodePowerOperationQueued(
@@ -47,7 +47,7 @@ class TestNodePowerOperationQueued(unittest.TestCase):
                 reset_type = 'ForceRestart',
                 power_state_before = 'On',
                 status = 'queued',
-                task_id = '',
+                operation_id = '',
         )
         """
 

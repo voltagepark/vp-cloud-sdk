@@ -48,8 +48,8 @@ class NodeOperationsApi:
         self,
         fleet_id: Annotated[UUID, Field(description="Fleet identifier")],
         node_id: Annotated[StrictStr, Field(description="Node identifier (from list nodes response)")],
+        idempotency_key: Annotated[str, Field(strict=True, max_length=255, description="Unique key for idempotent retries. Required for power operations.")],
         node_power_operation: NodePowerOperation,
-        idempotency_key: Annotated[Optional[Annotated[str, Field(strict=True, max_length=255)]], Field(description="**Idempotency Key for Safe Request Retries**  Optional but **strongly recommended** for all mutation operations (POST, PUT, PATCH, DELETE) to enable safe request retries.  **How It Works:** - Provide a unique key when making a request - If the request succeeds, the response is cached for 24 hours - Retrying with the same key returns the cached response immediately - Prevents duplicate operations (e.g., creating multiple fleets for one request)  **Key Requirements:** - **You are responsible for ensuring uniqueness** across your requests - Maximum length: 255 characters - Any string format is accepted (UUID v4, ULID, custom identifiers, etc.) - Recommended: Use UUID v4 for guaranteed global uniqueness  **Key Generation (Recommended):** ```javascript // UUID v4 - Recommended for guaranteed uniqueness const idempotencyKey = crypto.randomUUID(); // Browser/Node.js 19+ // OR const idempotencyKey = uuidv4(); // using uuid library  // Alternative: Use your own unique identifier const idempotencyKey = `${userId}-${timestamp}-${nonce}`; const idempotencyKey = `order-${orderId}`; // If order ID is unique ```  **Retry Guidelines:** - **Network timeout/failure**: Retry with the **SAME key** to get cached result - **409 Conflict** (concurrent request): Wait 5 seconds, retry with **SAME key** - **422 Unprocessable Entity** (body mismatch): Use a **NEW key** or fix request body - **500 Internal Server Error**: Retry with **SAME key** (or NEW key to force fresh attempt)  **Response Behavior:** - First request: Processes normally, caches response for 24 hours - Duplicate requests: Returns cached response with original status code - Requests in-progress: Returns `409 Conflict` (retry after 5 seconds) - Body mismatch: Returns `422 Unprocessable Entity` (key reused with different data)  **TTL (Time-To-Live):** - In-progress requests: 5 minutes (crash recovery) - Completed/failed requests: 24 hours (response caching) - Keys automatically expire and can be reused after TTL  **Best Practices:** 1. Generate key client-side before making the request 2. Store the key with your request context for retries 3. Use a new key for each distinct operation (not per retry) 4. Use UUID v4 format for guaranteed uniqueness 5. Maximum length: 255 characters  **Example Usage:** ```python import uuid import requests  def create_fleet_with_retry(fleet_config, max_retries=3):     # Generate key once for this operation     idempotency_key = str(uuid.uuid4())          for attempt in range(max_retries):         response = requests.post(             'https://api.harbor.example.com/admin/fleets',             json=fleet_config,             headers={                 'Authorization': f'Bearer {token}',                 'Idempotency-Key': idempotency_key # Same key for retries             }         )                  if response.status_code == 409: # Concurrent request             time.sleep(5) # Wait and retry             continue         elif response.status_code < 500:             return response # Success or client error         # else: retry on 500 errors          raise Exception('Max retries exceeded') ```  See full documentation at: https://github.com/voltagepark/harbor-service/blob/main/docs/IDEMPOTENCY.md")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -71,10 +71,10 @@ class NodeOperationsApi:
         :type fleet_id: str
         :param node_id: Node identifier (from list nodes response) (required)
         :type node_id: str
+        :param idempotency_key: Unique key for idempotent retries. Required for power operations. (required)
+        :type idempotency_key: str
         :param node_power_operation: (required)
         :type node_power_operation: NodePowerOperation
-        :param idempotency_key: **Idempotency Key for Safe Request Retries**  Optional but **strongly recommended** for all mutation operations (POST, PUT, PATCH, DELETE) to enable safe request retries.  **How It Works:** - Provide a unique key when making a request - If the request succeeds, the response is cached for 24 hours - Retrying with the same key returns the cached response immediately - Prevents duplicate operations (e.g., creating multiple fleets for one request)  **Key Requirements:** - **You are responsible for ensuring uniqueness** across your requests - Maximum length: 255 characters - Any string format is accepted (UUID v4, ULID, custom identifiers, etc.) - Recommended: Use UUID v4 for guaranteed global uniqueness  **Key Generation (Recommended):** ```javascript // UUID v4 - Recommended for guaranteed uniqueness const idempotencyKey = crypto.randomUUID(); // Browser/Node.js 19+ // OR const idempotencyKey = uuidv4(); // using uuid library  // Alternative: Use your own unique identifier const idempotencyKey = `${userId}-${timestamp}-${nonce}`; const idempotencyKey = `order-${orderId}`; // If order ID is unique ```  **Retry Guidelines:** - **Network timeout/failure**: Retry with the **SAME key** to get cached result - **409 Conflict** (concurrent request): Wait 5 seconds, retry with **SAME key** - **422 Unprocessable Entity** (body mismatch): Use a **NEW key** or fix request body - **500 Internal Server Error**: Retry with **SAME key** (or NEW key to force fresh attempt)  **Response Behavior:** - First request: Processes normally, caches response for 24 hours - Duplicate requests: Returns cached response with original status code - Requests in-progress: Returns `409 Conflict` (retry after 5 seconds) - Body mismatch: Returns `422 Unprocessable Entity` (key reused with different data)  **TTL (Time-To-Live):** - In-progress requests: 5 minutes (crash recovery) - Completed/failed requests: 24 hours (response caching) - Keys automatically expire and can be reused after TTL  **Best Practices:** 1. Generate key client-side before making the request 2. Store the key with your request context for retries 3. Use a new key for each distinct operation (not per retry) 4. Use UUID v4 format for guaranteed uniqueness 5. Maximum length: 255 characters  **Example Usage:** ```python import uuid import requests  def create_fleet_with_retry(fleet_config, max_retries=3):     # Generate key once for this operation     idempotency_key = str(uuid.uuid4())          for attempt in range(max_retries):         response = requests.post(             'https://api.harbor.example.com/admin/fleets',             json=fleet_config,             headers={                 'Authorization': f'Bearer {token}',                 'Idempotency-Key': idempotency_key # Same key for retries             }         )                  if response.status_code == 409: # Concurrent request             time.sleep(5) # Wait and retry             continue         elif response.status_code < 500:             return response # Success or client error         # else: retry on 500 errors          raise Exception('Max retries exceeded') ```  See full documentation at: https://github.com/voltagepark/harbor-service/blob/main/docs/IDEMPOTENCY.md
-        :type idempotency_key: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -100,8 +100,8 @@ class NodeOperationsApi:
         _param = self._create_node_power_operation_serialize(
             fleet_id=fleet_id,
             node_id=node_id,
-            node_power_operation=node_power_operation,
             idempotency_key=idempotency_key,
+            node_power_operation=node_power_operation,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -109,6 +109,7 @@ class NodeOperationsApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
+            '200': "NodePowerOperationQueued",
             '202': "NodePowerOperationQueued",
             '400': "ErrorResponse",
             '403': "ErrorResponse",
@@ -118,6 +119,7 @@ class NodeOperationsApi:
             '423': "ErrorResponse",
             '500': "ErrorResponse",
             '502': "ErrorResponse",
+            '503': "NodePowerOperationQueued",
         }
         response_data = self.api_client.call_api(
             *_param,
@@ -135,8 +137,8 @@ class NodeOperationsApi:
         self,
         fleet_id: Annotated[UUID, Field(description="Fleet identifier")],
         node_id: Annotated[StrictStr, Field(description="Node identifier (from list nodes response)")],
+        idempotency_key: Annotated[str, Field(strict=True, max_length=255, description="Unique key for idempotent retries. Required for power operations.")],
         node_power_operation: NodePowerOperation,
-        idempotency_key: Annotated[Optional[Annotated[str, Field(strict=True, max_length=255)]], Field(description="**Idempotency Key for Safe Request Retries**  Optional but **strongly recommended** for all mutation operations (POST, PUT, PATCH, DELETE) to enable safe request retries.  **How It Works:** - Provide a unique key when making a request - If the request succeeds, the response is cached for 24 hours - Retrying with the same key returns the cached response immediately - Prevents duplicate operations (e.g., creating multiple fleets for one request)  **Key Requirements:** - **You are responsible for ensuring uniqueness** across your requests - Maximum length: 255 characters - Any string format is accepted (UUID v4, ULID, custom identifiers, etc.) - Recommended: Use UUID v4 for guaranteed global uniqueness  **Key Generation (Recommended):** ```javascript // UUID v4 - Recommended for guaranteed uniqueness const idempotencyKey = crypto.randomUUID(); // Browser/Node.js 19+ // OR const idempotencyKey = uuidv4(); // using uuid library  // Alternative: Use your own unique identifier const idempotencyKey = `${userId}-${timestamp}-${nonce}`; const idempotencyKey = `order-${orderId}`; // If order ID is unique ```  **Retry Guidelines:** - **Network timeout/failure**: Retry with the **SAME key** to get cached result - **409 Conflict** (concurrent request): Wait 5 seconds, retry with **SAME key** - **422 Unprocessable Entity** (body mismatch): Use a **NEW key** or fix request body - **500 Internal Server Error**: Retry with **SAME key** (or NEW key to force fresh attempt)  **Response Behavior:** - First request: Processes normally, caches response for 24 hours - Duplicate requests: Returns cached response with original status code - Requests in-progress: Returns `409 Conflict` (retry after 5 seconds) - Body mismatch: Returns `422 Unprocessable Entity` (key reused with different data)  **TTL (Time-To-Live):** - In-progress requests: 5 minutes (crash recovery) - Completed/failed requests: 24 hours (response caching) - Keys automatically expire and can be reused after TTL  **Best Practices:** 1. Generate key client-side before making the request 2. Store the key with your request context for retries 3. Use a new key for each distinct operation (not per retry) 4. Use UUID v4 format for guaranteed uniqueness 5. Maximum length: 255 characters  **Example Usage:** ```python import uuid import requests  def create_fleet_with_retry(fleet_config, max_retries=3):     # Generate key once for this operation     idempotency_key = str(uuid.uuid4())          for attempt in range(max_retries):         response = requests.post(             'https://api.harbor.example.com/admin/fleets',             json=fleet_config,             headers={                 'Authorization': f'Bearer {token}',                 'Idempotency-Key': idempotency_key # Same key for retries             }         )                  if response.status_code == 409: # Concurrent request             time.sleep(5) # Wait and retry             continue         elif response.status_code < 500:             return response # Success or client error         # else: retry on 500 errors          raise Exception('Max retries exceeded') ```  See full documentation at: https://github.com/voltagepark/harbor-service/blob/main/docs/IDEMPOTENCY.md")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -158,10 +160,10 @@ class NodeOperationsApi:
         :type fleet_id: str
         :param node_id: Node identifier (from list nodes response) (required)
         :type node_id: str
+        :param idempotency_key: Unique key for idempotent retries. Required for power operations. (required)
+        :type idempotency_key: str
         :param node_power_operation: (required)
         :type node_power_operation: NodePowerOperation
-        :param idempotency_key: **Idempotency Key for Safe Request Retries**  Optional but **strongly recommended** for all mutation operations (POST, PUT, PATCH, DELETE) to enable safe request retries.  **How It Works:** - Provide a unique key when making a request - If the request succeeds, the response is cached for 24 hours - Retrying with the same key returns the cached response immediately - Prevents duplicate operations (e.g., creating multiple fleets for one request)  **Key Requirements:** - **You are responsible for ensuring uniqueness** across your requests - Maximum length: 255 characters - Any string format is accepted (UUID v4, ULID, custom identifiers, etc.) - Recommended: Use UUID v4 for guaranteed global uniqueness  **Key Generation (Recommended):** ```javascript // UUID v4 - Recommended for guaranteed uniqueness const idempotencyKey = crypto.randomUUID(); // Browser/Node.js 19+ // OR const idempotencyKey = uuidv4(); // using uuid library  // Alternative: Use your own unique identifier const idempotencyKey = `${userId}-${timestamp}-${nonce}`; const idempotencyKey = `order-${orderId}`; // If order ID is unique ```  **Retry Guidelines:** - **Network timeout/failure**: Retry with the **SAME key** to get cached result - **409 Conflict** (concurrent request): Wait 5 seconds, retry with **SAME key** - **422 Unprocessable Entity** (body mismatch): Use a **NEW key** or fix request body - **500 Internal Server Error**: Retry with **SAME key** (or NEW key to force fresh attempt)  **Response Behavior:** - First request: Processes normally, caches response for 24 hours - Duplicate requests: Returns cached response with original status code - Requests in-progress: Returns `409 Conflict` (retry after 5 seconds) - Body mismatch: Returns `422 Unprocessable Entity` (key reused with different data)  **TTL (Time-To-Live):** - In-progress requests: 5 minutes (crash recovery) - Completed/failed requests: 24 hours (response caching) - Keys automatically expire and can be reused after TTL  **Best Practices:** 1. Generate key client-side before making the request 2. Store the key with your request context for retries 3. Use a new key for each distinct operation (not per retry) 4. Use UUID v4 format for guaranteed uniqueness 5. Maximum length: 255 characters  **Example Usage:** ```python import uuid import requests  def create_fleet_with_retry(fleet_config, max_retries=3):     # Generate key once for this operation     idempotency_key = str(uuid.uuid4())          for attempt in range(max_retries):         response = requests.post(             'https://api.harbor.example.com/admin/fleets',             json=fleet_config,             headers={                 'Authorization': f'Bearer {token}',                 'Idempotency-Key': idempotency_key # Same key for retries             }         )                  if response.status_code == 409: # Concurrent request             time.sleep(5) # Wait and retry             continue         elif response.status_code < 500:             return response # Success or client error         # else: retry on 500 errors          raise Exception('Max retries exceeded') ```  See full documentation at: https://github.com/voltagepark/harbor-service/blob/main/docs/IDEMPOTENCY.md
-        :type idempotency_key: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -187,8 +189,8 @@ class NodeOperationsApi:
         _param = self._create_node_power_operation_serialize(
             fleet_id=fleet_id,
             node_id=node_id,
-            node_power_operation=node_power_operation,
             idempotency_key=idempotency_key,
+            node_power_operation=node_power_operation,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -196,6 +198,7 @@ class NodeOperationsApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
+            '200': "NodePowerOperationQueued",
             '202': "NodePowerOperationQueued",
             '400': "ErrorResponse",
             '403': "ErrorResponse",
@@ -205,6 +208,7 @@ class NodeOperationsApi:
             '423': "ErrorResponse",
             '500': "ErrorResponse",
             '502': "ErrorResponse",
+            '503': "NodePowerOperationQueued",
         }
         response_data = self.api_client.call_api(
             *_param,
@@ -222,8 +226,8 @@ class NodeOperationsApi:
         self,
         fleet_id: Annotated[UUID, Field(description="Fleet identifier")],
         node_id: Annotated[StrictStr, Field(description="Node identifier (from list nodes response)")],
+        idempotency_key: Annotated[str, Field(strict=True, max_length=255, description="Unique key for idempotent retries. Required for power operations.")],
         node_power_operation: NodePowerOperation,
-        idempotency_key: Annotated[Optional[Annotated[str, Field(strict=True, max_length=255)]], Field(description="**Idempotency Key for Safe Request Retries**  Optional but **strongly recommended** for all mutation operations (POST, PUT, PATCH, DELETE) to enable safe request retries.  **How It Works:** - Provide a unique key when making a request - If the request succeeds, the response is cached for 24 hours - Retrying with the same key returns the cached response immediately - Prevents duplicate operations (e.g., creating multiple fleets for one request)  **Key Requirements:** - **You are responsible for ensuring uniqueness** across your requests - Maximum length: 255 characters - Any string format is accepted (UUID v4, ULID, custom identifiers, etc.) - Recommended: Use UUID v4 for guaranteed global uniqueness  **Key Generation (Recommended):** ```javascript // UUID v4 - Recommended for guaranteed uniqueness const idempotencyKey = crypto.randomUUID(); // Browser/Node.js 19+ // OR const idempotencyKey = uuidv4(); // using uuid library  // Alternative: Use your own unique identifier const idempotencyKey = `${userId}-${timestamp}-${nonce}`; const idempotencyKey = `order-${orderId}`; // If order ID is unique ```  **Retry Guidelines:** - **Network timeout/failure**: Retry with the **SAME key** to get cached result - **409 Conflict** (concurrent request): Wait 5 seconds, retry with **SAME key** - **422 Unprocessable Entity** (body mismatch): Use a **NEW key** or fix request body - **500 Internal Server Error**: Retry with **SAME key** (or NEW key to force fresh attempt)  **Response Behavior:** - First request: Processes normally, caches response for 24 hours - Duplicate requests: Returns cached response with original status code - Requests in-progress: Returns `409 Conflict` (retry after 5 seconds) - Body mismatch: Returns `422 Unprocessable Entity` (key reused with different data)  **TTL (Time-To-Live):** - In-progress requests: 5 minutes (crash recovery) - Completed/failed requests: 24 hours (response caching) - Keys automatically expire and can be reused after TTL  **Best Practices:** 1. Generate key client-side before making the request 2. Store the key with your request context for retries 3. Use a new key for each distinct operation (not per retry) 4. Use UUID v4 format for guaranteed uniqueness 5. Maximum length: 255 characters  **Example Usage:** ```python import uuid import requests  def create_fleet_with_retry(fleet_config, max_retries=3):     # Generate key once for this operation     idempotency_key = str(uuid.uuid4())          for attempt in range(max_retries):         response = requests.post(             'https://api.harbor.example.com/admin/fleets',             json=fleet_config,             headers={                 'Authorization': f'Bearer {token}',                 'Idempotency-Key': idempotency_key # Same key for retries             }         )                  if response.status_code == 409: # Concurrent request             time.sleep(5) # Wait and retry             continue         elif response.status_code < 500:             return response # Success or client error         # else: retry on 500 errors          raise Exception('Max retries exceeded') ```  See full documentation at: https://github.com/voltagepark/harbor-service/blob/main/docs/IDEMPOTENCY.md")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -245,10 +249,10 @@ class NodeOperationsApi:
         :type fleet_id: str
         :param node_id: Node identifier (from list nodes response) (required)
         :type node_id: str
+        :param idempotency_key: Unique key for idempotent retries. Required for power operations. (required)
+        :type idempotency_key: str
         :param node_power_operation: (required)
         :type node_power_operation: NodePowerOperation
-        :param idempotency_key: **Idempotency Key for Safe Request Retries**  Optional but **strongly recommended** for all mutation operations (POST, PUT, PATCH, DELETE) to enable safe request retries.  **How It Works:** - Provide a unique key when making a request - If the request succeeds, the response is cached for 24 hours - Retrying with the same key returns the cached response immediately - Prevents duplicate operations (e.g., creating multiple fleets for one request)  **Key Requirements:** - **You are responsible for ensuring uniqueness** across your requests - Maximum length: 255 characters - Any string format is accepted (UUID v4, ULID, custom identifiers, etc.) - Recommended: Use UUID v4 for guaranteed global uniqueness  **Key Generation (Recommended):** ```javascript // UUID v4 - Recommended for guaranteed uniqueness const idempotencyKey = crypto.randomUUID(); // Browser/Node.js 19+ // OR const idempotencyKey = uuidv4(); // using uuid library  // Alternative: Use your own unique identifier const idempotencyKey = `${userId}-${timestamp}-${nonce}`; const idempotencyKey = `order-${orderId}`; // If order ID is unique ```  **Retry Guidelines:** - **Network timeout/failure**: Retry with the **SAME key** to get cached result - **409 Conflict** (concurrent request): Wait 5 seconds, retry with **SAME key** - **422 Unprocessable Entity** (body mismatch): Use a **NEW key** or fix request body - **500 Internal Server Error**: Retry with **SAME key** (or NEW key to force fresh attempt)  **Response Behavior:** - First request: Processes normally, caches response for 24 hours - Duplicate requests: Returns cached response with original status code - Requests in-progress: Returns `409 Conflict` (retry after 5 seconds) - Body mismatch: Returns `422 Unprocessable Entity` (key reused with different data)  **TTL (Time-To-Live):** - In-progress requests: 5 minutes (crash recovery) - Completed/failed requests: 24 hours (response caching) - Keys automatically expire and can be reused after TTL  **Best Practices:** 1. Generate key client-side before making the request 2. Store the key with your request context for retries 3. Use a new key for each distinct operation (not per retry) 4. Use UUID v4 format for guaranteed uniqueness 5. Maximum length: 255 characters  **Example Usage:** ```python import uuid import requests  def create_fleet_with_retry(fleet_config, max_retries=3):     # Generate key once for this operation     idempotency_key = str(uuid.uuid4())          for attempt in range(max_retries):         response = requests.post(             'https://api.harbor.example.com/admin/fleets',             json=fleet_config,             headers={                 'Authorization': f'Bearer {token}',                 'Idempotency-Key': idempotency_key # Same key for retries             }         )                  if response.status_code == 409: # Concurrent request             time.sleep(5) # Wait and retry             continue         elif response.status_code < 500:             return response # Success or client error         # else: retry on 500 errors          raise Exception('Max retries exceeded') ```  See full documentation at: https://github.com/voltagepark/harbor-service/blob/main/docs/IDEMPOTENCY.md
-        :type idempotency_key: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -274,8 +278,8 @@ class NodeOperationsApi:
         _param = self._create_node_power_operation_serialize(
             fleet_id=fleet_id,
             node_id=node_id,
-            node_power_operation=node_power_operation,
             idempotency_key=idempotency_key,
+            node_power_operation=node_power_operation,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -283,6 +287,7 @@ class NodeOperationsApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
+            '200': "NodePowerOperationQueued",
             '202': "NodePowerOperationQueued",
             '400': "ErrorResponse",
             '403': "ErrorResponse",
@@ -292,6 +297,7 @@ class NodeOperationsApi:
             '423': "ErrorResponse",
             '500': "ErrorResponse",
             '502': "ErrorResponse",
+            '503': "NodePowerOperationQueued",
         }
         response_data = self.api_client.call_api(
             *_param,
@@ -304,8 +310,8 @@ class NodeOperationsApi:
         self,
         fleet_id,
         node_id,
-        node_power_operation,
         idempotency_key,
+        node_power_operation,
         _request_auth,
         _content_type,
         _headers,
