@@ -39,8 +39,35 @@ class TestNodeOperationsApi:
     # create_node_power_operation
     # ------------------------------------------------------------------
 
-    def test_create_node_power_operation_success(self, api_instance):
-        """Queue a power operation and receive an ACCEPTED response."""
+    def test_create_node_power_operation_accepted(self, api_instance):
+        """Queue a new power operation — API returns HTTP 202 ACCEPTED."""
+        body = {
+            "nodeId": NODE_ID,
+            "resetType": "ForceRestart",
+            "powerStateBefore": "On",
+            "status": "ACCEPTED",
+            "operationId": "op-1111",
+        }
+        mock_response = MockResponse(
+            202,
+            data=json.dumps(body).encode(),
+            headers={"Content-Type": "application/json"},
+        )
+        with patch.object(
+            api_instance.api_client.rest_client, "request",
+            return_value=mock_response,
+        ):
+            result = api_instance.create_node_power_operation(
+                FLEET_ID, NODE_ID, str(uuid.uuid4()),
+                NodePowerOperation(reset_type="ForceRestart"),
+            )
+            assert isinstance(result, NodePowerOperationQueued)
+            assert result.operation_id == "op-1111"
+            assert result.reset_type == "ForceRestart"
+            assert result.status == "ACCEPTED"
+
+    def test_create_node_power_operation_idempotent_replay(self, api_instance):
+        """Idempotent replay with same key — API returns HTTP 200 with terminal status."""
         body = {
             "nodeId": NODE_ID,
             "resetType": "ForceRestart",
@@ -63,8 +90,6 @@ class TestNodeOperationsApi:
             )
             assert isinstance(result, NodePowerOperationQueued)
             assert result.operation_id == "op-1111"
-            assert result.reset_type == "ForceRestart"
-            assert result.status == "ACCEPTED"
 
     def test_create_node_power_operation_409_conflict(self, api_instance):
         """409 when another operation with the same idempotency key is in flight."""
@@ -149,7 +174,7 @@ class TestNodeOperationsApi:
                 "operationId": f"op-{reset_type}",
             }
             mock_response = MockResponse(
-                200,
+                202,
                 data=json.dumps(body).encode(),
                 headers={"Content-Type": "application/json"},
             )

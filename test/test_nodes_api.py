@@ -260,6 +260,8 @@ class TestNodesApi:
         ):
             result = api_instance.list_nodes_by_fleet_id(FLEET_ID)
             assert isinstance(result, ListNodesResponse)
+            assert len(result.nodes) == 1
+            assert result.nodes[0].node_name == NODE_ID
 
     def test_list_nodes_by_fleet_id_error(self, api_instance):
         """Error listing nodes."""

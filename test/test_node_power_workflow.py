@@ -312,8 +312,16 @@ class TestDrain:
             assert result.drained is True
             assert attempts == 3
 
-    def test_drain_poll_timeout_proceeds(self, api_clients):
-        """When drain stays false (system pods), workflow should still proceed."""
+    def test_drain_poll_timeout_proceeds_when_node_cordoned(self, api_clients):
+        """Drain timeout proceeds only because the node is already cordoned.
+
+        drained may stay False when cluster-infrastructure pods (CoreDNS,
+        cert-manager) reschedule onto the cordoned node after user workloads
+        were evicted (HTTP 202 confirmed eviction).  The workflow proceeds
+        because: (a) the node IS cordoned (schedulable=False), meaning no
+        new user workloads will land, and (b) the drain API already evicted
+        user pods.  If the node were NOT cordoned, this would be unsafe.
+        """
         k8s, _, _ = api_clients
         not_drained = _make_worker_node(schedulable=False, drained=False)
 
@@ -332,6 +340,8 @@ class TestDrain:
                     break
             assert timed_out is True
             assert result.drained is False
+            # Safety invariant: node must be cordoned before proceeding
+            assert result.schedulable is False
 
 
 # ---------------------------------------------------------------------------
