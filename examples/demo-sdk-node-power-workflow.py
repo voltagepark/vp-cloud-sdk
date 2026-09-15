@@ -16,7 +16,8 @@ Prerequisites:
         cd vp-cloud-sdk && uv sync && source .venv/bin/activate
 
     - Set environment variables:
-        export HOST="https://api.sea1.voltagepark.com"
+        export HOST="https://api.sea1.voltagepark.com"   # SEA1 region
+        # or:  HOST="https://api.iad1.voltagepark.com"   # IAD1 region
         export CLIENT_ID="<your-client-id>"
         export CLIENT_SECRET="<your-client-secret>"
 
