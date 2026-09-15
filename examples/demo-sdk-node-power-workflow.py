@@ -8,7 +8,8 @@ Demonstrates the full node maintenance lifecycle using the Voltage Park Python S
     4. Drain (evict pods gracefully)
     5. Power action (ForceRestart)
     6. Poll until power operation completes
-    7. Uncordon (mark node schedulable again)
+    7. Wait for node to rejoin the cluster
+    8. Uncordon (mark node schedulable again)
 
 Prerequisites:
     - Install the SDK:
@@ -75,6 +76,9 @@ DRAIN_POLL_INTERVAL = 5
 DRAIN_TIMEOUT = 300
 POWER_POLL_INTERVAL = 10
 POWER_TIMEOUT = 300
+REQUEST_TIMEOUT = 30  # per-request HTTP timeout for polling calls
+REJOIN_POLL_INTERVAL = 10
+REJOIN_TIMEOUT = 300
 
 
 def show(obj):
@@ -180,14 +184,20 @@ with vpcloud_client.ApiClient(configuration) as api_client:
     # the number of pods, their grace period, and PodDisruptionBudgets.
     print("\n  Waiting for drain to complete...")
     drain_start = time.time()
+    drain_succeeded = False
     while True:
-        after_drain = kubernetes_api.get_customer_mks2_worker_node(fleet_id, node_id)
+        after_drain = kubernetes_api.get_customer_mks2_worker_node(
+            fleet_id, node_id, _request_timeout=REQUEST_TIMEOUT,
+        )
         if after_drain.drained:
+            drain_succeeded = True
             break
         elapsed = time.time() - drain_start
         if elapsed >= DRAIN_TIMEOUT:
-            print(f"\n  Drain timed out after {DRAIN_TIMEOUT}s. Proceeding anyway.")
-            break
+            print(f"\n  Drain timed out after {DRAIN_TIMEOUT}s.")
+            print("  Node still has non-evicted pods (common on single-node clusters).")
+            print("  Leaving node cordoned for operator intervention. Aborting workflow.")
+            sys.exit(1)
         print(f"    drained={after_drain.drained}, retrying in {DRAIN_POLL_INTERVAL}s...")
         time.sleep(DRAIN_POLL_INTERVAL)
     print(f"  Drain complete: schedulable={after_drain.schedulable}, drained={after_drain.drained}")
@@ -244,29 +254,64 @@ with vpcloud_client.ApiClient(configuration) as api_client:
     # Non-terminal (keep polling): ACCEPTED, IN_PROGRESS.
     power_start = time.time()
     while True:
-        state = nodes_api.get_node_power_state(fleet_id, node_id)
+        state = nodes_api.get_node_power_state(
+            fleet_id, node_id, _request_timeout=REQUEST_TIMEOUT,
+        )
         if state.last_operation and state.last_operation.status in TERMINAL_STATUSES:
             break
         elapsed = time.time() - power_start
         if elapsed >= POWER_TIMEOUT:
             print(f"\n  Power poll timed out after {POWER_TIMEOUT}s.")
-            break
+            print("  Leaving node cordoned for operator intervention. Aborting workflow.")
+            sys.exit(1)
         operation_status = state.last_operation.status if state.last_operation else "unknown"
         print(f"    powerState={state.power_state}, operationStatus={operation_status}, retrying in {POWER_POLL_INTERVAL}s...")
         time.sleep(POWER_POLL_INTERVAL)
 
+    last_op = state.last_operation
     print(f"  Power state:      {state.power_state}")
-    print(f"  Operation status: {state.last_operation.status}")
+    print(f"  Operation status: {last_op.status if last_op else 'unknown'}")
 
-    if state.last_operation.status != "SUCCESS":
-        print(f"\n  Warning: Operation did not succeed. Status: {state.last_operation.status}")
-        if state.last_operation.error:
-            print(f"  Error: {state.last_operation.error}")
+    if not last_op or last_op.status != "SUCCESS":
+        status = last_op.status if last_op else "unknown"
+        print(f"\n  Error: Operation did not succeed. Status: {status}")
+        if last_op and last_op.error:
+            print(f"  Error detail: {last_op.error}")
+        print("  Leaving node cordoned for operator intervention. Aborting workflow.")
+        sys.exit(1)
 
     # ------------------------------------------------------------------
-    # 8. Uncordon — mark the node schedulable again
+    # 8. Wait for node to rejoin the cluster
     # ------------------------------------------------------------------
-    step("8. Uncordon — mark node schedulable")
+    step("8. Waiting for node to rejoin the cluster")
+
+    # After a power restart, the node needs time to boot and rejoin
+    # Kubernetes. Uncordoning before the node is Ready can make it
+    # schedulable while it cannot yet accept workloads.
+    rejoin_start = time.time()
+    while True:
+        try:
+            rejoined = kubernetes_api.get_customer_mks2_worker_node(
+                fleet_id, node_id, _request_timeout=REQUEST_TIMEOUT,
+            )
+            reg = getattr(rejoined.registration_status, "value", rejoined.registration_status)
+            if reg == "joined":
+                print(f"  Node rejoined: registrationStatus={reg}")
+                break
+        except ApiException:
+            pass  # node may be unreachable while rebooting
+        elapsed = time.time() - rejoin_start
+        if elapsed >= REJOIN_TIMEOUT:
+            print(f"\n  Node did not rejoin within {REJOIN_TIMEOUT}s.")
+            print("  Leaving node cordoned for operator intervention. Aborting workflow.")
+            sys.exit(1)
+        print(f"    Waiting for node to rejoin... ({int(elapsed)}s elapsed)")
+        time.sleep(REJOIN_POLL_INTERVAL)
+
+    # ------------------------------------------------------------------
+    # 9. Uncordon — mark the node schedulable again
+    # ------------------------------------------------------------------
+    step("9. Uncordon — mark node schedulable")
 
     # Only uncordon after the node is back online and the power operation
     # completed successfully.
@@ -282,9 +327,9 @@ with vpcloud_client.ApiClient(configuration) as api_client:
         sys.exit(1)
 
     # ------------------------------------------------------------------
-    # 9. Final verification
+    # 10. Final verification
     # ------------------------------------------------------------------
-    step("9. Final verification")
+    step("10. Final verification")
 
     final_node = kubernetes_api.get_customer_mks2_worker_node(fleet_id, node_id)
     print(f"  Node:        {final_node.id}")
