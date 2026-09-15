@@ -245,8 +245,8 @@ with vpcloud_client.ApiClient(configuration) as api_client:
         queued = operations_api.create_node_power_operation(
             fleet_id,
             node_id,
-            idempotency_key=str(uuid.uuid4()),
-            node_power_operation=NodePowerOperation(reset_type="ForceRestart"),
+            str(uuid.uuid4()),
+            NodePowerOperation(reset_type="ForceRestart"),
         )
         show(queued)
         print(f"\n  Operation queued: {queued.operation_id}")
