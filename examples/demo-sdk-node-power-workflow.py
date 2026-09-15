@@ -69,9 +69,11 @@ configuration = vpcloud_client.Configuration(
 # Terminal statuses for power operations — stop polling when reached.
 TERMINAL_STATUSES = {"SUCCESS", "FAILURE", "TIMED_OUT"}
 
-# Polling intervals (seconds).
+# Polling intervals and timeouts (seconds).
 DRAIN_POLL_INTERVAL = 5
+DRAIN_TIMEOUT = 300
 POWER_POLL_INTERVAL = 10
+POWER_TIMEOUT = 300
 
 
 def show(obj):
@@ -176,9 +178,14 @@ with vpcloud_client.ApiClient(configuration) as api_client:
     # Poll until drained=true. This can take several minutes depending on
     # the number of pods, their grace period, and PodDisruptionBudgets.
     print("\n  Waiting for drain to complete...")
+    drain_start = time.time()
     while True:
         after_drain = kubernetes_api.get_customer_mks2_worker_node(fleet_id, node_id)
         if after_drain.drained:
+            break
+        elapsed = time.time() - drain_start
+        if elapsed >= DRAIN_TIMEOUT:
+            print(f"\n  Drain timed out after {DRAIN_TIMEOUT}s. Proceeding anyway.")
             break
         print(f"    drained={after_drain.drained}, retrying in {DRAIN_POLL_INTERVAL}s...")
         time.sleep(DRAIN_POLL_INTERVAL)
@@ -234,9 +241,14 @@ with vpcloud_client.ApiClient(configuration) as api_client:
 
     # Terminal statuses: SUCCESS, FAILURE, TIMED_OUT.
     # Non-terminal (keep polling): ACCEPTED, IN_PROGRESS.
+    power_start = time.time()
     while True:
         state = nodes_api.get_node_power_state(fleet_id, node_id)
         if state.last_operation and state.last_operation.status in TERMINAL_STATUSES:
+            break
+        elapsed = time.time() - power_start
+        if elapsed >= POWER_TIMEOUT:
+            print(f"\n  Power poll timed out after {POWER_TIMEOUT}s.")
             break
         operation_status = state.last_operation.status if state.last_operation else "unknown"
         print(f"    powerState={state.power_state}, operationStatus={operation_status}, retrying in {POWER_POLL_INTERVAL}s...")
