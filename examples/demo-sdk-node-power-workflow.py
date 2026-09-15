@@ -31,7 +31,7 @@ Prerequisites:
       for power operations.
 
 Usage:
-    python demo-sdk-maintenance-workflow.py
+    python examples/demo-sdk-node-power-workflow.py
 """
 
 import json
@@ -123,6 +123,14 @@ with vpcloud_client.ApiClient(configuration) as api_client:
     if registration_status != "joined":
         print("\nError: Node has not joined the cluster. Cannot proceed.")
         sys.exit(1)
+
+    if not node.schedulable:
+        print("\n  Warning: Node is already cordoned (schedulable=False).")
+        print("  This may indicate an in-progress maintenance operation.")
+        print("  Proceeding, but the node may have been intentionally cordoned by an operator.")
+
+    # Remember baseline so we can detect if we changed the cordon state.
+    was_schedulable = node.schedulable
 
     # ------------------------------------------------------------------
     # 2. Pre-flight readiness — check if the node is safe for power action
@@ -237,8 +245,8 @@ with vpcloud_client.ApiClient(configuration) as api_client:
         queued = operations_api.create_node_power_operation(
             fleet_id,
             node_id,
-            NodePowerOperation(reset_type="ForceRestart"),
             idempotency_key=str(uuid.uuid4()),
+            node_power_operation=NodePowerOperation(reset_type="ForceRestart"),
         )
         show(queued)
         print(f"\n  Operation queued: {queued.operation_id}")
@@ -258,12 +266,18 @@ with vpcloud_client.ApiClient(configuration) as api_client:
 
     # Terminal statuses: SUCCESS, FAILURE, TIMED_OUT.
     # Non-terminal (keep polling): ACCEPTED, IN_PROGRESS.
+    # Match on the queued operation_id so we don't break early on a
+    # terminal status left over from a previous power operation.
+    target_op_id = queued.operation_id
     power_start = time.time()
     while True:
         state = nodes_api.get_node_power_state(
             fleet_id, node_id, _request_timeout=REQUEST_TIMEOUT,
         )
-        if state.last_operation and state.last_operation.status in TERMINAL_STATUSES:
+        last_op = state.last_operation
+        if (last_op
+                and getattr(last_op, "operation_id", None) == target_op_id
+                and last_op.status in TERMINAL_STATUSES):
             break
         elapsed = time.time() - power_start
         if elapsed >= POWER_TIMEOUT:
