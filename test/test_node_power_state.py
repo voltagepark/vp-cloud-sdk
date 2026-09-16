@@ -43,7 +43,6 @@ class TestNodePowerState(unittest.TestCase):
                     status = 'ACCEPTED', 
                     queued_at = 56, 
                     completed_at = 56, 
-                    verified_power_state = '', 
                     error = vpcloud_client.models.node_power_operation_error.NodePowerOperationError(
                         code = '', 
                         message = '', 

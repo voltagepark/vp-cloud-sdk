@@ -32,9 +32,8 @@ class NodePowerLastOperation(BaseModel):
     status: StrictStr = Field(description="Current operation status. ACCEPTED = request received, execution not started. IN_PROGRESS = execution underway, result not yet known.")
     queued_at: StrictInt = Field(description="Unix millis when the operation was queued.", alias="queuedAt")
     completed_at: Optional[StrictInt] = Field(default=None, description="Unix millis when the operation completed. Null if non-terminal.", alias="completedAt")
-    verified_power_state: Optional[StrictStr] = Field(default=None, description="Power state verified on SUCCESS. Null otherwise.", alias="verifiedPowerState")
     error: Optional[NodePowerOperationError] = None
-    __properties: ClassVar[List[str]] = ["operationId", "resetType", "status", "queuedAt", "completedAt", "verifiedPowerState", "error"]
+    __properties: ClassVar[List[str]] = ["operationId", "resetType", "status", "queuedAt", "completedAt", "error"]
 
     @field_validator('status')
     def status_validate_enum(cls, value):
@@ -90,11 +89,6 @@ class NodePowerLastOperation(BaseModel):
         if self.completed_at is None and "completed_at" in self.model_fields_set:
             _dict['completedAt'] = None
 
-        # set to None if verified_power_state (nullable) is None
-        # and model_fields_set contains the field
-        if self.verified_power_state is None and "verified_power_state" in self.model_fields_set:
-            _dict['verifiedPowerState'] = None
-
         # set to None if error (nullable) is None
         # and model_fields_set contains the field
         if self.error is None and "error" in self.model_fields_set:
@@ -117,7 +111,6 @@ class NodePowerLastOperation(BaseModel):
             "status": obj.get("status"),
             "queuedAt": obj.get("queuedAt"),
             "completedAt": obj.get("completedAt"),
-            "verifiedPowerState": obj.get("verifiedPowerState"),
             "error": NodePowerOperationError.from_dict(obj["error"]) if obj.get("error") is not None else None
         })
         return _obj

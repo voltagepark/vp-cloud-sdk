@@ -11,7 +11,6 @@ Name | Type | Description | Notes
 **status** | **str** | Current operation status. ACCEPTED &#x3D; request received, execution not started. IN_PROGRESS &#x3D; execution underway, result not yet known. | 
 **queued_at** | **int** | Unix millis when the operation was queued. | 
 **completed_at** | **int** | Unix millis when the operation completed. Null if non-terminal. | [optional] 
-**verified_power_state** | **str** | Power state verified on SUCCESS. Null otherwise. | [optional] 
 **error** | [**NodePowerOperationError**](NodePowerOperationError.md) |  | [optional] 
 
 ## Example
