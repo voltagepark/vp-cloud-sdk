@@ -94,9 +94,6 @@ All URIs are relative to *https://api.sea1.voltagepark.com*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
-*AuditApi* | [**get_audit_log_export**](docs/AuditApi.md#get_audit_log_export) | **GET** /v1/audit-logs/export | Check the 90-day audit log export and get its download URL
-*AuditApi* | [**get_audit_logs**](docs/AuditApi.md#get_audit_logs) | **GET** /v1/audit-logs | List recent audit logs for your organization
-*AuditApi* | [**start_audit_log_export**](docs/AuditApi.md#start_audit_log_export) | **POST** /v1/audit-logs/export | Start building the 90-day audit log export for your organization
 *FleetsApi* | [**get_fleet**](docs/FleetsApi.md#get_fleet) | **GET** /v1/fleets/{fleetId} | Get fleet details
 *FleetsApi* | [**get_fleet_health**](docs/FleetsApi.md#get_fleet_health) | **GET** /v1/fleets/{fleetId}/health | Get fleet health metrics
 *FleetsApi* | [**list_fleets**](docs/FleetsApi.md#list_fleets) | **GET** /v1/fleets | List your fleets
@@ -110,24 +107,16 @@ Class | Method | HTTP request | Description
 *MonitoringApi* | [**get_fleet_logs**](docs/MonitoringApi.md#get_fleet_logs) | **GET** /v1/fleets/{fleetId}/services/logs | Get Grafana Dashboard and Explore links for a fleet&#39;s system logs
 *MonitoringApi* | [**list_fleet_grafana_dashboards**](docs/MonitoringApi.md#list_fleet_grafana_dashboards) | **GET** /v1/fleets/services/grafana | List Grafana dashboards for all fleets
 *NodeOperationsApi* | [**create_node_power_operation**](docs/NodeOperationsApi.md#create_node_power_operation) | **POST** /v1/fleets/{fleetId}/nodes/{nodeId}/power | Queue a node power operation
-*NodeOperationsApi* | [**remediate_nodes**](docs/NodeOperationsApi.md#remediate_nodes) | **POST** /v1/fleets/{fleetId}/nodes/remediate | Fix unhealthy nodes
 *NodesApi* | [**get_fleet_node_details**](docs/NodesApi.md#get_fleet_node_details) | **GET** /v1/fleets/{fleetId}/nodes/{nodeId}/details | Get consolidated node details
 *NodesApi* | [**get_node_by_fleet_id**](docs/NodesApi.md#get_node_by_fleet_id) | **GET** /v1/fleets/{fleetId}/nodes/{nodeId} | Get node details
 *NodesApi* | [**get_node_power_state**](docs/NodesApi.md#get_node_power_state) | **GET** /v1/fleets/{fleetId}/nodes/{nodeId}/power | Get node power state
 *NodesApi* | [**list_nodes_by_fleet_id**](docs/NodesApi.md#list_nodes_by_fleet_id) | **GET** /v1/fleets/{fleetId}/nodes | List nodes in a fleet
-*StorageApi* | [**add_storage_view**](docs/StorageApi.md#add_storage_view) | **POST** /v1/fleets/{fleetId}/storage/views | Add a VAST storage view
-*StorageApi* | [**delete_storage_view**](docs/StorageApi.md#delete_storage_view) | **DELETE** /v1/fleets/{fleetId}/storage/views/{view} | Delete a VAST storage view
 *StorageApi* | [**get_storage_view**](docs/StorageApi.md#get_storage_view) | **GET** /v1/fleets/{fleetId}/storage/views/{view} | Get a VAST storage view
 *StorageApi* | [**list_storage_views**](docs/StorageApi.md#list_storage_views) | **GET** /v1/fleets/{fleetId}/storage/views | List VAST storage views
-*StorageApi* | [**update_storage_view**](docs/StorageApi.md#update_storage_view) | **PATCH** /v1/fleets/{fleetId}/storage/views/{view} | Update a VAST storage view
 
 
 ## Documentation For Models
 
- - [AddStorageViewRequest](docs/AddStorageViewRequest.md)
- - [AuditLogEntry](docs/AuditLogEntry.md)
- - [AuditLogExportStatusResponse](docs/AuditLogExportStatusResponse.md)
- - [AuditLogListResponse](docs/AuditLogListResponse.md)
  - [Bootstrap](docs/Bootstrap.md)
  - [ErrorResponse](docs/ErrorResponse.md)
  - [ExpandableCapacity](docs/ExpandableCapacity.md)
@@ -183,15 +172,11 @@ Class | Method | HTTP request | Description
  - [NodeState](docs/NodeState.md)
  - [OsConfig](docs/OsConfig.md)
  - [PowerActionReadiness](docs/PowerActionReadiness.md)
- - [RemediateNodeRequest](docs/RemediateNodeRequest.md)
- - [RemediateNodeResponse](docs/RemediateNodeResponse.md)
  - [SlurmParameters](docs/SlurmParameters.md)
  - [SlurmParametersSshKeysInner](docs/SlurmParametersSshKeysInner.md)
  - [StorageConfig](docs/StorageConfig.md)
- - [StorageProtectionPolicy](docs/StorageProtectionPolicy.md)
  - [StorageView](docs/StorageView.md)
  - [StorageViewListResponse](docs/StorageViewListResponse.md)
- - [UpdateStorageViewRequest](docs/UpdateStorageViewRequest.md)
 
 
 <a id="documentation-for-authorization"></a>

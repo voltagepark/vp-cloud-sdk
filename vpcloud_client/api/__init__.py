@@ -1,7 +1,6 @@
 # flake8: noqa
 
 # import apis into api package
-from vpcloud_client.api.audit_api import AuditApi
 from vpcloud_client.api.fleets_api import FleetsApi
 from vpcloud_client.api.kubernetes_api import KubernetesApi
 from vpcloud_client.api.monitoring_api import MonitoringApi

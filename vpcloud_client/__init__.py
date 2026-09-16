@@ -18,7 +18,6 @@ __version__ = "1.0.0"
 
 # Define package exports
 __all__ = [
-    "AuditApi",
     "FleetsApi",
     "KubernetesApi",
     "MonitoringApi",
@@ -38,10 +37,6 @@ __all__ = [
     "ApiKeyError",
     "ApiAttributeError",
     "ApiException",
-    "AddStorageViewRequest",
-    "AuditLogEntry",
-    "AuditLogExportStatusResponse",
-    "AuditLogListResponse",
     "Bootstrap",
     "ErrorResponse",
     "ExpandableCapacity",
@@ -97,19 +92,14 @@ __all__ = [
     "NodeState",
     "OsConfig",
     "PowerActionReadiness",
-    "RemediateNodeRequest",
-    "RemediateNodeResponse",
     "SlurmParameters",
     "SlurmParametersSshKeysInner",
     "StorageConfig",
-    "StorageProtectionPolicy",
     "StorageView",
     "StorageViewListResponse",
-    "UpdateStorageViewRequest",
 ]
 
 # import apis into sdk package
-from vpcloud_client.api.audit_api import AuditApi as AuditApi
 from vpcloud_client.api.fleets_api import FleetsApi as FleetsApi
 from vpcloud_client.api.kubernetes_api import KubernetesApi as KubernetesApi
 from vpcloud_client.api.monitoring_api import MonitoringApi as MonitoringApi
@@ -133,10 +123,6 @@ from vpcloud_client.exceptions import ApiAttributeError as ApiAttributeError
 from vpcloud_client.exceptions import ApiException as ApiException
 
 # import models into sdk package
-from vpcloud_client.models.add_storage_view_request import AddStorageViewRequest as AddStorageViewRequest
-from vpcloud_client.models.audit_log_entry import AuditLogEntry as AuditLogEntry
-from vpcloud_client.models.audit_log_export_status_response import AuditLogExportStatusResponse as AuditLogExportStatusResponse
-from vpcloud_client.models.audit_log_list_response import AuditLogListResponse as AuditLogListResponse
 from vpcloud_client.models.bootstrap import Bootstrap as Bootstrap
 from vpcloud_client.models.error_response import ErrorResponse as ErrorResponse
 from vpcloud_client.models.expandable_capacity import ExpandableCapacity as ExpandableCapacity
@@ -192,13 +178,9 @@ from vpcloud_client.models.node_power_state import NodePowerState as NodePowerSt
 from vpcloud_client.models.node_state import NodeState as NodeState
 from vpcloud_client.models.os_config import OsConfig as OsConfig
 from vpcloud_client.models.power_action_readiness import PowerActionReadiness as PowerActionReadiness
-from vpcloud_client.models.remediate_node_request import RemediateNodeRequest as RemediateNodeRequest
-from vpcloud_client.models.remediate_node_response import RemediateNodeResponse as RemediateNodeResponse
 from vpcloud_client.models.slurm_parameters import SlurmParameters as SlurmParameters
 from vpcloud_client.models.slurm_parameters_ssh_keys_inner import SlurmParametersSshKeysInner as SlurmParametersSshKeysInner
 from vpcloud_client.models.storage_config import StorageConfig as StorageConfig
-from vpcloud_client.models.storage_protection_policy import StorageProtectionPolicy as StorageProtectionPolicy
 from vpcloud_client.models.storage_view import StorageView as StorageView
 from vpcloud_client.models.storage_view_list_response import StorageViewListResponse as StorageViewListResponse
-from vpcloud_client.models.update_storage_view_request import UpdateStorageViewRequest as UpdateStorageViewRequest
 

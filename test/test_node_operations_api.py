@@ -52,27 +52,3 @@ class TestNodeOperationsApi:
             # Test error handling
             pass
 
-    def test_remediate_nodes_success(self, api_instance):
-        """Test successful remediate_nodes request.
-        
-        Fix unhealthy nodes
-        """
-        # Mock successful response
-        mock_response = MockResponse(200, data=b'{"result": "success"}')
-        with patch.object(api_instance.api_client.rest_client, 'request', 
-                         return_value=mock_response):
-            # Test implementation
-            pass
-
-    def test_remediate_nodes_error(self, api_instance):
-        """Test remediate_nodes error handling.
-        
-        Fix unhealthy nodes
-        """
-        # Mock error response
-        mock_response = MockResponse(400, data=b'{"error": "bad request"}')
-        with patch.object(api_instance.api_client.rest_client, 'request', 
-                         return_value=mock_response):
-            # Test error handling
-            pass
-
