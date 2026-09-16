@@ -24,10 +24,11 @@ class TestIdempotencyKeys:
         
         # Call actual serialize method to test idempotency key injection
         from uuid import UUID
-        result = api._remediate_nodes_serialize(
+        result = api._create_node_power_operation_serialize(
             fleet_id=UUID('12345678-1234-1234-1234-123456789abc'),
-            remediate_node_request=[],
+            node_id='node-1',
             idempotency_key=None,
+            node_power_operation=None,
             _request_auth=None,
             _content_type=None,
             _headers=None,
@@ -68,10 +69,11 @@ class TestIdempotencyKeys:
         api = NodeOperationsApi(api_client=ApiClient(config))
         
         from uuid import UUID
-        result = api._remediate_nodes_serialize(
+        result = api._create_node_power_operation_serialize(
             fleet_id=UUID('12345678-1234-1234-1234-123456789abc'),
-            remediate_node_request=[],
+            node_id='node-1',
             idempotency_key=None,
+            node_power_operation=None,
             _request_auth=None,
             _content_type=None,
             _headers=None,
@@ -91,10 +93,11 @@ class TestIdempotencyKeys:
         custom_key = "custom-key-12345"
         
         from uuid import UUID
-        result = api._remediate_nodes_serialize(
+        result = api._create_node_power_operation_serialize(
             fleet_id=UUID('12345678-1234-1234-1234-123456789abc'),
-            remediate_node_request=[],
+            node_id='node-1',
             idempotency_key=custom_key,
+            node_power_operation=None,
             _request_auth=None,
             _content_type=None,
             _headers=None,
@@ -118,10 +121,11 @@ class TestIdempotencyKeys:
         api = NodeOperationsApi(api_client=ApiClient(config))
         
         from uuid import UUID
-        result = api._remediate_nodes_serialize(
+        result = api._create_node_power_operation_serialize(
             fleet_id=UUID('12345678-1234-1234-1234-123456789abc'),
-            remediate_node_request=[],
+            node_id='node-1',
             idempotency_key=None,
+            node_power_operation=None,
             _request_auth=None,
             _content_type=None,
             _headers=None,
@@ -140,10 +144,11 @@ class TestIdempotencyKeys:
         
         # Test POST
         from uuid import UUID
-        result = api._remediate_nodes_serialize(
+        result = api._create_node_power_operation_serialize(
             fleet_id=UUID('12345678-1234-1234-1234-123456789abc'),
-            remediate_node_request=[],
+            node_id='node-1',
             idempotency_key=None,
+            node_power_operation=None,
             _request_auth=None,
             _content_type=None,
             _headers=None,
