@@ -12,7 +12,7 @@ Method | HTTP request | Description
 
 Queue a node power operation
 
-Queues a power transition on a node via its BMC. Valid transitions depend on the node's current power state. All reset types require both `cust:fleets:nodes:power` (route gate) and `cust:fleets:nodes:power-off` (handler gate, cust-admin). Requests missing the `power-off` permission are rejected with 403. Unknown reset types are rejected with 400.
+Queues a power transition on a node via its BMC. Valid transitions depend on the node's current power state. Requires the Administrator role. Requests from Users are rejected with 403. Unknown reset types are rejected with 400.
 
 ### Example
 
@@ -91,10 +91,10 @@ Name | Type | Description  | Notes
 **200** | Idempotent replay — the operation already completed. The response body contains the terminal outcome. |  -  |
 **202** | Power operation accepted and queued. |  -  |
 **400** | Invalid request body or unknown resetType |  -  |
-**403** | Authenticated but missing the required cust:fleets:nodes:power-off permission |  -  |
+**403** | Authenticated but the caller does not have the Administrator role |  -  |
 **404** | Fleet or node not found, or the fleet has no reservation yet |  -  |
 **409** | Requested transition conflicts with the node&#39;s current power state, or a request with the same Idempotency-Key is currently in progress |  -  |
-**422** | Idempotency-Key reused with a different request body |  -  |
+**422** | Idempotency-Key already used with a different request body, method, path, or organization |  -  |
 **423** | Another power operation is already in progress on this node |  -  |
 **500** | Internal failure before the upstream call |  -  |
 **502** | Upstream infrastructure service returned an error, or the node&#39;s BMC is unreachable |  -  |

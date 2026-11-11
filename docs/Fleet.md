@@ -21,6 +21,7 @@ Name | Type | Description | Notes
 **fleet_apps** | [**FleetApps**](FleetApps.md) |  | [optional] 
 **os_config** | [**OsConfig**](OsConfig.md) |  | [optional] 
 **order_id** | **str** | Linked order ID. Null if this fleet is not associated with an order. | [optional] 
+**managed_by** | [**FleetManagedBy**](FleetManagedBy.md) | The service that manages this fleet&#39;s size, if any. While set, scale requests from anyone else are refused with code &#x60;FLEET_MANAGED_EXTERNALLY&#x60;. Set when the fleet is created and never changed. | [optional] [readonly] 
 
 ## Example
 

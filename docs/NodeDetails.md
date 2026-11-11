@@ -1,6 +1,6 @@
 # NodeDetails
 
-Consolidated single-node details for the customer node-details page. Composes base physical-node fields (publicIp only — no privateIp / reservationId / nodeResourceName), advisory powerActionReadiness, and optional managedServices. Customer power readiness checks cluster join, cordon, and drain state. Topology, privateIp, reservationId, and nodeResourceName are admin-only (see AdminNodeDetails). Existing list/detail endpoints are unchanged.
+Consolidated single-node details for the node-details page. Composes base physical-node fields (publicIp only), advisory powerActionReadiness, and optional managedServices. Power readiness checks cluster join, cordon, and drain state. Existing list/detail endpoints are unchanged.
 
 ## Properties
 

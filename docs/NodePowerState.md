@@ -1,13 +1,13 @@
 # NodePowerState
 
-Live BMC power state for a node. When a power operation is tracked, lastOperation shows its status.
+Eventually consistent power state for a node. powerState is the last confirmed value and can lag the hardware while a power operation is in progress, or until the confirmation is older than 5 minutes. lastOperation shows the status of the most recent power operation.
 
 ## Properties
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **node_id** | **str** | Node identifier. | 
-**power_state** | **str** | Live power state as reported by the BMC. | 
+**power_state** | **str** | Last confirmed power state. Eventually consistent: it can lag the hardware while a power operation is in progress, and it is refreshed from the hardware when the confirmation is older than 5 minutes. | 
 **last_operation** | [**NodePowerLastOperation**](NodePowerLastOperation.md) |  | [optional] 
 
 ## Example

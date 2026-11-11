@@ -15,7 +15,7 @@ Method | HTTP request | Description
 
 Get consolidated node details
 
-Returns consolidated single-node details for the node-details page: base physical fields (publicIp only), advisory powerActionReadiness, and optional managed-service data. privateIp and topology are admin-only (see AdminNodeDetails). Org-scoped: the caller's JWT org must own the fleet and the node must belong to that fleet.
+Returns consolidated single-node details for the node-details page: base physical fields (publicIp only), advisory powerActionReadiness, and optional managed-service data. Org-scoped: the caller's JWT org must own the fleet and the node must belong to that fleet.
 
 Net-new endpoint — does not replace GET /v1/fleets/{fleetId}/nodes/{nodeId}.
 
@@ -189,7 +189,7 @@ Name | Type | Description  | Notes
 
 Get node power state
 
-Returns the node's live power state and, when available, the most recent power operation status. The powerState field is read from the hardware on every call. The optional lastOperation field is backed by stored state and may poll the upstream service for non-terminal operations.
+Returns the node's power state and, when available, the most recent power operation. This read is eventually consistent. powerState is the last confirmed value, not a live hardware read on every call. It can stay at the previous value while a power operation is in progress, and a power change that did not go through this API can take up to 5 minutes to appear. The value is refreshed from the hardware when the confirmation is older than 5 minutes, and again when the operation finishes. While lastOperation is ACCEPTED or IN_PROGRESS, wait 10 to 15 seconds between calls. The response includes Retry-After while that operation is still running.
 
 ### Example
 
@@ -260,7 +260,7 @@ Name | Type | Description  | Notes
 
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-**200** | The node&#39;s live power state. |  -  |
+**200** | The node&#39;s last confirmed power state. |  * Retry-After - Seconds to wait before calling again while the power operation is still running. <br>  |
 **400** | Fleet has an invalid reservation ID, or nodeId is invalid |  -  |
 **404** | Fleet or node not found, or the fleet has no reservation yet |  -  |
 **500** | Internal failure before the upstream call |  -  |

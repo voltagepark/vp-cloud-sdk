@@ -20,7 +20,8 @@ Name | Type | Description | Notes
 **labels** | **Dict[str, str]** | Kubernetes node labels. Absent until the node has joined. | [optional] 
 **annotations** | **Dict[str, str]** | Kubernetes node annotations. Absent until the node has joined. | [optional] 
 **public_ip** | **str** | Public IPv4 address of the node, used for source-IP-based request routing. Absent when the node was registered without a public IP. | [optional] 
-**taints** | [**List[Mks2NodeTaint]**](Mks2NodeTaint.md) | Live Kubernetes node taints. Absent until the node has joined. The admin/CX node-details policy uses the maintenance taint for powerActionReadiness. | [optional] 
+**taints** | [**List[Mks2NodeTaint]**](Mks2NodeTaint.md) | Live Kubernetes node taints. Absent until the node has joined. | [optional] 
+**maintenance** | [**Mks2NodeMaintenance**](Mks2NodeMaintenance.md) |  | [optional] 
 
 ## Example
 

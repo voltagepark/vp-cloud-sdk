@@ -6,6 +6,7 @@ Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**get_fleet**](FleetsApi.md#get_fleet) | **GET** /v1/fleets/{fleetId} | Get fleet details
 [**get_fleet_health**](FleetsApi.md#get_fleet_health) | **GET** /v1/fleets/{fleetId}/health | Get fleet health metrics
+[**get_fleet_history**](FleetsApi.md#get_fleet_history) | **GET** /v1/fleets/{fleetId}/history | Get fleet event history
 [**list_fleets**](FleetsApi.md#list_fleets) | **GET** /v1/fleets | List your fleets
 
 
@@ -181,6 +182,96 @@ Name | Type | Description  | Notes
 **404** | Fleet not found |  -  |
 **422** | Fleet is not in ACTIVE status or has inconsistent state (ACTIVE fleet with no nodes) |  -  |
 **500** | Internal server error |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **get_fleet_history**
+> FleetHistoryResponse get_fleet_history(fleet_id, limit=limit, next_token=next_token)
+
+Get fleet event history
+
+Get the lifecycle history for a fleet, newest first: creation, status changes (including scaling and termination), storage changes, and node remediation requests.
+
+**When to use:**
+- Show fleet activity timeline in your UI
+- Audit what happened to a fleet
+- Debug issues by reviewing recent events
+
+**Pagination:** Some events are omitted from the history, so a page can contain fewer events than `limit`, or none, while `nextToken` is still returned. Keep requesting pages until `nextToken` is absent.
+
+### Example
+
+* Bearer (JWT) Authentication (bearerAuth):
+
+```python
+import vpcloud_client
+from vpcloud_client.models.fleet_history_response import FleetHistoryResponse
+from vpcloud_client.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to https://api.sea1.voltagepark.com
+# See configuration.py for a list of all supported configuration parameters.
+configuration = vpcloud_client.Configuration(
+    host = "https://api.sea1.voltagepark.com"
+)
+
+# The client must configure the authentication and authorization parameters
+# in accordance with the API server security policy.
+# Examples for each auth method are provided below, use the example that
+# satisfies your auth use case.
+
+# Configure Bearer authorization (JWT): bearerAuth
+configuration = vpcloud_client.Configuration(
+    access_token = os.environ["BEARER_TOKEN"]
+)
+
+# Enter a context with an instance of the API client
+with vpcloud_client.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = vpcloud_client.FleetsApi(api_client)
+    fleet_id = '900e8eac-2b1f-421f-a635-72556268b41f' # str | Fleet identifier
+    limit = 1000 # int | Maximum number of events per page (default: 1000, max: 1000) (optional) (default to 1000)
+    next_token = 'next_token_example' # str | Token from previous response to get next page of events (optional)
+
+    try:
+        # Get fleet event history
+        api_response = api_instance.get_fleet_history(fleet_id, limit=limit, next_token=next_token)
+        print("The response of FleetsApi->get_fleet_history:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling FleetsApi->get_fleet_history: %s\n" % e)
+```
+
+
+
+### Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **fleet_id** | **str**| Fleet identifier | 
+ **limit** | **int**| Maximum number of events per page (default: 1000, max: 1000) | [optional] [default to 1000]
+ **next_token** | **str**| Token from previous response to get next page of events | [optional] 
+
+### Return type
+
+[**FleetHistoryResponse**](FleetHistoryResponse.md)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Success - returns paginated fleet history events |  -  |
+**404** | Fleet not found |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 

@@ -7,7 +7,7 @@ A taint on a live Kubernetes node (from the Kubernetes node spec). Identity is k
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **key** | **str** | Taint key. Maintenance uses voltagepark.io/maintenance. | 
-**value** | **str** | Optional taint value. Maintenance convention is \&quot;true\&quot;. | [optional] 
+**value** | **str** | Optional taint value. For &#x60;voltagepark.io/maintenance&#x60;, a value written through the managed Kubernetes node-taint API is the hold&#39;s end time in Unix seconds, and &#x60;true&#x60; means no end time. | [optional] 
 **effect** | **str** | Taint effect. NoExecute is not exposed on the API write path. | 
 
 ## Example
