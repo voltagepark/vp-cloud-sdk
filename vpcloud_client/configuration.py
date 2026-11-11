@@ -206,6 +206,9 @@ class Configuration:
         ca_cert_data: Optional[Union[str, bytes]] = None,
         *,
         debug: Optional[bool] = None,
+        observatory_host: Optional[str] = None,
+        observatory_access_token: Optional[str] = None,
+        observatory_auth0_domain: Optional[str] = None,
     ) -> None:
         """Constructor
         """
@@ -259,6 +262,28 @@ class Configuration:
         self.access_token = access_token
         """Access token (may be resolved automatically)
         """
+        import os
+        self.observatory_host = (
+            observatory_host
+            or os.environ.get("VPCLOUD_OBSERVATORY_HOST")
+            or "https://observatory.voltagepark.com"
+        ).rstrip("/")
+        """Base URL of the Observatory gateway (metrics, logs, audit)
+        """
+        self.observatory_access_token = observatory_access_token
+        """Observatory-audience access token. Never taken from access_token,
+           which is for the Harbor API.
+        """
+        self.observatory_auth0_domain = (
+            observatory_auth0_domain or os.environ.get("VPCLOUD_OBSERVATORY_AUTH0_DOMAIN") or None
+        )
+        """Auth0 tenant that issues Observatory tokens. Defaults by
+           observatory_host: beta.observatory.voltagepark.com uses the dev
+           tenant (voltagepark-dev.us.auth0.com), every other host the prod
+           tenant (voltagepark-harbor.us.auth0.com). Client credentials belong
+           to one tenant, so beta needs an application in the dev tenant.
+        """
+        self._observatory_token_managers: Dict[str, Auth0TokenManager] = {}
         self.logger = {}
         """Logging Settings
         """
@@ -529,15 +554,23 @@ class Configuration:
             basic_auth=username + ':' + password
         ).get('authorization')
 
-    def auth_settings(self)-> AuthSettings:
+    def auth_settings(self, service: Optional[str] = None)-> AuthSettings:
         """Gets Auth Settings dict for api client.
 
         Automatically resolves credentials and refreshes Auth0 tokens if needed.
 
+        :param service: "observatory" for an Observatory operation (metrics,
+            logs, audit), which gets an Observatory-audience token wherever
+            observatory_host points; None for a Harbor operation, which gets the
+            Harbor token. The choice is by operation, never by host, so the
+            Harbor token is never sent to observatory_host.
         :return: The Auth Settings information dict.
         """
         # Resolve access token from credential chain
-        access_token = self._resolve_access_token()
+        if service == "observatory":
+            access_token = self._resolve_observatory_token()
+        else:
+            access_token = self._resolve_access_token()
         
         auth: AuthSettings = {}
         if access_token is not None:
@@ -603,6 +636,51 @@ class Configuration:
         
         return None
 
+    def _resolve_observatory_token(self) -> str:
+        """Resolve an Observatory-audience token for observatory_host.
+
+        Priority:
+        1. Explicit observatory_access_token
+        2. VPCLOUD_OBSERVATORY_ACCESS_TOKEN
+        3. Exchange client_id/secret for an Observatory-audience token via Auth0
+
+        The Harbor token is never used here: Observatory rejects it.
+
+        :raises AuthenticationError: If no Observatory token can be obtained
+        """
+        import os
+
+        if self.observatory_access_token:
+            return self.observatory_access_token
+        env_token = os.environ.get("VPCLOUD_OBSERVATORY_ACCESS_TOKEN")
+        if env_token:
+            return env_token
+
+        client_id, client_secret = self._credential_provider.get_client_credentials()
+        if not (client_id and client_secret):
+            raise AuthenticationError(
+                "No credentials for Observatory: set client_id and client_secret "
+                "(or VPCLOUD_CLIENT_ID / VPCLOUD_CLIENT_SECRET), or observatory_access_token"
+            )
+        domain = self.observatory_auth0_domain or Auth0TokenManager.observatory_auth0_domain(self.observatory_host)
+        manager = self._observatory_token_managers.get(domain)
+        if manager is None or manager.client_id != client_id or manager.client_secret != client_secret:
+            manager = Auth0TokenManager(
+                client_id,
+                client_secret,
+                audience=Auth0TokenManager.OBSERVATORY_AUDIENCE,
+                domain=domain,
+                refresh_margin=Auth0TokenManager.OBSERVATORY_REFRESH_MARGIN,
+            )
+            self._observatory_token_managers[domain] = manager
+        try:
+            return manager.get_token()
+        except AuthenticationError as e:
+            raise AuthenticationError(
+                f"Could not get an access token for {Auth0TokenManager.OBSERVATORY_AUDIENCE} from {domain}. "
+                f"Check that your Auth0 application is granted the Observatory API: {e}"
+            ) from e
+
     def to_debug_report(self) -> str:
         """Gets the essential information for debugging.
 
@@ -612,7 +690,7 @@ class Configuration:
                "OS: {env}\n"\
                "Python Version: {pyversion}\n"\
                "Version of the API: 1.0.0\n"\
-               "SDK Package Version: 1.0.0".\
+               "SDK Package Version: 2.0.0".\
                format(env=sys.platform, pyversion=sys.version)
 
     def get_host_settings(self) -> List[HostSetting]:

@@ -14,15 +14,19 @@
 """  # noqa: E501
 
 
-__version__ = "1.0.0"
+__version__ = "2.0.0"
 
 # Define package exports
 __all__ = [
     "AuditApi",
     "ClusterValidationApi",
+    "ClustersApi",
     "FleetOperationsApi",
     "FleetsApi",
     "KubernetesApi",
+    "KubernetesAuditApi",
+    "LogsApi",
+    "MetricsApi",
     "MonitoringApi",
     "NodeOperationsApi",
     "NodesApi",
@@ -51,6 +55,7 @@ __all__ = [
     "ClusterValidationDetail",
     "ClusterValidationListResponse",
     "ClusterValidationResponse",
+    "CreateAuditQueryRequest",
     "CreateSSHKeyRequest",
     "CustomerTriggerClusterValidationRequest",
     "ErrorResponse",
@@ -71,6 +76,7 @@ __all__ = [
     "FleetNodeSpec",
     "FleetStatus",
     "GetFleetHealth422Response",
+    "GoogleRpcCode",
     "GrafanaDashboardResponse",
     "Infrastructure",
     "InfrastructureNetwork",
@@ -78,6 +84,7 @@ __all__ = [
     "KubernetesServiceLinks",
     "ListFleetsResponse",
     "ListNodesResponse",
+    "LogsQueryRequest",
     "Mks2AddonsHealth",
     "Mks2ClusterHealth",
     "Mks2ComponentHealth",
@@ -109,9 +116,29 @@ __all__ = [
     "NodePowerOperationQueued",
     "NodePowerState",
     "NodeState",
+    "ObservatoryV1AuditCoverage",
+    "ObservatoryV1AuditCoverageGap",
+    "ObservatoryV1AuditCoverageVerdict",
+    "ObservatoryV1AuditOrder",
+    "ObservatoryV1AuditQueryError",
+    "ObservatoryV1AuditQueryState",
+    "ObservatoryV1AuditQueryStatistics",
+    "ObservatoryV1CancelAuditQueryResponse",
+    "ObservatoryV1CreateAuditQueryResponse",
+    "ObservatoryV1GetAuditCoverageResponse",
+    "ObservatoryV1GetAuditQueryResponse",
+    "ObservatoryV1GetAuditQueryResultsResponse",
+    "ObservatoryV1LogsQueryResponse",
+    "ObservatoryV1MetricsResult",
+    "ObservatoryV1QueryRangeResponse",
+    "ObservatoryV1QueryResponse",
+    "ObservatoryV1ResolveClustersResponse",
+    "ObservatoryV1ResolvedCluster",
     "OsConfig",
     "PowerActionReadiness",
     "PublicKeyEntry",
+    "QueryRangeRequest",
+    "QueryRequest",
     "RemoveFleetSSHKeyResponse",
     "SSHKey",
     "SlurmParameters",
@@ -126,9 +153,13 @@ __all__ = [
 # import apis into sdk package
 from vpcloud_client.api.audit_api import AuditApi as AuditApi
 from vpcloud_client.api.cluster_validation_api import ClusterValidationApi as ClusterValidationApi
+from vpcloud_client.api.clusters_api import ClustersApi as ClustersApi
 from vpcloud_client.api.fleet_operations_api import FleetOperationsApi as FleetOperationsApi
 from vpcloud_client.api.fleets_api import FleetsApi as FleetsApi
 from vpcloud_client.api.kubernetes_api import KubernetesApi as KubernetesApi
+from vpcloud_client.api.kubernetes_audit_api import KubernetesAuditApi as KubernetesAuditApi
+from vpcloud_client.api.logs_api import LogsApi as LogsApi
+from vpcloud_client.api.metrics_api import MetricsApi as MetricsApi
 from vpcloud_client.api.monitoring_api import MonitoringApi as MonitoringApi
 from vpcloud_client.api.node_operations_api import NodeOperationsApi as NodeOperationsApi
 from vpcloud_client.api.nodes_api import NodesApi as NodesApi
@@ -161,6 +192,7 @@ from vpcloud_client.models.bootstrap import Bootstrap as Bootstrap
 from vpcloud_client.models.cluster_validation_detail import ClusterValidationDetail as ClusterValidationDetail
 from vpcloud_client.models.cluster_validation_list_response import ClusterValidationListResponse as ClusterValidationListResponse
 from vpcloud_client.models.cluster_validation_response import ClusterValidationResponse as ClusterValidationResponse
+from vpcloud_client.models.create_audit_query_request import CreateAuditQueryRequest as CreateAuditQueryRequest
 from vpcloud_client.models.create_ssh_key_request import CreateSSHKeyRequest as CreateSSHKeyRequest
 from vpcloud_client.models.customer_trigger_cluster_validation_request import CustomerTriggerClusterValidationRequest as CustomerTriggerClusterValidationRequest
 from vpcloud_client.models.error_response import ErrorResponse as ErrorResponse
@@ -181,6 +213,7 @@ from vpcloud_client.models.fleet_node import FleetNode as FleetNode
 from vpcloud_client.models.fleet_node_spec import FleetNodeSpec as FleetNodeSpec
 from vpcloud_client.models.fleet_status import FleetStatus as FleetStatus
 from vpcloud_client.models.get_fleet_health422_response import GetFleetHealth422Response as GetFleetHealth422Response
+from vpcloud_client.models.google_rpc_code import GoogleRpcCode as GoogleRpcCode
 from vpcloud_client.models.grafana_dashboard_response import GrafanaDashboardResponse as GrafanaDashboardResponse
 from vpcloud_client.models.infrastructure import Infrastructure as Infrastructure
 from vpcloud_client.models.infrastructure_network import InfrastructureNetwork as InfrastructureNetwork
@@ -188,6 +221,7 @@ from vpcloud_client.models.kubeconfig_v2_response import KubeconfigV2Response as
 from vpcloud_client.models.kubernetes_service_links import KubernetesServiceLinks as KubernetesServiceLinks
 from vpcloud_client.models.list_fleets_response import ListFleetsResponse as ListFleetsResponse
 from vpcloud_client.models.list_nodes_response import ListNodesResponse as ListNodesResponse
+from vpcloud_client.models.logs_query_request import LogsQueryRequest as LogsQueryRequest
 from vpcloud_client.models.mks2_addons_health import Mks2AddonsHealth as Mks2AddonsHealth
 from vpcloud_client.models.mks2_cluster_health import Mks2ClusterHealth as Mks2ClusterHealth
 from vpcloud_client.models.mks2_component_health import Mks2ComponentHealth as Mks2ComponentHealth
@@ -219,9 +253,29 @@ from vpcloud_client.models.node_power_operation_error import NodePowerOperationE
 from vpcloud_client.models.node_power_operation_queued import NodePowerOperationQueued as NodePowerOperationQueued
 from vpcloud_client.models.node_power_state import NodePowerState as NodePowerState
 from vpcloud_client.models.node_state import NodeState as NodeState
+from vpcloud_client.models.observatory_v1_audit_coverage import ObservatoryV1AuditCoverage as ObservatoryV1AuditCoverage
+from vpcloud_client.models.observatory_v1_audit_coverage_gap import ObservatoryV1AuditCoverageGap as ObservatoryV1AuditCoverageGap
+from vpcloud_client.models.observatory_v1_audit_coverage_verdict import ObservatoryV1AuditCoverageVerdict as ObservatoryV1AuditCoverageVerdict
+from vpcloud_client.models.observatory_v1_audit_order import ObservatoryV1AuditOrder as ObservatoryV1AuditOrder
+from vpcloud_client.models.observatory_v1_audit_query_error import ObservatoryV1AuditQueryError as ObservatoryV1AuditQueryError
+from vpcloud_client.models.observatory_v1_audit_query_state import ObservatoryV1AuditQueryState as ObservatoryV1AuditQueryState
+from vpcloud_client.models.observatory_v1_audit_query_statistics import ObservatoryV1AuditQueryStatistics as ObservatoryV1AuditQueryStatistics
+from vpcloud_client.models.observatory_v1_cancel_audit_query_response import ObservatoryV1CancelAuditQueryResponse as ObservatoryV1CancelAuditQueryResponse
+from vpcloud_client.models.observatory_v1_create_audit_query_response import ObservatoryV1CreateAuditQueryResponse as ObservatoryV1CreateAuditQueryResponse
+from vpcloud_client.models.observatory_v1_get_audit_coverage_response import ObservatoryV1GetAuditCoverageResponse as ObservatoryV1GetAuditCoverageResponse
+from vpcloud_client.models.observatory_v1_get_audit_query_response import ObservatoryV1GetAuditQueryResponse as ObservatoryV1GetAuditQueryResponse
+from vpcloud_client.models.observatory_v1_get_audit_query_results_response import ObservatoryV1GetAuditQueryResultsResponse as ObservatoryV1GetAuditQueryResultsResponse
+from vpcloud_client.models.observatory_v1_logs_query_response import ObservatoryV1LogsQueryResponse as ObservatoryV1LogsQueryResponse
+from vpcloud_client.models.observatory_v1_metrics_result import ObservatoryV1MetricsResult as ObservatoryV1MetricsResult
+from vpcloud_client.models.observatory_v1_query_range_response import ObservatoryV1QueryRangeResponse as ObservatoryV1QueryRangeResponse
+from vpcloud_client.models.observatory_v1_query_response import ObservatoryV1QueryResponse as ObservatoryV1QueryResponse
+from vpcloud_client.models.observatory_v1_resolve_clusters_response import ObservatoryV1ResolveClustersResponse as ObservatoryV1ResolveClustersResponse
+from vpcloud_client.models.observatory_v1_resolved_cluster import ObservatoryV1ResolvedCluster as ObservatoryV1ResolvedCluster
 from vpcloud_client.models.os_config import OsConfig as OsConfig
 from vpcloud_client.models.power_action_readiness import PowerActionReadiness as PowerActionReadiness
 from vpcloud_client.models.public_key_entry import PublicKeyEntry as PublicKeyEntry
+from vpcloud_client.models.query_range_request import QueryRangeRequest as QueryRangeRequest
+from vpcloud_client.models.query_request import QueryRequest as QueryRequest
 from vpcloud_client.models.remove_fleet_ssh_key_response import RemoveFleetSSHKeyResponse as RemoveFleetSSHKeyResponse
 from vpcloud_client.models.ssh_key import SSHKey as SSHKey
 from vpcloud_client.models.slurm_parameters import SlurmParameters as SlurmParameters

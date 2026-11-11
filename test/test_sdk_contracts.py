@@ -160,6 +160,12 @@ def _validator_rules(model_cls):
     return rules
 
 
+def _base_type(annotation):
+    while typing_extensions.get_origin(annotation) is typing_extensions.Annotated:
+        annotation = typing_extensions.get_args(annotation)[0]
+    return annotation
+
+
 def _unwrap(annotation, constraints):
     """Strip Optional/Annotated wrappers, collecting constraint metadata."""
     while True:
@@ -173,7 +179,13 @@ def _unwrap(annotation, constraints):
                     constraints.append(item)
         elif origin is typing.Union:
             args = [a for a in typing_extensions.get_args(annotation) if a is not type(None)]
-            annotation = args[0]
+            # A `format: byte` field is Union[StrictBytes, StrictStr]: on the
+            # wire it is base64 text, so sample its str member.
+            bases = [_base_type(a) for a in args]
+            if str in bases and any(b in (bytes, bytearray) for b in bases):
+                annotation = args[bases.index(str)]
+            else:
+                annotation = args[0]
         else:
             return annotation
 
@@ -413,6 +425,7 @@ def _operation_spec(api_cls, name):
             if not arg.startswith('_')
         },
         'body_param': next(iter(re.findall(r'_body_params = (\w+)', serializer)), None),
+        'service': next(iter(re.findall(r"_service='(\w+)'", serializer)), None),
         'status': int(status),
         'response_type': None if response_type == 'None' else response_type.strip('"'),
     }
@@ -504,7 +517,9 @@ class TestGeneratedOperations:
             expected_path = expected_path.replace(
                 '{' + alias + '}', quote(str(args[arg]), safe=''))
         parts = urlsplit(url)
-        assert f'{parts.scheme}://{parts.netloc}{parts.path}' == HOST + expected_path
+        # Observatory operations go to observatory_host, Harbor ones to host.
+        host = api_client.configuration.observatory_host if spec['service'] == 'observatory' else HOST
+        assert f'{parts.scheme}://{parts.netloc}{parts.path}' == host + expected_path
 
         query = parse_qs(parts.query)
         for alias, arg in spec['query_params'].items():

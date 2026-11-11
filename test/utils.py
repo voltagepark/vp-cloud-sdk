@@ -56,6 +56,9 @@ def create_test_config(
     :param kwargs: Additional configuration parameters
     :return: Configuration instance for testing
     """
+    # Observatory operations fail closed without an Observatory token, even
+    # when only serialized, so test configurations carry one.
+    kwargs.setdefault("observatory_access_token", "test-observatory-token")
     return Configuration(
         host="https://api.test.example.com",
         retry_strategy=retry_strategy,

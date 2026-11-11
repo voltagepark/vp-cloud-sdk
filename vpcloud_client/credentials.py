@@ -182,6 +182,25 @@ class Auth0TokenManager:
     
     AUTH0_DOMAIN = "voltagepark-harbor.us.auth0.com"
     TOKEN_URL = f"https://{AUTH0_DOMAIN}/oauth/token"
+
+    # Observatory (metrics, logs, audit) verifies one audience in every
+    # region. Beta's gateway trusts the dev Auth0 tenant; prod's trust the
+    # Harbor tenant.
+    OBSERVATORY_AUDIENCE = "https://observatory.voltagepark.com"
+    OBSERVATORY_BETA_AUTH0_DOMAIN = "voltagepark-dev.us.auth0.com"
+    OBSERVATORY_REFRESH_MARGIN = 300
+
+    @staticmethod
+    def _hostname(host: str) -> str:
+        from urllib.parse import urlparse
+        return (urlparse(host if "://" in host else "https://" + host).hostname or "").lower()
+
+    @staticmethod
+    def observatory_auth0_domain(host: str) -> str:
+        """The Auth0 tenant whose tokens the Observatory gateway at host accepts."""
+        if Auth0TokenManager._hostname(host) == "beta.observatory.voltagepark.com":
+            return Auth0TokenManager.OBSERVATORY_BETA_AUTH0_DOMAIN
+        return Auth0TokenManager.AUTH0_DOMAIN
     
     # Mapping from region/datacenter code to Auth0 audience
     # This map defines which audience to use when requesting tokens for each region
@@ -232,16 +251,29 @@ class Auth0TokenManager:
         # Fallback to default (sea1)
         return Auth0TokenManager.REGION_AUDIENCE_MAP.get("sea1", "https://api.sea-1.voltagepark.com/harbor")
     
-    def __init__(self, client_id: str, client_secret: str, audience: Optional[str] = None, host: Optional[str] = None):
+    def __init__(
+        self,
+        client_id: str,
+        client_secret: str,
+        audience: Optional[str] = None,
+        host: Optional[str] = None,
+        domain: Optional[str] = None,
+        refresh_margin: float = 60,
+    ):
         """Initialize token manager.
         
         :param client_id: Auth0 M2M client ID
         :param client_secret: Auth0 M2M client secret
         :param audience: Auth0 audience URL (optional, will be derived from host if not provided)
         :param host: API host URL (used to derive audience if audience not provided)
+        :param domain: Auth0 tenant domain (default: voltagepark-harbor.us.auth0.com)
+        :param refresh_margin: Seconds before expiry at which a cached token is replaced
         """
         self.client_id = client_id
         self.client_secret = client_secret
+        self.domain = domain or self.AUTH0_DOMAIN
+        self.TOKEN_URL = f"https://{self.domain}/oauth/token"
+        self.refresh_margin = refresh_margin
         if audience:
             self.audience = audience
         elif host:
@@ -251,6 +283,7 @@ class Auth0TokenManager:
             self.audience = "https://api.sea-1.voltagepark.com/harbor"
         self._cached_token: Optional[str] = None
         self._token_expires_at: float = 0
+        self._token_lifetime: float = 0
     
     def get_token(self, force_refresh: bool = False) -> str:
         """Get a valid access token, refreshing if necessary.
@@ -259,8 +292,12 @@ class Auth0TokenManager:
         :return: Access token (JWT)
         :raises AuthenticationError: If token exchange fails
         """
-        # Check if cached token is still valid (refresh 60 seconds before expiry)
-        if not force_refresh and self._cached_token and time.time() < self._token_expires_at - 60:
+        # Check if cached token is still valid. A token is replaced refresh_margin
+        # seconds before it expires, or halfway through its lifetime if that is
+        # shorter, so a short-lived token is still reused rather than fetched
+        # on every call.
+        margin = min(self.refresh_margin, self._token_lifetime / 2) if self._token_lifetime else self.refresh_margin
+        if not force_refresh and self._cached_token and time.time() < self._token_expires_at - margin:
             return self._cached_token
         
         # Exchange credentials for token
@@ -292,6 +329,7 @@ class Auth0TokenManager:
             # Cache token with expiry
             expires_in = data.get("expires_in", 86400)  # Default 24 hours
             self._cached_token = access_token
+            self._token_lifetime = float(expires_in)
             self._token_expires_at = time.time() + expires_in
             
             return access_token

@@ -91,7 +91,7 @@ class ApiClient:
             self.default_headers[header_name] = header_value
         self.cookie = cookie
         # Set default User-Agent.
-        self.user_agent = 'OpenAPI-Generator/1.0.0/python'
+        self.user_agent = 'OpenAPI-Generator/2.0.0/python'
         self.client_side_validation = configuration.client_side_validation
 
     def __enter__(self):
@@ -151,7 +151,8 @@ class ApiClient:
         files=None, auth_settings=None,
         collection_formats=None,
         _host=None,
-        _request_auth=None
+        _request_auth=None,
+        _service=None,
     ) -> RequestSerialized:
 
         """Builds the HTTP request params needed by the request.
@@ -172,6 +173,9 @@ class ApiClient:
         :param _request_auth: set to override the auth_settings for an a single
                               request; this effectively ignores the authentication
                               in the spec for a single request.
+        :param _service: "observatory" for an Observatory operation (metrics,
+            logs, audit): it is sent to configuration.observatory_host with an
+            Observatory token. None for a Harbor operation.
         :return: tuple of form (path, http_method, query_params, header_params,
             body, post_params, files)
         """
@@ -214,7 +218,18 @@ class ApiClient:
             if files:
                 post_params.extend(self.files_parameters(files))
 
-        # auth setting
+        # request host. Observatory operations always go to observatory_host:
+        # ignore_operation_servers redirects only Harbor operations.
+        if _service == "observatory":
+            request_host = self.configuration.observatory_host
+        elif _host is None or self.configuration.ignore_operation_servers:
+            request_host = self.configuration.host
+        else:
+            # use server/host defined in path or operation instead
+            request_host = _host
+
+        # auth setting: the token is chosen by the operation's service, never
+        # by the host, so a Harbor token never reaches observatory_host
         self.update_params_for_auth(
             header_params,
             query_params,
@@ -222,7 +237,8 @@ class ApiClient:
             resource_path,
             method,
             body,
-            request_auth=_request_auth
+            request_auth=_request_auth,
+            service=_service,
         )
 
         # body
@@ -230,11 +246,7 @@ class ApiClient:
             body = self.sanitize_for_serialization(body)
 
         # request url
-        if _host is None or self.configuration.ignore_operation_servers:
-            url = self.configuration.host + resource_path
-        else:
-            # use server/host defined in path or operation instead
-            url = _host + resource_path
+        url = request_host + resource_path
 
         # query parameters
         if query_params:
@@ -778,7 +790,8 @@ class ApiClient:
         resource_path,
         method,
         body,
-        request_auth=None
+        request_auth=None,
+        service=None,
     ) -> None:
         """Updates header and query params based on authentication setting.
 
@@ -791,6 +804,8 @@ class ApiClient:
         The object type is the return value of sanitize_for_serialization().
         :param request_auth: if set, the provided settings will
                              override the token in the configuration.
+        :param service: "observatory" for an Observatory operation, which takes an
+            Observatory token; None for a Harbor operation.
         """
         if not auth_settings:
             return
@@ -806,7 +821,7 @@ class ApiClient:
             )
         else:
             for auth in auth_settings:
-                auth_setting = self.configuration.auth_settings().get(auth)
+                auth_setting = self.configuration.auth_settings(service=service).get(auth)
                 if auth_setting:
                     self._apply_auth_params(
                         headers,
