@@ -1,6 +1,6 @@
 # vpcloud_client.MetricsApi
 
-All URIs are relative to *https://observatory.voltagepark.com*, the default `Configuration.observatory_host`. `ClustersApi.resolve_clusters()` reports the regional endpoint that serves each cluster.
+All URIs are relative to *https://observatory.voltagepark.com*, the default `Configuration.observatory_host`. `ClustersApi.resolve_clusters()` reports the regional endpoint that serves each cluster. These APIs don't need a region.
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------

@@ -1,6 +1,6 @@
 # vpcloud_client.NodesApi
 
-All URIs are relative to *https://api.sea1.voltagepark.com*, the default `Configuration.host`. Set `host` to the regional API endpoint for your fleets' region.
+All URIs are relative to your region's API endpoint, for example *https://api.iad1.voltagepark.com*. Set `Configuration(region=...)` or `VPCLOUD_REGION` to pick it.
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
@@ -30,12 +30,11 @@ from vpcloud_client.models.node_details import NodeDetails
 from vpcloud_client.rest import ApiException
 from pprint import pprint
 
-# Set host to the regional API endpoint for your fleets' region, for example
-# https://api.iad1.voltagepark.com. It defaults to https://api.sea1.voltagepark.com.
+# region is where your fleets are: sea1, iad1, dfw2 or ord1
 # The SDK exchanges your application's client credentials for an access token.
 # See configuration.py for a list of all supported configuration parameters.
 configuration = vpcloud_client.Configuration(
-    host = "https://api.sea1.voltagepark.com",
+    region = os.environ.get("VPCLOUD_REGION"),
     client_id = os.environ["VPCLOUD_CLIENT_ID"],
     client_secret = os.environ["VPCLOUD_CLIENT_SECRET"],
 )
@@ -115,12 +114,11 @@ from vpcloud_client.models.node import Node
 from vpcloud_client.rest import ApiException
 from pprint import pprint
 
-# Set host to the regional API endpoint for your fleets' region, for example
-# https://api.iad1.voltagepark.com. It defaults to https://api.sea1.voltagepark.com.
+# region is where your fleets are: sea1, iad1, dfw2 or ord1
 # The SDK exchanges your application's client credentials for an access token.
 # See configuration.py for a list of all supported configuration parameters.
 configuration = vpcloud_client.Configuration(
-    host = "https://api.sea1.voltagepark.com",
+    region = os.environ.get("VPCLOUD_REGION"),
     client_id = os.environ["VPCLOUD_CLIENT_ID"],
     client_secret = os.environ["VPCLOUD_CLIENT_SECRET"],
 )
@@ -192,12 +190,11 @@ from vpcloud_client.models.node_power_state import NodePowerState
 from vpcloud_client.rest import ApiException
 from pprint import pprint
 
-# Set host to the regional API endpoint for your fleets' region, for example
-# https://api.iad1.voltagepark.com. It defaults to https://api.sea1.voltagepark.com.
+# region is where your fleets are: sea1, iad1, dfw2 or ord1
 # The SDK exchanges your application's client credentials for an access token.
 # See configuration.py for a list of all supported configuration parameters.
 configuration = vpcloud_client.Configuration(
-    host = "https://api.sea1.voltagepark.com",
+    region = os.environ.get("VPCLOUD_REGION"),
     client_id = os.environ["VPCLOUD_CLIENT_ID"],
     client_secret = os.environ["VPCLOUD_CLIENT_SECRET"],
 )
@@ -279,12 +276,11 @@ from vpcloud_client.models.list_nodes_response import ListNodesResponse
 from vpcloud_client.rest import ApiException
 from pprint import pprint
 
-# Set host to the regional API endpoint for your fleets' region, for example
-# https://api.iad1.voltagepark.com. It defaults to https://api.sea1.voltagepark.com.
+# region is where your fleets are: sea1, iad1, dfw2 or ord1
 # The SDK exchanges your application's client credentials for an access token.
 # See configuration.py for a list of all supported configuration parameters.
 configuration = vpcloud_client.Configuration(
-    host = "https://api.sea1.voltagepark.com",
+    region = os.environ.get("VPCLOUD_REGION"),
     client_id = os.environ["VPCLOUD_CLIENT_ID"],
     client_secret = os.environ["VPCLOUD_CLIENT_SECRET"],
 )

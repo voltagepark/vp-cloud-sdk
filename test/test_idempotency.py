@@ -49,7 +49,7 @@ def _find(method, with_param=None):
 def _config(**kwargs):
     # Observatory operations fail closed without an Observatory token, even
     # when only serialized; give them one so every operation can be built.
-    return Configuration(observatory_access_token="test-token", **kwargs)
+    return Configuration(observatory_access_token="test-token", region="sea1", **kwargs)
 
 
 def _headers(config, cls, name, **overrides):

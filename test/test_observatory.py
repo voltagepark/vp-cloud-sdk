@@ -15,6 +15,7 @@ import urllib3
 import vpcloud_client
 from vpcloud_client import credentials, rest
 from vpcloud_client.credentials import AuthenticationError
+from vpcloud_client.models.logs_query_request import LogsQueryRequest
 from vpcloud_client.models.query_range_request import QueryRangeRequest
 from vpcloud_client.models.query_request import QueryRequest
 
@@ -35,8 +36,8 @@ class FakeResp:
 @pytest.fixture
 def wire(monkeypatch, tmp_path):
     """Fakes Auth0 and the HTTP layer; records token mints and requests."""
-    monkeypatch.setenv("HOME", str(tmp_path))  # no ~/.voltagepark/credentials
-    monkeypatch.setattr(credentials.CredentialProvider, "CREDENTIALS_FILE", tmp_path / ".voltagepark" / "credentials")
+    monkeypatch.setenv("HOME", str(tmp_path))
+    monkeypatch.setattr(credentials.CredentialProvider, "CREDENTIALS_FILE", tmp_path / "credentials")
     for k in list(__import__("os").environ):
         if k.startswith("VPCLOUD_"):
             monkeypatch.delenv(k)
@@ -75,7 +76,7 @@ def query(config, cluster="c-1"):
 
 
 def test_observatory_calls_get_their_own_audience_and_host(wire):
-    config = vpcloud_client.Configuration(client_id="cid", client_secret="secret")
+    config = vpcloud_client.Configuration(client_id="cid", client_secret="secret", region="sea1")
     with vpcloud_client.ApiClient(config) as api:
         vpcloud_client.FleetsApi(api).list_fleets()
         vpcloud_client.MetricsApi(api).query_metrics("c-1", QueryRequest(query="up"))
@@ -91,7 +92,7 @@ def test_observatory_calls_get_their_own_audience_and_host(wire):
 
 
 def test_one_token_per_audience(wire):
-    config = vpcloud_client.Configuration(client_id="cid", client_secret="secret")
+    config = vpcloud_client.Configuration(client_id="cid", client_secret="secret", region="sea1")
     query(config)
     query(config)
     with vpcloud_client.ApiClient(config) as api:
@@ -175,7 +176,8 @@ def test_responses_parse(wire):
 def test_any_observatory_host_gets_the_observatory_token(wire):
     """The token follows the operation, not the host: a proxy, a private
     name or a typo still never receives the Harbor token."""
-    config = vpcloud_client.Configuration(client_id="cid", client_secret="secret", observatory_host="http://localhost:8080")
+    config = vpcloud_client.Configuration(
+        client_id="cid", client_secret="secret", region="sea1", observatory_host="http://localhost:8080")
     query(config)
     with vpcloud_client.ApiClient(config) as api:
         vpcloud_client.FleetsApi(api).list_fleets()
@@ -186,7 +188,9 @@ def test_any_observatory_host_gets_the_observatory_token(wire):
 
 
 def test_ignore_operation_servers_redirects_only_harbor(wire):
-    config = vpcloud_client.Configuration(client_id="cid", client_secret="secret", host="https://harbor.example")
+    config = vpcloud_client.Configuration(
+        client_id="cid", client_secret="secret", host="https://harbor.example", region="sea1"
+    )
     config.ignore_operation_servers = True
     query(config)
     with vpcloud_client.ApiClient(config) as api:
@@ -233,33 +237,176 @@ def list_fleets(config):
         return vpcloud_client.FleetsApi(api).list_fleets()
 
 
+@pytest.mark.parametrize("region,host,audience", [
+    ("sea1", "https://api.sea1.voltagepark.com", "https://api.sea-1.voltagepark.com/harbor"),
+    ("iad1", "https://api.iad1.voltagepark.com", "https://api.iad-1.voltagepark.com/harbor"),
+    ("dfw2", "https://api.dfw2.voltagepark.com", "https://api.dfw-2.voltagepark.com/harbor"),
+    ("ord1", "https://api.ord1.voltagepark.com", "https://api.ord-1.voltagepark.com/harbor"),
+])
+def test_region_sets_host_and_audience(wire, region, host, audience):
+    list_fleets(vpcloud_client.Configuration(client_id="cid", client_secret="secret", region=region))
+    assert wire["requests"][0]["url"] == host + "/v1/fleets"
+    assert wire["mints"] == [(PROD, audience)]
+
+
+def test_region_from_env(wire, monkeypatch):
+    monkeypatch.setenv("VPCLOUD_REGION", " IAD1 ")
+    config = vpcloud_client.Configuration(client_id="cid", client_secret="secret")
+    list_fleets(config)
+    assert config.region == "iad1"
+    assert wire["requests"][0]["url"] == "https://api.iad1.voltagepark.com/v1/fleets"
+
+
+def test_region_from_credentials_profile(wire, tmp_path):
+    (tmp_path / "credentials").write_text("[default]\nregion = ord1\n[other]\nregion = dfw2\n")
+    assert vpcloud_client.Configuration().region == "ord1"
+    assert vpcloud_client.Configuration(profile="other").region == "dfw2"
+
+
+def test_region_precedence_is_argument_then_env_then_file(wire, monkeypatch, tmp_path):
+    (tmp_path / "credentials").write_text("[default]\nregion = ord1\n")
+    monkeypatch.setenv("VPCLOUD_REGION", "iad1")
+    explicit = vpcloud_client.Configuration(region="dfw2")
+    from_env = vpcloud_client.Configuration()
+    assert explicit.region == "dfw2"
+    assert from_env.region == "iad1"
+    assert explicit._credential_provider._credentials_cache is None
+    assert from_env._credential_provider._credentials_cache is None
+
+
+def test_missing_region_fails_before_any_request(wire):
+    config = vpcloud_client.Configuration(client_id="cid", client_secret="secret")
+    with pytest.raises(ValueError, match="No region set.*VPCLOUD_REGION.*sea1, iad1, dfw2, ord1"):
+        list_fleets(config)
+    with pytest.raises(ValueError, match="No region set.*VPCLOUD_REGION.*sea1, iad1, dfw2, ord1"):
+        with vpcloud_client.ApiClient(config) as api:
+            vpcloud_client.AuditApi(api).get_audit_logs()
+    assert wire["requests"] == [] and wire["mints"] == []
+
+
+def test_observatory_needs_no_region(wire):
+    config = vpcloud_client.Configuration(client_id="cid", client_secret="secret")
+    with vpcloud_client.ApiClient(config) as api:
+        vpcloud_client.MetricsApi(api).query_metrics("c-1", QueryRequest(query="up"))
+        vpcloud_client.LogsApi(api).query_logs("c-1", LogsQueryRequest(query="error"))
+        vpcloud_client.KubernetesAuditApi(api).get_audit_coverage("c-1")
+        vpcloud_client.ClustersApi(api).resolve_clusters()
+    assert config.region is None
+    assert [r["url"] for r in wire["requests"]] == [
+        OBS + "/v1/clusters/c-1/query",
+        OBS + "/v1/clusters/c-1/logs/query",
+        OBS + "/v1/clusters/c-1/audit/coverage",
+        OBS + "/v1/clusters",
+    ]
+
+
+def test_unknown_region_lists_valid_regions(wire, monkeypatch, tmp_path):
+    with pytest.raises(ValueError, match=r"Unknown region 'us-east-1' \(from region\).*sea1, iad1, dfw2, ord1"):
+        vpcloud_client.Configuration(region="us-east-1")
+    monkeypatch.setenv("VPCLOUD_REGION", "sea-1")
+    config = vpcloud_client.Configuration(client_id="cid", client_secret="secret")
+    with pytest.raises(ValueError, match=r"from VPCLOUD_REGION"):
+        list_fleets(config)
+    monkeypatch.delenv("VPCLOUD_REGION")
+    (tmp_path / "credentials").write_text("[default]\nregion = eu-west-1\n")
+    with pytest.raises(ValueError, match=r"from credentials profile 'default'"):
+        vpcloud_client.Configuration().region
+    assert wire["requests"] == [] and wire["mints"] == []
+
+
+def test_bad_env_region_does_not_break_observatory(wire, monkeypatch):
+    monkeypatch.setenv("VPCLOUD_REGION", "iad-1")
+    config = vpcloud_client.Configuration(observatory_access_token="obs-jwt")
+    query(config)
+    assert wire["requests"][0]["auth"] == "Bearer obs-jwt"
+
+
+def test_region_with_host_picks_the_audience(wire):
+    config = vpcloud_client.Configuration(
+        client_id="cid", client_secret="secret", region="iad1", host="https://harbor-proxy.internal"
+    )
+    list_fleets(config)
+    assert wire["requests"][0]["url"] == "https://harbor-proxy.internal/v1/fleets"
+    assert wire["mints"] == [(PROD, "https://api.iad-1.voltagepark.com/harbor")]
+    with pytest.raises(ValueError, match="region or server_index, not both"):
+        vpcloud_client.Configuration(region="iad1", server_index=0)
+
+
+@pytest.mark.parametrize("host", ["https://harbor-proxy.internal", "https://api.beta.iad1.voltagepark.com"])
+def test_unrecognized_host_without_region_raises(wire, host):
+    config = vpcloud_client.Configuration(client_id="cid", client_secret="secret", host=host)
+    with pytest.raises(ValueError, match="Can't tell which region .* serves; pass region= with host="):
+        list_fleets(config)
+    assert wire["requests"] == [] and wire["mints"] == []
+
+
+def test_explicit_host_ignores_env_region(wire, monkeypatch):
+    monkeypatch.setenv("VPCLOUD_REGION", "not-a-region")
+    config = vpcloud_client.Configuration(client_id="cid", client_secret="secret", host="https://api.dfw2.voltagepark.com")
+    list_fleets(config)
+    assert config.region is None
+    assert wire["mints"] == [(PROD, "https://api.dfw-2.voltagepark.com/harbor")]
+
+
+def test_uppercase_host_derives_audience_and_ignores_lookalike(wire):
+    config = vpcloud_client.Configuration(
+        client_id="cid", client_secret="secret", host="https://API.DFW2.VOLTAGEPARK.COM"
+    )
+    list_fleets(config)
+    assert wire["mints"] == [(PROD, "https://api.dfw-2.voltagepark.com/harbor")]
+    assert credentials.Auth0TokenManager.region_for_host("https://api.iad1.voltagepark.com.evil.example") is None
+
+
+def test_region_can_change_after_construction(wire):
+    config = vpcloud_client.Configuration(client_id="cid", client_secret="secret", region="sea1")
+    list_fleets(config)
+    config.region = "ord1"
+    assert config.access_token is None
+    list_fleets(config)
+    assert [r["url"] for r in wire["requests"]] == [
+        "https://api.sea1.voltagepark.com/v1/fleets",
+        "https://api.ord1.voltagepark.com/v1/fleets",
+    ]
+    assert wire["mints"] == [
+        (PROD, HARBOR_SEA1),
+        (PROD, "https://api.ord-1.voltagepark.com/harbor"),
+    ]
+    config.server_index = 1
+    assert config.region is None
+    assert config.host == "https://api.iad1.voltagepark.com"
+    config.host = "https://harbor.example"
+    assert config.region == "ord1"
+
+
+def test_access_token_assigned_after_construction_keeps_region(wire):
+    config = vpcloud_client.Configuration(region="iad1")
+    config.access_token = "direct-jwt"
+    list_fleets(config)
+    assert wire["requests"][0]["url"] == "https://api.iad1.voltagepark.com/v1/fleets"
+    assert wire["requests"][0]["auth"] == "Bearer direct-jwt"
+    assert wire["mints"] == []
+
+
 def test_region_without_a_grant_raises_before_any_request(wire):
     """An application granted only another region's API is refused by Auth0;
-    the call raises naming the audience and the fix, instead of sending the
+    the call raises naming the region and audience instead of sending the
     request without a token and failing with a bare 401."""
-    wire["deny"].add(HARBOR_SEA1)
+    iad1 = "https://api.iad-1.voltagepark.com/harbor"
+    wire["deny"].add(iad1)
+    config = vpcloud_client.Configuration(client_id="cid", client_secret="s3cret-value", region="iad1")
     with pytest.raises(AuthenticationError) as err:
-        list_fleets(vpcloud_client.Configuration(client_id="cid", client_secret="s3cret-value"))
+        list_fleets(config)
     message = str(err.value)
-    assert message.startswith(f"This client has no access to {HARBOR_SEA1}. Set Configuration(host=...)")
-    assert "https://api.iad1.voltagepark.com" in message
-    assert "https://api.sea1.voltagepark.com" not in message  # the host that was refused
+    assert message.startswith(f"This client has no access to {iad1} (region iad1). Check that iad1")
     assert "s3cret-value" not in message
-    assert (err.value.status_code, err.value.error, err.value.audience) == (403, "access_denied", HARBOR_SEA1)
+    assert (err.value.status_code, err.value.error, err.value.audience) == (403, "access_denied", iad1)
     assert wire["requests"] == []
-
-
-def test_granted_region_host_works(wire):
-    wire["deny"].add(HARBOR_SEA1)
-    list_fleets(vpcloud_client.Configuration(client_id="cid", client_secret="secret", host="https://api.iad1.voltagepark.com"))
-    assert wire["requests"][0]["url"] == "https://api.iad1.voltagepark.com/v1/fleets"
-    assert wire["requests"][0]["auth"] == f"Bearer tok[{PROD}|https://api.iad-1.voltagepark.com/harbor]"
 
 
 def test_rejected_client_secret_says_so(wire):
     wire["bad_secret"] = True
     with pytest.raises(AuthenticationError, match="rejected the client credentials") as err:
-        list_fleets(vpcloud_client.Configuration(client_id="cid", client_secret="s3cret-value"))
+        list_fleets(vpcloud_client.Configuration(client_id="cid", client_secret="s3cret-value", region="sea1"))
     assert err.value.status_code == 401
     assert "s3cret-value" not in str(err.value)
     with pytest.raises(AuthenticationError, match="rejected the client credentials"):
@@ -267,17 +414,16 @@ def test_rejected_client_secret_says_so(wire):
     assert wire["requests"] == []
 
 
-def test_refused_exchange_falls_back_to_the_credentials_file_token(wire, monkeypatch, tmp_path):
-    creds = tmp_path / "credentials"
-    creds.write_text("[default]\naccess_token = file-token\n")
-    monkeypatch.setattr(credentials.CredentialProvider, "CREDENTIALS_FILE", creds)
+def test_refused_exchange_does_not_fall_back_to_the_credentials_file_token(wire, tmp_path):
+    (tmp_path / "credentials").write_text("[default]\naccess_token = file-token\n")
     wire["deny"].add(HARBOR_SEA1)
-    list_fleets(vpcloud_client.Configuration(client_id="cid", client_secret="secret"))
-    assert wire["requests"][0]["auth"] == "Bearer file-token"
+    with pytest.raises(AuthenticationError, match="region sea1"):
+        list_fleets(vpcloud_client.Configuration(client_id="cid", client_secret="secret", region="sea1"))
+    assert wire["requests"] == []
 
 
 def test_configs_without_client_credentials_are_unchanged(wire):
-    list_fleets(vpcloud_client.Configuration(access_token="harbor-token"))
-    list_fleets(vpcloud_client.Configuration())
+    list_fleets(vpcloud_client.Configuration(access_token="harbor-token", region="sea1"))
+    list_fleets(vpcloud_client.Configuration(region="sea1"))
     assert wire["mints"] == []
     assert [r["auth"] for r in wire["requests"]] == ["Bearer harbor-token", None]

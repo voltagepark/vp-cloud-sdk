@@ -15,7 +15,7 @@ import time
 import json
 import logging
 from pathlib import Path
-from typing import Optional, Dict, Tuple
+from typing import NamedTuple, Optional, Dict, Tuple
 from configparser import ConfigParser, NoSectionError, NoOptionError
 
 try:
@@ -62,6 +62,44 @@ def _auth0_error(response) -> Tuple[Optional[str], str]:
     return None, text.strip()[:200]
 
 
+class HarborRegion(NamedTuple):
+    host: str
+    audience: str
+
+
+# Keep in sync with the console's region list (production values).
+HARBOR_REGIONS: Dict[str, HarborRegion] = {
+    "sea1": HarborRegion(
+        "https://api.sea1.voltagepark.com", "https://api.sea-1.voltagepark.com/harbor"
+    ),
+    "iad1": HarborRegion(
+        "https://api.iad1.voltagepark.com", "https://api.iad-1.voltagepark.com/harbor"
+    ),
+    "dfw2": HarborRegion(
+        "https://api.dfw2.voltagepark.com", "https://api.dfw-2.voltagepark.com/harbor"
+    ),
+    "ord1": HarborRegion(
+        "https://api.ord1.voltagepark.com", "https://api.ord-1.voltagepark.com/harbor"
+    ),
+}
+
+REGION_HELP = (
+    "Pass Configuration(region=...), set VPCLOUD_REGION, or add region to your "
+    "~/.voltagepark/credentials profile. Valid regions: " + ", ".join(HARBOR_REGIONS) + "."
+)
+
+
+def harbor_region(name: str, source: str = "region") -> str:
+    """Normalize and validate a region name; source names where it came from in errors."""
+    region = name.strip().lower()
+    if region not in HARBOR_REGIONS:
+        raise ValueError(
+            f"Unknown region {name!r} (from {source}). "
+            f"Valid regions: {', '.join(HARBOR_REGIONS)}."
+        )
+    return region
+
+
 class CredentialProvider:
     """Resolves credentials from multiple sources in priority order.
     
@@ -74,6 +112,7 @@ class CredentialProvider:
     - VPCLOUD_ACCESS_TOKEN: Direct JWT token (highest priority)
     - VPCLOUD_CLIENT_ID: Auth0 M2M client ID
     - VPCLOUD_CLIENT_SECRET: Auth0 M2M client secret
+    - VPCLOUD_REGION: Harbor region, read by Configuration
     """
     
     CREDENTIALS_FILE = Path.home() / ".voltagepark" / "credentials"
@@ -143,6 +182,10 @@ class CredentialProvider:
                     client_secret = creds.get("client_secret")
         
         return (client_id, client_secret)
+
+    def get_region_from_file(self) -> Optional[str]:
+        """Get the region set in the selected credentials file profile, if any."""
+        return (self._load_credentials_file() or {}).get("region") or None
     
     def get_credentials_from_file(self) -> Optional[Dict[str, str]]:
         """Get credentials from file, including access_token if present.
@@ -191,6 +234,8 @@ class CredentialProvider:
                     creds["client_id"] = config.get(self._profile, "client_id")
                 if config.has_option(self._profile, "client_secret"):
                     creds["client_secret"] = config.get(self._profile, "client_secret")
+                if config.has_option(self._profile, "region"):
+                    creds["region"] = config.get(self._profile, "region")
             except (NoSectionError, NoOptionError):
                 pass
             
@@ -232,66 +277,20 @@ class Auth0TokenManager:
             return Auth0TokenManager.OBSERVATORY_BETA_AUTH0_DOMAIN
         return Auth0TokenManager.AUTH0_DOMAIN
     
-    # Mapping from region/datacenter code to Auth0 audience
-    # This map defines which audience to use when requesting tokens for each region
-    REGION_AUDIENCE_MAP = {
-        "sea1": "https://api.sea-1.voltagepark.com/harbor",
-        "iad1": "https://api.iad-1.voltagepark.com/harbor",
-    }
-
     @staticmethod
-    def regional_hosts() -> Tuple[str, ...]:
-        """The regional API endpoints, e.g. https://api.sea1.voltagepark.com."""
-        return tuple(f"https://api.{region}.voltagepark.com" for region in Auth0TokenManager.REGION_AUDIENCE_MAP)
-    
-    @staticmethod
-    def _extract_region_from_host(host: str) -> str:
-        """Extract region/datacenter code from API host URL.
-        
-        :param host: API host URL (e.g., https://api.sea1.voltagepark.com)
-        :return: Region code (e.g., "sea1") or None if not found
-        """
-        import re
-        match = re.search(r'api\.([^.]+)\.voltagepark\.com', host)
-        if match:
-            return match.group(1)
+    def region_for_host(host: str) -> Optional[str]:
+        """The region whose API endpoint is host, or None for any other host."""
+        hostname = Auth0TokenManager._hostname(host)
+        for name, region in HARBOR_REGIONS.items():
+            if Auth0TokenManager._hostname(region.host) == hostname:
+                return name
         return None
-    
-    @staticmethod
-    def _get_audience_for_region(region: str) -> str:
-        """Get Auth0 audience for a given region.
-        
-        :param region: Region/datacenter code (e.g., "sea1", "iad1")
-        :return: Auth0 audience URL for the region
-        """
-        if region in Auth0TokenManager.REGION_AUDIENCE_MAP:
-            return Auth0TokenManager.REGION_AUDIENCE_MAP[region]
-        # Fallback: try to construct audience from region
-        # Some regions use hyphenated format (e.g., sea1 -> sea-1)
-        if region.endswith('1') and len(region) == 4:
-            base = region[:-1]
-            return f"https://api.{base}-1.voltagepark.com/harbor"
-        return f"https://api.{region}.voltagepark.com/harbor"
-    
-    @staticmethod
-    def _get_audience_from_host(host: str) -> str:
-        """Derive Auth0 audience from API host URL.
-        
-        :param host: API host URL (e.g., https://api.sea1.voltagepark.com)
-        :return: Auth0 audience URL
-        """
-        region = Auth0TokenManager._extract_region_from_host(host)
-        if region:
-            return Auth0TokenManager._get_audience_for_region(region)
-        # Fallback to default (sea1)
-        return Auth0TokenManager.REGION_AUDIENCE_MAP.get("sea1", "https://api.sea-1.voltagepark.com/harbor")
     
     def __init__(
         self,
         client_id: str,
         client_secret: str,
-        audience: Optional[str] = None,
-        host: Optional[str] = None,
+        audience: str,
         domain: Optional[str] = None,
         refresh_margin: float = 60,
     ):
@@ -299,23 +298,16 @@ class Auth0TokenManager:
         
         :param client_id: Auth0 M2M client ID
         :param client_secret: Auth0 M2M client secret
-        :param audience: Auth0 audience URL (optional, will be derived from host if not provided)
-        :param host: API host URL (used to derive audience if audience not provided)
+        :param audience: Auth0 audience URL, e.g. a region's HARBOR_REGIONS audience
         :param domain: Auth0 tenant domain (default: voltagepark-harbor.us.auth0.com)
         :param refresh_margin: Seconds before expiry at which a cached token is replaced
         """
         self.client_id = client_id
         self.client_secret = client_secret
+        self.audience = audience
         self.domain = domain or self.AUTH0_DOMAIN
         self.TOKEN_URL = f"https://{self.domain}/oauth/token"
         self.refresh_margin = refresh_margin
-        if audience:
-            self.audience = audience
-        elif host:
-            self.audience = self._get_audience_from_host(host)
-        else:
-            # Default to sea1 audience for backward compatibility
-            self.audience = "https://api.sea-1.voltagepark.com/harbor"
         self._cached_token: Optional[str] = None
         self._token_expires_at: float = 0
         self._token_lifetime: float = 0

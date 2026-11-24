@@ -23,7 +23,14 @@ from typing_extensions import NotRequired, Self
 
 import urllib3
 
-from vpcloud_client.credentials import CredentialProvider, Auth0TokenManager, AuthenticationError
+from vpcloud_client.credentials import (
+    HARBOR_REGIONS,
+    REGION_HELP,
+    Auth0TokenManager,
+    AuthenticationError,
+    CredentialProvider,
+    harbor_region,
+)
 from vpcloud_client.retry import RetryStrategy
 
 JSON_SCHEMA_VALIDATION_KEYWORDS = {
@@ -136,7 +143,12 @@ class HostSetting(TypedDict):
 class Configuration:
     """This class contains various settings of the API client.
 
-    :param host: Base url.
+    :param host: Base url. Overrides the region's API endpoint, e.g. for a proxy. Pass
+      region too unless host is a regional endpoint, so the SDK knows which token to get.
+    :param region: Harbor region for fleets, nodes, Kubernetes, storage and the other
+      regional APIs (sea1, iad1, dfw2 or ord1). Picks the API endpoint and token audience.
+      Falls back to VPCLOUD_REGION, then the credentials file profile's region, when
+      host isn't set. The Observability APIs don't need it.
     :param ignore_operation_servers
       Boolean to ignore operation servers for the API client.
       Config will use `host` as the base url regardless of the operation servers.
@@ -206,16 +218,22 @@ class Configuration:
         ca_cert_data: Optional[Union[str, bytes]] = None,
         *,
         debug: Optional[bool] = None,
+        region: Optional[str] = None,
         observatory_host: Optional[str] = None,
         observatory_access_token: Optional[str] = None,
         observatory_auth0_domain: Optional[str] = None,
     ) -> None:
         """Constructor
         """
-        self._base_path = "https://api.sea1.voltagepark.com" if host is None else host
+        if region is not None and server_index is not None:
+            raise ValueError("Pass region or server_index, not both: server_index picks the host.")
+        self._base_path: Optional[str] = host
         """Default Base url
         """
-        self.server_index = 0 if server_index is None and host is None else server_index
+        self._region: Optional[str] = harbor_region(region, "region") if region else None
+        self._region_unresolved = not region and host is None and server_index is None
+        self._profile = profile
+        self.server_index = server_index
         self.server_operation_index = server_operation_index or {}
         """Default server index
         """
@@ -257,6 +275,7 @@ class Configuration:
             profile=profile
         )
         self._auth0_token_manager: Optional[Auth0TokenManager] = None
+        self._access_token: Optional[str] = access_token
         
         # Initialize access_token from credential provider
         self.access_token = access_token
@@ -565,6 +584,7 @@ class Configuration:
         :return: The Auth Settings information dict.
         """
         # Resolve access token from credential chain
+        access_token: Optional[str]
         if service == "observatory":
             access_token = self._resolve_observatory_token()
         else:
@@ -588,11 +608,11 @@ class Configuration:
         1. Explicit access_token (provided in code)
         2. Access token from environment variable (VPCLOUD_ACCESS_TOKEN)
         3. Exchange client_id/secret for token via Auth0 (preferred over file access_token)
-        4. Access token from credentials file (fallback)
+        4. Access token from credentials file, only when no client credentials are set
         
         :return: Access token if available, None when no credentials are configured
-        :raises AuthenticationError: If Auth0 refuses the client credentials
-            and the credentials file holds no access_token to fall back to
+        :raises AuthenticationError: If client credentials are set but the exchange fails
+        :raises ValueError: If the token audience can't be told from the region or host
         """
         import os
         
@@ -609,39 +629,34 @@ class Configuration:
         # Check if we have client credentials (from env vars, explicit, or file)
         client_id, client_secret = self._credential_provider.get_client_credentials()
         if client_id and client_secret:
-            # Get current host to derive correct audience
-            current_host = self.host
-            # Check if we need to create a new manager or update audience
-            if self._auth0_token_manager is None:
-                self._auth0_token_manager = Auth0TokenManager(client_id, client_secret, host=current_host)
-            elif (self._auth0_token_manager.client_id != client_id or 
-                  self._auth0_token_manager.client_secret != client_secret or
-                  self._auth0_token_manager.audience != Auth0TokenManager._get_audience_from_host(current_host)):
-                # Credentials changed or host changed, create new manager with correct audience
-                self._auth0_token_manager = Auth0TokenManager(client_id, client_secret, host=current_host)
+            region = self.region or Auth0TokenManager.region_for_host(self.host)
+            if region is None:
+                raise ValueError(
+                    f"Can't tell which region {self.host} serves; pass region= with host=."
+                )
+            audience = HARBOR_REGIONS[region].audience
+            if (self._auth0_token_manager is None or
+                    self._auth0_token_manager.client_id != client_id or
+                    self._auth0_token_manager.client_secret != client_secret or
+                    self._auth0_token_manager.audience != audience):
+                self._auth0_token_manager = Auth0TokenManager(
+                    client_id, client_secret, audience=audience
+                )
             
             try:
                 access_token = self._auth0_token_manager.get_token()
-                # Update instance access_token for consistency
-                self.access_token = access_token
+                # Reflect the minted token without pinning it as an explicit override
+                self._access_token = access_token
                 return access_token
             except AuthenticationError as e:
-                file_creds = self._credential_provider.get_credentials_from_file()
-                if file_creds and file_creds.get("access_token"):
-                    self.logger["package_logger"].warning(
-                        f"Failed to exchange Auth0 credentials for token; using the credentials file's access_token: {e}"
-                    )
-                    return file_creds["access_token"]
-                audience = e.audience or Auth0TokenManager._get_audience_from_host(current_host)
-                others = [h for h in Auth0TokenManager.regional_hosts() if h != current_host.rstrip("/")]
                 raise self._token_error(
                     e,
                     audience,
                     no_access=(
-                        ". Set Configuration(host=...) to the regional API endpoint for your "
-                        f"fleets' region (e.g. {', '.join(others)})."
+                        f" (region {region}). Check that {region} is your fleets' region, "
+                        "or contact Voltage Park support to add it."
                     ),
-                    otherwise=f"Could not get an access token for {audience} (host {current_host}).",
+                    otherwise=f"Could not get an access token for region {region} ({audience}).",
                 ) from e
         
         # 4. Fallback: Check credentials file for access_token
@@ -649,6 +664,17 @@ class Configuration:
         if file_creds and file_creds.get("access_token"):
             return file_creds["access_token"]
         
+        return None
+
+    def _resolve_region(self) -> Optional[str]:
+        """The region set by VPCLOUD_REGION, else by the credentials file profile."""
+        import os
+        env_region = os.environ.get("VPCLOUD_REGION")
+        if env_region:
+            return harbor_region(env_region, "VPCLOUD_REGION")
+        file_region = self._credential_provider.get_region_from_file()
+        if file_region:
+            return harbor_region(file_region, f"credentials profile {self._profile!r}")
         return None
 
     @staticmethod
@@ -733,7 +759,7 @@ class Configuration:
                "OS: {env}\n"\
                "Python Version: {pyversion}\n"\
                "Version of the API: 1.0.0\n"\
-               "SDK Package Version: 2.2.0".\
+               "SDK Package Version: 3.0.0".\
                format(env=sys.platform, pyversion=sys.version)
 
     def get_host_settings(self) -> List[HostSetting]:
@@ -757,7 +783,7 @@ class Configuration:
         index: Optional[int],
         variables: Optional[ServerVariablesT]=None,
         servers: Optional[List[HostSetting]]=None,
-    ) -> str:
+    ) -> Optional[str]:
         """Gets host URL based on the index and variables
         :param index: array index of the host settings
         :param variables: hash of variable and the corresponding value
@@ -797,12 +823,54 @@ class Configuration:
         return url
 
     @property
+    def access_token(self) -> Optional[str]:
+        """Access token (may be resolved automatically)."""
+        return self._access_token
+
+    @access_token.setter
+    def access_token(self, value: Optional[str]) -> None:
+        """Set or clear the explicit Harbor access token."""
+        self._access_token = value
+        self._credential_provider._explicit_access_token = value
+
+    @property
     def host(self) -> str:
-        """Return generated host."""
-        return self.get_host_from_settings(self.server_index, variables=self.server_variables)
+        """The API endpoint: host or server_index if set, else the region's endpoint."""
+        if self.server_index is not None or self._base_path is not None:
+            host = self.get_host_from_settings(self.server_index, variables=self.server_variables)
+        else:
+            region = self.region
+            host = HARBOR_REGIONS[region].host if region else None
+        if host is None:
+            raise ValueError("No region set for the Voltage Park Cloud API. " + REGION_HELP)
+        return host
 
     @host.setter
     def host(self, value: str) -> None:
-        """Fix base path."""
+        """Replace the endpoint; an explicit region still picks the token audience."""
         self._base_path = value
+        self._region_unresolved = False
         self.server_index = None
+        self._access_token = self._credential_provider._explicit_access_token
+
+    @property
+    def region(self) -> Optional[str]:
+        """Harbor region, which picks the token audience; None when server_index picks the host.
+
+        :raises ValueError: If VPCLOUD_REGION or the credentials file names an unknown region
+        """
+        if self.server_index is not None:
+            return None
+        if self._region_unresolved:
+            self._region = self._resolve_region()
+            self._region_unresolved = False
+        return self._region
+
+    @region.setter
+    def region(self, value: Optional[str]) -> None:
+        """Point host at the region's API endpoint."""
+        self._region = harbor_region(value) if value else None
+        self._region_unresolved = False
+        self._base_path = None
+        self.server_index = None
+        self._access_token = self._credential_provider._explicit_access_token

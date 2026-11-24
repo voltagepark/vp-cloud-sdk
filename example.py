@@ -5,11 +5,10 @@ from vpcloud_client.rest import ApiException
 
 # Authenticate with your Application Principal's client ID and secret
 # The SDK will automatically exchange these for an access token
-# host is the regional API endpoint for your fleets' region, for example
-# https://api.iad1.voltagepark.com; it defaults to https://api.sea1.voltagepark.com
+# region is where your fleets are: sea1, iad1, dfw2 or ord1
 # See configuration.py for a list of all supported configuration parameters.
 configuration = vpcloud_client.Configuration(
-    host = "https://api.sea1.voltagepark.com",
+    region = os.environ.get("VPCLOUD_REGION"),
     client_id = os.environ["VPCLOUD_CLIENT_ID"],
     client_secret = os.environ["VPCLOUD_CLIENT_SECRET"]
 )

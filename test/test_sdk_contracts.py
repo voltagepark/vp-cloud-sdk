@@ -579,6 +579,7 @@ def test_example_runs_end_to_end(monkeypatch, capsys):
 
     monkeypatch.setenv('VPCLOUD_CLIENT_ID', 'test-client-id')
     monkeypatch.setenv('VPCLOUD_CLIENT_SECRET', 'test-client-secret')
+    monkeypatch.setenv('VPCLOUD_REGION', 'iad1')
     monkeypatch.delenv('VPCLOUD_ACCESS_TOKEN', raising=False)
     monkeypatch.setattr(
         credentials.Auth0TokenManager,
@@ -596,7 +597,7 @@ def test_example_runs_end_to_end(monkeypatch, capsys):
     assert len(calls) == 1
     (method, url), kwargs = calls[0]
     assert method == 'GET'
-    assert url.endswith('/v1/fleets')
+    assert url == 'https://api.iad1.voltagepark.com/v1/fleets'
     assert kwargs['headers']['Authorization'] == 'Bearer test-token'
     assert kwargs['headers']['User-Agent'] == f'vpcloud-client/{__version__}/python'
 

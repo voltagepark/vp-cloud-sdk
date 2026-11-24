@@ -90,7 +90,7 @@ class TestAuth0TokenManager:
         mock_response.raise_for_status = Mock()
         mock_httpx.post.return_value = mock_response
         
-        manager = Auth0TokenManager("client-id", "client-secret")
+        manager = Auth0TokenManager("client-id", "client-secret", "audience")
         token = manager.get_token()
         
         assert token == "test-token"
@@ -111,7 +111,7 @@ class TestAuth0TokenManager:
         mock_response.raise_for_status = Mock()
         mock_httpx.post.return_value = mock_response
         
-        manager = Auth0TokenManager("client-id", "client-secret")
+        manager = Auth0TokenManager("client-id", "client-secret", "audience")
         token1 = manager.get_token()
         token2 = manager.get_token()
         
@@ -132,7 +132,7 @@ class TestAuth0TokenManager:
         mock_response.raise_for_status = Mock()
         mock_httpx.post.return_value = mock_response
         
-        manager = Auth0TokenManager("client-id", "client-secret")
+        manager = Auth0TokenManager("client-id", "client-secret", "audience")
         manager._cached_token = "old-token"
         manager._token_expires_at = 1050.0  # Expires in 50 seconds
         
@@ -162,7 +162,7 @@ class TestAuth0TokenManager:
         # Make sure HTTPStatusError is accessible through the mock
         mock_httpx.HTTPStatusError = real_httpx.HTTPStatusError
         
-        manager = Auth0TokenManager("client-id", "client-secret")
+        manager = Auth0TokenManager("client-id", "client-secret", "audience")
         
         with pytest.raises(AuthenticationError):
             manager.get_token()
@@ -170,7 +170,7 @@ class TestAuth0TokenManager:
     @patch("vpcloud_client.credentials.httpx", None)
     def test_httpx_required(self):
         """Test AuthenticationError when httpx is not installed."""
-        manager = Auth0TokenManager("client-id", "client-secret")
+        manager = Auth0TokenManager("client-id", "client-secret", "audience")
         
         with pytest.raises(AuthenticationError, match="httpx is required"):
             manager.get_token()
@@ -189,7 +189,7 @@ class TestAuth0TokenManager:
         mock_response.raise_for_status = Mock()
         mock_httpx.post.return_value = mock_response
         
-        manager = Auth0TokenManager("client-id", "client-secret")
+        manager = Auth0TokenManager("client-id", "client-secret", "audience")
         manager._cached_token = "old-token"
         manager._token_expires_at = time.time() + 3600  # Valid for 1 hour
         
@@ -225,7 +225,7 @@ class TestAuth0TokenManager:
         credentials.httpx.HTTPStatusError = real_httpx.HTTPStatusError
         credentials.httpx.RequestError = real_httpx.RequestError
         
-        manager = Auth0TokenManager("client-id", "client-secret")
+        manager = Auth0TokenManager("client-id", "client-secret", "audience")
         
         # The exception is raised when access_token is missing
         with pytest.raises(AuthenticationError, match="missing access_token"):
@@ -261,10 +261,46 @@ class TestConfigurationCredentials:
         mock_response.raise_for_status = Mock()
         mock_httpx.post.return_value = mock_response
         
-        config = Configuration(client_id="client-id", client_secret="client-secret")
+        config = Configuration(client_id="client-id", client_secret="client-secret", region="sea1")
         token = config._resolve_access_token()
         
         assert token == "auth0-token"
+
+    @patch.dict(os.environ, {}, clear=True)
+    @patch("vpcloud_client.credentials.Path.exists", return_value=False)
+    @patch("vpcloud_client.credentials.Auth0TokenManager.get_token")
+    def test_wrong_secret_says_to_check_credentials(self, mock_get_token, _exists):
+        """A 401 from Auth0 points at the client ID and secret, not the region."""
+        mock_get_token.side_effect = AuthenticationError("Auth0 token exchange failed with status 401", status_code=401)
+        config = Configuration(client_id="client-id", client_secret="wrong", region="dfw2")
+
+        with pytest.raises(
+            AuthenticationError, match="rejected the client credentials for https://api.dfw-2.*check client_id"
+        ) as exc:
+            config._resolve_access_token()
+        assert exc.value.status_code == 401
+
+    @patch.dict(os.environ, {}, clear=True)
+    @patch("vpcloud_client.credentials.Auth0TokenManager.get_token")
+    def test_failed_exchange_does_not_fall_back_to_file_token(self, mock_get_token):
+        """A failed exchange raises instead of using the region-agnostic file access_token."""
+        mock_get_token.side_effect = AuthenticationError("Auth0 exchange failed", status_code=403)
+        config = Configuration(client_id="client-id", client_secret="client-secret", region="iad1")
+        config._credential_provider._credentials_cache = {"access_token": "file-token"}
+
+        with pytest.raises(AuthenticationError, match="region iad1") as exc:
+            config._resolve_access_token()
+        assert exc.value.status_code == 403
+
+    @patch.dict(os.environ, {"VPCLOUD_ACCESS_TOKEN": "env-token"}, clear=True)
+    @patch("vpcloud_client.credentials.Path.exists", return_value=False)
+    def test_access_token_setter_overrides_and_clears(self, _exists):
+        """Assigning configuration.access_token after construction sets the explicit token."""
+        config = Configuration(region="iad1")
+        config.access_token = "assigned-token"
+        assert config.auth_settings()["bearerAuth"]["value"] == "Bearer assigned-token"
+        config.access_token = None
+        assert config.auth_settings()["bearerAuth"]["value"] == "Bearer env-token"
 
     def test_auth_settings_includes_bearer_token(self):
         """Test auth_settings() includes Bearer token in header."""
