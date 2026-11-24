@@ -17,12 +17,12 @@ Name | Type | Description | Notes
 ```python
 from vpcloud_client.models.mks2_node_alert_suppression import Mks2NodeAlertSuppression
 
-# TODO update the JSON string below
+# a Mks2NodeAlertSuppression as JSON, with the properties above, for example from an API response
 json = "{}"
 # create an instance of Mks2NodeAlertSuppression from a JSON string
 mks2_node_alert_suppression_instance = Mks2NodeAlertSuppression.from_json(json)
 # print the JSON string representation of the object
-print(Mks2NodeAlertSuppression.to_json())
+print(mks2_node_alert_suppression_instance.to_json())
 
 # convert the object into a dict
 mks2_node_alert_suppression_dict = mks2_node_alert_suppression_instance.to_dict()

@@ -14,12 +14,12 @@ Name | Type | Description | Notes
 ```python
 from vpcloud_client.models.external_storage_config import ExternalStorageConfig
 
-# TODO update the JSON string below
+# a ExternalStorageConfig as JSON, with the properties above, for example from an API response
 json = "{}"
 # create an instance of ExternalStorageConfig from a JSON string
 external_storage_config_instance = ExternalStorageConfig.from_json(json)
 # print the JSON string representation of the object
-print(ExternalStorageConfig.to_json())
+print(external_storage_config_instance.to_json())
 
 # convert the object into a dict
 external_storage_config_dict = external_storage_config_instance.to_dict()

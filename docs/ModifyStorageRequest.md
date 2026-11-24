@@ -12,12 +12,12 @@ Name | Type | Description | Notes
 ```python
 from vpcloud_client.models.modify_storage_request import ModifyStorageRequest
 
-# TODO update the JSON string below
+# a ModifyStorageRequest as JSON, with the properties above, for example from an API response
 json = "{}"
 # create an instance of ModifyStorageRequest from a JSON string
 modify_storage_request_instance = ModifyStorageRequest.from_json(json)
 # print the JSON string representation of the object
-print(ModifyStorageRequest.to_json())
+print(modify_storage_request_instance.to_json())
 
 # convert the object into a dict
 modify_storage_request_dict = modify_storage_request_instance.to_dict()

@@ -15,12 +15,12 @@ Name | Type | Description | Notes
 ```python
 from vpcloud_client.models.node_power_state import NodePowerState
 
-# TODO update the JSON string below
+# a NodePowerState as JSON, with the properties above, for example from an API response
 json = "{}"
 # create an instance of NodePowerState from a JSON string
 node_power_state_instance = NodePowerState.from_json(json)
 # print the JSON string representation of the object
-print(NodePowerState.to_json())
+print(node_power_state_instance.to_json())
 
 # convert the object into a dict
 node_power_state_dict = node_power_state_instance.to_dict()

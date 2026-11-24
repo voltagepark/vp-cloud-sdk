@@ -15,12 +15,12 @@ Name | Type | Description | Notes
 ```python
 from vpcloud_client.models.error_response import ErrorResponse
 
-# TODO update the JSON string below
+# a ErrorResponse as JSON, with the properties above, for example from an API response
 json = "{}"
 # create an instance of ErrorResponse from a JSON string
 error_response_instance = ErrorResponse.from_json(json)
 # print the JSON string representation of the object
-print(ErrorResponse.to_json())
+print(error_response_instance.to_json())
 
 # convert the object into a dict
 error_response_dict = error_response_instance.to_dict()

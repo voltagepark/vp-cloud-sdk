@@ -28,12 +28,12 @@ Name | Type | Description | Notes
 ```python
 from vpcloud_client.models.mks2_worker_node_detail import Mks2WorkerNodeDetail
 
-# TODO update the JSON string below
+# a Mks2WorkerNodeDetail as JSON, with the properties above, for example from an API response
 json = "{}"
 # create an instance of Mks2WorkerNodeDetail from a JSON string
 mks2_worker_node_detail_instance = Mks2WorkerNodeDetail.from_json(json)
 # print the JSON string representation of the object
-print(Mks2WorkerNodeDetail.to_json())
+print(mks2_worker_node_detail_instance.to_json())
 
 # convert the object into a dict
 mks2_worker_node_detail_dict = mks2_worker_node_detail_instance.to_dict()

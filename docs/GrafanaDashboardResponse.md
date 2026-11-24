@@ -16,12 +16,12 @@ Name | Type | Description | Notes
 ```python
 from vpcloud_client.models.grafana_dashboard_response import GrafanaDashboardResponse
 
-# TODO update the JSON string below
+# a GrafanaDashboardResponse as JSON, with the properties above, for example from an API response
 json = "{}"
 # create an instance of GrafanaDashboardResponse from a JSON string
 grafana_dashboard_response_instance = GrafanaDashboardResponse.from_json(json)
 # print the JSON string representation of the object
-print(GrafanaDashboardResponse.to_json())
+print(grafana_dashboard_response_instance.to_json())
 
 # convert the object into a dict
 grafana_dashboard_response_dict = grafana_dashboard_response_instance.to_dict()

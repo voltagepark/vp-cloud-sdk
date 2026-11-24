@@ -13,12 +13,12 @@ Name | Type | Description | Notes
 ```python
 from vpcloud_client.models.kubernetes_service_links import KubernetesServiceLinks
 
-# TODO update the JSON string below
+# a KubernetesServiceLinks as JSON, with the properties above, for example from an API response
 json = "{}"
 # create an instance of KubernetesServiceLinks from a JSON string
 kubernetes_service_links_instance = KubernetesServiceLinks.from_json(json)
 # print the JSON string representation of the object
-print(KubernetesServiceLinks.to_json())
+print(kubernetes_service_links_instance.to_json())
 
 # convert the object into a dict
 kubernetes_service_links_dict = kubernetes_service_links_instance.to_dict()

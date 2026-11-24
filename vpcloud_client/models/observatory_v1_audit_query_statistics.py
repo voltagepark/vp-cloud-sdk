@@ -28,7 +28,7 @@ class ObservatoryV1AuditQueryStatistics(BaseModel):
     """ # noqa: E501
     bytes_scanned: Optional[StrictStr] = Field(default=None, description="Bytes of audit log the query scanned, as a decimal string.", alias="bytesScanned")
     event_count: Optional[StrictInt] = Field(default=None, description="Events in the results. Set once the query has succeeded.", alias="eventCount")
-    truncated: Optional[StrictBool] = Field(default=None, description="True when more events matched than the results hold. Narrow the time window or the filters.")
+    truncated: Optional[StrictBool] = Field(default=False, description="True when more events matched than the results hold. Narrow the time window or the filters.")
     __properties: ClassVar[List[str]] = ["bytesScanned", "eventCount", "truncated"]
 
     model_config = ConfigDict(
@@ -84,7 +84,7 @@ class ObservatoryV1AuditQueryStatistics(BaseModel):
         _obj = cls.model_validate({
             "bytesScanned": obj.get("bytesScanned"),
             "eventCount": obj.get("eventCount"),
-            "truncated": obj.get("truncated")
+            "truncated": obj.get("truncated") if obj.get("truncated") is not None else False
         })
         return _obj
 

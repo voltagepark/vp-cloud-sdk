@@ -22,12 +22,12 @@ Name | Type | Description | Notes
 ```python
 from vpcloud_client.models.audit_log_entry import AuditLogEntry
 
-# TODO update the JSON string below
+# a AuditLogEntry as JSON, with the properties above, for example from an API response
 json = "{}"
 # create an instance of AuditLogEntry from a JSON string
 audit_log_entry_instance = AuditLogEntry.from_json(json)
 # print the JSON string representation of the object
-print(AuditLogEntry.to_json())
+print(audit_log_entry_instance.to_json())
 
 # convert the object into a dict
 audit_log_entry_dict = audit_log_entry_instance.to_dict()

@@ -13,12 +13,12 @@ Name | Type | Description | Notes
 ```python
 from vpcloud_client.models.add_fleet_ssh_key_request import AddFleetSSHKeyRequest
 
-# TODO update the JSON string below
+# a AddFleetSSHKeyRequest as JSON, with the properties above, for example from an API response
 json = "{}"
 # create an instance of AddFleetSSHKeyRequest from a JSON string
 add_fleet_ssh_key_request_instance = AddFleetSSHKeyRequest.from_json(json)
 # print the JSON string representation of the object
-print(AddFleetSSHKeyRequest.to_json())
+print(add_fleet_ssh_key_request_instance.to_json())
 
 # convert the object into a dict
 add_fleet_ssh_key_request_dict = add_fleet_ssh_key_request_instance.to_dict()

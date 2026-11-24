@@ -12,12 +12,12 @@ Name | Type | Description | Notes
 ```python
 from vpcloud_client.models.expandable_capacity import ExpandableCapacity
 
-# TODO update the JSON string below
+# a ExpandableCapacity as JSON, with the properties above, for example from an API response
 json = "{}"
 # create an instance of ExpandableCapacity from a JSON string
 expandable_capacity_instance = ExpandableCapacity.from_json(json)
 # print the JSON string representation of the object
-print(ExpandableCapacity.to_json())
+print(expandable_capacity_instance.to_json())
 
 # convert the object into a dict
 expandable_capacity_dict = expandable_capacity_instance.to_dict()

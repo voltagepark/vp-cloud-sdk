@@ -14,12 +14,12 @@ Name | Type | Description | Notes
 ```python
 from vpcloud_client.models.expandable_node_spec import ExpandableNodeSpec
 
-# TODO update the JSON string below
+# a ExpandableNodeSpec as JSON, with the properties above, for example from an API response
 json = "{}"
 # create an instance of ExpandableNodeSpec from a JSON string
 expandable_node_spec_instance = ExpandableNodeSpec.from_json(json)
 # print the JSON string representation of the object
-print(ExpandableNodeSpec.to_json())
+print(expandable_node_spec_instance.to_json())
 
 # convert the object into a dict
 expandable_node_spec_dict = expandable_node_spec_instance.to_dict()

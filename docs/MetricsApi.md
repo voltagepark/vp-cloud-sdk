@@ -1,6 +1,6 @@
 # vpcloud_client.MetricsApi
 
-All URIs are relative to *https://api.sea1.voltagepark.com*
+All URIs are relative to *https://observatory.voltagepark.com*, the default `Configuration.observatory_host`. `ClustersApi.resolve_clusters()` reports the regional endpoint that serves each cluster.
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
@@ -22,26 +22,23 @@ Evaluates a PromQL query over one cluster's metrics at a single point in time. T
 * Bearer (JWT) Authentication (bearerAuth):
 
 ```python
+import os
 import vpcloud_client
 from vpcloud_client.models.observatory_v1_query_response import ObservatoryV1QueryResponse
 from vpcloud_client.models.query_request import QueryRequest
 from vpcloud_client.rest import ApiException
 from pprint import pprint
 
-# Defining the host is optional and defaults to https://api.sea1.voltagepark.com
+# Observatory operations (metrics, logs, audit) are sent to observatory_host,
+# https://observatory.voltagepark.com by default. ClustersApi.resolve_clusters()
+# reports the regional endpoint that serves each cluster; set observatory_host
+# to it for a cluster served elsewhere.
+# The SDK exchanges your application's client credentials for an access token.
 # See configuration.py for a list of all supported configuration parameters.
 configuration = vpcloud_client.Configuration(
-    host = "https://api.sea1.voltagepark.com"
-)
-
-# The client must configure the authentication and authorization parameters
-# in accordance with the API server security policy.
-# Examples for each auth method are provided below, use the example that
-# satisfies your auth use case.
-
-# Configure Bearer authorization (JWT): bearerAuth
-configuration = vpcloud_client.Configuration(
-    access_token = os.environ["BEARER_TOKEN"]
+    observatory_host = "https://observatory.voltagepark.com",
+    client_id = os.environ["VPCLOUD_CLIENT_ID"],
+    client_secret = os.environ["VPCLOUD_CLIENT_SECRET"],
 )
 
 # Enter a context with an instance of the API client
@@ -49,7 +46,7 @@ with vpcloud_client.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = vpcloud_client.MetricsApi(api_client)
     cluster_id = 'cluster_id_example' # str | A cluster your organization owns.
-    query_request = vpcloud_client.QueryRequest() # QueryRequest | 
+    query_request = vpcloud_client.QueryRequest(query='count(up)') # QueryRequest | 
 
     try:
         # Run an instant PromQL query
@@ -103,34 +100,33 @@ Evaluates a PromQL query over one cluster's metrics across a time range, at a fi
 * Bearer (JWT) Authentication (bearerAuth):
 
 ```python
+import datetime
+import os
 import vpcloud_client
 from vpcloud_client.models.observatory_v1_query_range_response import ObservatoryV1QueryRangeResponse
 from vpcloud_client.models.query_range_request import QueryRangeRequest
 from vpcloud_client.rest import ApiException
 from pprint import pprint
 
-# Defining the host is optional and defaults to https://api.sea1.voltagepark.com
+# Observatory operations (metrics, logs, audit) are sent to observatory_host,
+# https://observatory.voltagepark.com by default. ClustersApi.resolve_clusters()
+# reports the regional endpoint that serves each cluster; set observatory_host
+# to it for a cluster served elsewhere.
+# The SDK exchanges your application's client credentials for an access token.
 # See configuration.py for a list of all supported configuration parameters.
 configuration = vpcloud_client.Configuration(
-    host = "https://api.sea1.voltagepark.com"
-)
-
-# The client must configure the authentication and authorization parameters
-# in accordance with the API server security policy.
-# Examples for each auth method are provided below, use the example that
-# satisfies your auth use case.
-
-# Configure Bearer authorization (JWT): bearerAuth
-configuration = vpcloud_client.Configuration(
-    access_token = os.environ["BEARER_TOKEN"]
+    observatory_host = "https://observatory.voltagepark.com",
+    client_id = os.environ["VPCLOUD_CLIENT_ID"],
+    client_secret = os.environ["VPCLOUD_CLIENT_SECRET"],
 )
 
 # Enter a context with an instance of the API client
 with vpcloud_client.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = vpcloud_client.MetricsApi(api_client)
+    now = datetime.datetime.now(datetime.timezone.utc)
     cluster_id = 'cluster_id_example' # str | A cluster your organization owns.
-    query_range_request = vpcloud_client.QueryRangeRequest() # QueryRangeRequest | 
+    query_range_request = vpcloud_client.QueryRangeRequest(query='count(up)', start=now - datetime.timedelta(hours=1), end=now, step='60s') # QueryRangeRequest | 
 
     try:
         # Run a range PromQL query
@@ -184,33 +180,30 @@ Evaluates a PromQL query over all of your organization's metrics, including metr
 * Bearer (JWT) Authentication (bearerAuth):
 
 ```python
+import os
 import vpcloud_client
 from vpcloud_client.models.observatory_v1_query_response import ObservatoryV1QueryResponse
 from vpcloud_client.models.query_request import QueryRequest
 from vpcloud_client.rest import ApiException
 from pprint import pprint
 
-# Defining the host is optional and defaults to https://api.sea1.voltagepark.com
+# Observatory operations (metrics, logs, audit) are sent to observatory_host,
+# https://observatory.voltagepark.com by default. ClustersApi.resolve_clusters()
+# reports the regional endpoint that serves each cluster; set observatory_host
+# to it for a cluster served elsewhere.
+# The SDK exchanges your application's client credentials for an access token.
 # See configuration.py for a list of all supported configuration parameters.
 configuration = vpcloud_client.Configuration(
-    host = "https://api.sea1.voltagepark.com"
-)
-
-# The client must configure the authentication and authorization parameters
-# in accordance with the API server security policy.
-# Examples for each auth method are provided below, use the example that
-# satisfies your auth use case.
-
-# Configure Bearer authorization (JWT): bearerAuth
-configuration = vpcloud_client.Configuration(
-    access_token = os.environ["BEARER_TOKEN"]
+    observatory_host = "https://observatory.voltagepark.com",
+    client_id = os.environ["VPCLOUD_CLIENT_ID"],
+    client_secret = os.environ["VPCLOUD_CLIENT_SECRET"],
 )
 
 # Enter a context with an instance of the API client
 with vpcloud_client.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = vpcloud_client.MetricsApi(api_client)
-    query_request = vpcloud_client.QueryRequest() # QueryRequest | 
+    query_request = vpcloud_client.QueryRequest(query='count(up)') # QueryRequest | 
 
     try:
         # Run an instant PromQL query across your organization
@@ -263,33 +256,32 @@ Evaluates a PromQL query over all of your organization's metrics across a time r
 * Bearer (JWT) Authentication (bearerAuth):
 
 ```python
+import datetime
+import os
 import vpcloud_client
 from vpcloud_client.models.observatory_v1_query_range_response import ObservatoryV1QueryRangeResponse
 from vpcloud_client.models.query_range_request import QueryRangeRequest
 from vpcloud_client.rest import ApiException
 from pprint import pprint
 
-# Defining the host is optional and defaults to https://api.sea1.voltagepark.com
+# Observatory operations (metrics, logs, audit) are sent to observatory_host,
+# https://observatory.voltagepark.com by default. ClustersApi.resolve_clusters()
+# reports the regional endpoint that serves each cluster; set observatory_host
+# to it for a cluster served elsewhere.
+# The SDK exchanges your application's client credentials for an access token.
 # See configuration.py for a list of all supported configuration parameters.
 configuration = vpcloud_client.Configuration(
-    host = "https://api.sea1.voltagepark.com"
-)
-
-# The client must configure the authentication and authorization parameters
-# in accordance with the API server security policy.
-# Examples for each auth method are provided below, use the example that
-# satisfies your auth use case.
-
-# Configure Bearer authorization (JWT): bearerAuth
-configuration = vpcloud_client.Configuration(
-    access_token = os.environ["BEARER_TOKEN"]
+    observatory_host = "https://observatory.voltagepark.com",
+    client_id = os.environ["VPCLOUD_CLIENT_ID"],
+    client_secret = os.environ["VPCLOUD_CLIENT_SECRET"],
 )
 
 # Enter a context with an instance of the API client
 with vpcloud_client.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = vpcloud_client.MetricsApi(api_client)
-    query_range_request = vpcloud_client.QueryRangeRequest() # QueryRangeRequest | 
+    now = datetime.datetime.now(datetime.timezone.utc)
+    query_range_request = vpcloud_client.QueryRangeRequest(query='count(up)', start=now - datetime.timedelta(hours=1), end=now, step='60s') # QueryRangeRequest | 
 
     try:
         # Run a range PromQL query across your organization

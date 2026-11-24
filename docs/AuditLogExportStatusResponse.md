@@ -21,12 +21,12 @@ Name | Type | Description | Notes
 ```python
 from vpcloud_client.models.audit_log_export_status_response import AuditLogExportStatusResponse
 
-# TODO update the JSON string below
+# a AuditLogExportStatusResponse as JSON, with the properties above, for example from an API response
 json = "{}"
 # create an instance of AuditLogExportStatusResponse from a JSON string
 audit_log_export_status_response_instance = AuditLogExportStatusResponse.from_json(json)
 # print the JSON string representation of the object
-print(AuditLogExportStatusResponse.to_json())
+print(audit_log_export_status_response_instance.to_json())
 
 # convert the object into a dict
 audit_log_export_status_response_dict = audit_log_export_status_response_instance.to_dict()

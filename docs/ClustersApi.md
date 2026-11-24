@@ -1,6 +1,6 @@
 # vpcloud_client.ClustersApi
 
-All URIs are relative to *https://api.sea1.voltagepark.com*
+All URIs are relative to *https://observatory.voltagepark.com*, the default `Configuration.observatory_host`. `ClustersApi.resolve_clusters()` reports the regional endpoint that serves each cluster.
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
@@ -19,25 +19,22 @@ Lists the clusters your organization owns, the regional endpoint that serves eac
 * Bearer (JWT) Authentication (bearerAuth):
 
 ```python
+import os
 import vpcloud_client
 from vpcloud_client.models.observatory_v1_resolve_clusters_response import ObservatoryV1ResolveClustersResponse
 from vpcloud_client.rest import ApiException
 from pprint import pprint
 
-# Defining the host is optional and defaults to https://api.sea1.voltagepark.com
+# Observatory operations (metrics, logs, audit) are sent to observatory_host,
+# https://observatory.voltagepark.com by default. ClustersApi.resolve_clusters()
+# reports the regional endpoint that serves each cluster; set observatory_host
+# to it for a cluster served elsewhere.
+# The SDK exchanges your application's client credentials for an access token.
 # See configuration.py for a list of all supported configuration parameters.
 configuration = vpcloud_client.Configuration(
-    host = "https://api.sea1.voltagepark.com"
-)
-
-# The client must configure the authentication and authorization parameters
-# in accordance with the API server security policy.
-# Examples for each auth method are provided below, use the example that
-# satisfies your auth use case.
-
-# Configure Bearer authorization (JWT): bearerAuth
-configuration = vpcloud_client.Configuration(
-    access_token = os.environ["BEARER_TOKEN"]
+    observatory_host = "https://observatory.voltagepark.com",
+    client_id = os.environ["VPCLOUD_CLIENT_ID"],
+    client_secret = os.environ["VPCLOUD_CLIENT_SECRET"],
 )
 
 # Enter a context with an instance of the API client

@@ -17,12 +17,12 @@ Name | Type | Description | Notes
 ```python
 from vpcloud_client.models.mks2_node_maintenance import Mks2NodeMaintenance
 
-# TODO update the JSON string below
+# a Mks2NodeMaintenance as JSON, with the properties above, for example from an API response
 json = "{}"
 # create an instance of Mks2NodeMaintenance from a JSON string
 mks2_node_maintenance_instance = Mks2NodeMaintenance.from_json(json)
 # print the JSON string representation of the object
-print(Mks2NodeMaintenance.to_json())
+print(mks2_node_maintenance_instance.to_json())
 
 # convert the object into a dict
 mks2_node_maintenance_dict = mks2_node_maintenance_instance.to_dict()

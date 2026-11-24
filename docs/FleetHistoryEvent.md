@@ -20,12 +20,12 @@ Name | Type | Description | Notes
 ```python
 from vpcloud_client.models.fleet_history_event import FleetHistoryEvent
 
-# TODO update the JSON string below
+# a FleetHistoryEvent as JSON, with the properties above, for example from an API response
 json = "{}"
 # create an instance of FleetHistoryEvent from a JSON string
 fleet_history_event_instance = FleetHistoryEvent.from_json(json)
 # print the JSON string representation of the object
-print(FleetHistoryEvent.to_json())
+print(fleet_history_event_instance.to_json())
 
 # convert the object into a dict
 fleet_history_event_dict = fleet_history_event_instance.to_dict()

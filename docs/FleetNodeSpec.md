@@ -15,12 +15,12 @@ Name | Type | Description | Notes
 ```python
 from vpcloud_client.models.fleet_node_spec import FleetNodeSpec
 
-# TODO update the JSON string below
+# a FleetNodeSpec as JSON, with the properties above, for example from an API response
 json = "{}"
 # create an instance of FleetNodeSpec from a JSON string
 fleet_node_spec_instance = FleetNodeSpec.from_json(json)
 # print the JSON string representation of the object
-print(FleetNodeSpec.to_json())
+print(fleet_node_spec_instance.to_json())
 
 # convert the object into a dict
 fleet_node_spec_dict = fleet_node_spec_instance.to_dict()

@@ -15,12 +15,12 @@ Name | Type | Description | Notes
 ```python
 from vpcloud_client.models.update_storage_view_request import UpdateStorageViewRequest
 
-# TODO update the JSON string below
+# a UpdateStorageViewRequest as JSON, with the properties above, for example from an API response
 json = "{}"
 # create an instance of UpdateStorageViewRequest from a JSON string
 update_storage_view_request_instance = UpdateStorageViewRequest.from_json(json)
 # print the JSON string representation of the object
-print(UpdateStorageViewRequest.to_json())
+print(update_storage_view_request_instance.to_json())
 
 # convert the object into a dict
 update_storage_view_request_dict = update_storage_view_request_instance.to_dict()

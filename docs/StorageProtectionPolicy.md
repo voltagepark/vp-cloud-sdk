@@ -16,12 +16,12 @@ Name | Type | Description | Notes
 ```python
 from vpcloud_client.models.storage_protection_policy import StorageProtectionPolicy
 
-# TODO update the JSON string below
+# a StorageProtectionPolicy as JSON, with the properties above, for example from an API response
 json = "{}"
 # create an instance of StorageProtectionPolicy from a JSON string
 storage_protection_policy_instance = StorageProtectionPolicy.from_json(json)
 # print the JSON string representation of the object
-print(StorageProtectionPolicy.to_json())
+print(storage_protection_policy_instance.to_json())
 
 # convert the object into a dict
 storage_protection_policy_dict = storage_protection_policy_instance.to_dict()

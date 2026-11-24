@@ -16,12 +16,12 @@ Name | Type | Description | Notes
 ```python
 from vpcloud_client.models.ssh_key import SSHKey
 
-# TODO update the JSON string below
+# a SSHKey as JSON, with the properties above, for example from an API response
 json = "{}"
 # create an instance of SSHKey from a JSON string
 ssh_key_instance = SSHKey.from_json(json)
 # print the JSON string representation of the object
-print(SSHKey.to_json())
+print(ssh_key_instance.to_json())
 
 # convert the object into a dict
 ssh_key_dict = ssh_key_instance.to_dict()

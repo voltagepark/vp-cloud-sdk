@@ -17,12 +17,12 @@ Name | Type | Description | Notes
 ```python
 from vpcloud_client.models.storage_view import StorageView
 
-# TODO update the JSON string below
+# a StorageView as JSON, with the properties above, for example from an API response
 json = "{}"
 # create an instance of StorageView from a JSON string
 storage_view_instance = StorageView.from_json(json)
 # print the JSON string representation of the object
-print(StorageView.to_json())
+print(storage_view_instance.to_json())
 
 # convert the object into a dict
 storage_view_dict = storage_view_instance.to_dict()

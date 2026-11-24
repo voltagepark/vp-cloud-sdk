@@ -18,12 +18,12 @@ Name | Type | Description | Notes
 ```python
 from vpcloud_client.models.fleet_apps import FleetApps
 
-# TODO update the JSON string below
+# a FleetApps as JSON, with the properties above, for example from an API response
 json = "{}"
 # create an instance of FleetApps from a JSON string
 fleet_apps_instance = FleetApps.from_json(json)
 # print the JSON string representation of the object
-print(FleetApps.to_json())
+print(fleet_apps_instance.to_json())
 
 # convert the object into a dict
 fleet_apps_dict = fleet_apps_instance.to_dict()

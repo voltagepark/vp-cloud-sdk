@@ -14,12 +14,12 @@ Name | Type | Description | Notes
 ```python
 from vpcloud_client.models.os_config import OsConfig
 
-# TODO update the JSON string below
+# a OsConfig as JSON, with the properties above, for example from an API response
 json = "{}"
 # create an instance of OsConfig from a JSON string
 os_config_instance = OsConfig.from_json(json)
 # print the JSON string representation of the object
-print(OsConfig.to_json())
+print(os_config_instance.to_json())
 
 # convert the object into a dict
 os_config_dict = os_config_instance.to_dict()

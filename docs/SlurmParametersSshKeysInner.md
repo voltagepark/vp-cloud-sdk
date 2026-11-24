@@ -13,12 +13,12 @@ Name | Type | Description | Notes
 ```python
 from vpcloud_client.models.slurm_parameters_ssh_keys_inner import SlurmParametersSshKeysInner
 
-# TODO update the JSON string below
+# a SlurmParametersSshKeysInner as JSON, with the properties above, for example from an API response
 json = "{}"
 # create an instance of SlurmParametersSshKeysInner from a JSON string
 slurm_parameters_ssh_keys_inner_instance = SlurmParametersSshKeysInner.from_json(json)
 # print the JSON string representation of the object
-print(SlurmParametersSshKeysInner.to_json())
+print(slurm_parameters_ssh_keys_inner_instance.to_json())
 
 # convert the object into a dict
 slurm_parameters_ssh_keys_inner_dict = slurm_parameters_ssh_keys_inner_instance.to_dict()

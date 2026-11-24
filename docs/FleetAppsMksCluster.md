@@ -25,12 +25,12 @@ Name | Type | Description | Notes
 ```python
 from vpcloud_client.models.fleet_apps_mks_cluster import FleetAppsMksCluster
 
-# TODO update the JSON string below
+# a FleetAppsMksCluster as JSON, with the properties above, for example from an API response
 json = "{}"
 # create an instance of FleetAppsMksCluster from a JSON string
 fleet_apps_mks_cluster_instance = FleetAppsMksCluster.from_json(json)
 # print the JSON string representation of the object
-print(FleetAppsMksCluster.to_json())
+print(fleet_apps_mks_cluster_instance.to_json())
 
 # convert the object into a dict
 fleet_apps_mks_cluster_dict = fleet_apps_mks_cluster_instance.to_dict()

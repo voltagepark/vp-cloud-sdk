@@ -15,12 +15,12 @@ Name | Type | Description | Notes
 ```python
 from vpcloud_client.models.power_action_readiness import PowerActionReadiness
 
-# TODO update the JSON string below
+# a PowerActionReadiness as JSON, with the properties above, for example from an API response
 json = "{}"
 # create an instance of PowerActionReadiness from a JSON string
 power_action_readiness_instance = PowerActionReadiness.from_json(json)
 # print the JSON string representation of the object
-print(PowerActionReadiness.to_json())
+print(power_action_readiness_instance.to_json())
 
 # convert the object into a dict
 power_action_readiness_dict = power_action_readiness_instance.to_dict()

@@ -13,12 +13,12 @@ Name | Type | Description | Notes
 ```python
 from vpcloud_client.models.observatory_v1_audit_query_error import ObservatoryV1AuditQueryError
 
-# TODO update the JSON string below
+# a ObservatoryV1AuditQueryError as JSON, with the properties above, for example from an API response
 json = "{}"
 # create an instance of ObservatoryV1AuditQueryError from a JSON string
 observatory_v1_audit_query_error_instance = ObservatoryV1AuditQueryError.from_json(json)
 # print the JSON string representation of the object
-print(ObservatoryV1AuditQueryError.to_json())
+print(observatory_v1_audit_query_error_instance.to_json())
 
 # convert the object into a dict
 observatory_v1_audit_query_error_dict = observatory_v1_audit_query_error_instance.to_dict()

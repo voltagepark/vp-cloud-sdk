@@ -15,12 +15,12 @@ Name | Type | Description | Notes
 ```python
 from vpcloud_client.models.logs_query_request import LogsQueryRequest
 
-# TODO update the JSON string below
+# a LogsQueryRequest as JSON, with the properties above, for example from an API response
 json = "{}"
 # create an instance of LogsQueryRequest from a JSON string
 logs_query_request_instance = LogsQueryRequest.from_json(json)
 # print the JSON string representation of the object
-print(LogsQueryRequest.to_json())
+print(logs_query_request_instance.to_json())
 
 # convert the object into a dict
 logs_query_request_dict = logs_query_request_instance.to_dict()

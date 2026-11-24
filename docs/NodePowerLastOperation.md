@@ -18,12 +18,12 @@ Name | Type | Description | Notes
 ```python
 from vpcloud_client.models.node_power_last_operation import NodePowerLastOperation
 
-# TODO update the JSON string below
+# a NodePowerLastOperation as JSON, with the properties above, for example from an API response
 json = "{}"
 # create an instance of NodePowerLastOperation from a JSON string
 node_power_last_operation_instance = NodePowerLastOperation.from_json(json)
 # print the JSON string representation of the object
-print(NodePowerLastOperation.to_json())
+print(node_power_last_operation_instance.to_json())
 
 # convert the object into a dict
 node_power_last_operation_dict = node_power_last_operation_instance.to_dict()

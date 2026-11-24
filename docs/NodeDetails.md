@@ -18,12 +18,12 @@ Name | Type | Description | Notes
 ```python
 from vpcloud_client.models.node_details import NodeDetails
 
-# TODO update the JSON string below
+# a NodeDetails as JSON, with the properties above, for example from an API response
 json = "{}"
 # create an instance of NodeDetails from a JSON string
 node_details_instance = NodeDetails.from_json(json)
 # print the JSON string representation of the object
-print(NodeDetails.to_json())
+print(node_details_instance.to_json())
 
 # convert the object into a dict
 node_details_dict = node_details_instance.to_dict()

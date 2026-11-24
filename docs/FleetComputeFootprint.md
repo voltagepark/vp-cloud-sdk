@@ -12,12 +12,12 @@ Name | Type | Description | Notes
 ```python
 from vpcloud_client.models.fleet_compute_footprint import FleetComputeFootprint
 
-# TODO update the JSON string below
+# a FleetComputeFootprint as JSON, with the properties above, for example from an API response
 json = "{}"
 # create an instance of FleetComputeFootprint from a JSON string
 fleet_compute_footprint_instance = FleetComputeFootprint.from_json(json)
 # print the JSON string representation of the object
-print(FleetComputeFootprint.to_json())
+print(fleet_compute_footprint_instance.to_json())
 
 # convert the object into a dict
 fleet_compute_footprint_dict = fleet_compute_footprint_instance.to_dict()

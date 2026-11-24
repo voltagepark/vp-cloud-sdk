@@ -13,12 +13,12 @@ Name | Type | Description | Notes
 ```python
 from vpcloud_client.models.infrastructure import Infrastructure
 
-# TODO update the JSON string below
+# a Infrastructure as JSON, with the properties above, for example from an API response
 json = "{}"
 # create an instance of Infrastructure from a JSON string
 infrastructure_instance = Infrastructure.from_json(json)
 # print the JSON string representation of the object
-print(Infrastructure.to_json())
+print(infrastructure_instance.to_json())
 
 # convert the object into a dict
 infrastructure_dict = infrastructure_instance.to_dict()

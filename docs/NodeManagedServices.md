@@ -13,12 +13,12 @@ Name | Type | Description | Notes
 ```python
 from vpcloud_client.models.node_managed_services import NodeManagedServices
 
-# TODO update the JSON string below
+# a NodeManagedServices as JSON, with the properties above, for example from an API response
 json = "{}"
 # create an instance of NodeManagedServices from a JSON string
 node_managed_services_instance = NodeManagedServices.from_json(json)
 # print the JSON string representation of the object
-print(NodeManagedServices.to_json())
+print(node_managed_services_instance.to_json())
 
 # convert the object into a dict
 node_managed_services_dict = node_managed_services_instance.to_dict()

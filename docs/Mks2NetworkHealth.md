@@ -14,12 +14,12 @@ Name | Type | Description | Notes
 ```python
 from vpcloud_client.models.mks2_network_health import Mks2NetworkHealth
 
-# TODO update the JSON string below
+# a Mks2NetworkHealth as JSON, with the properties above, for example from an API response
 json = "{}"
 # create an instance of Mks2NetworkHealth from a JSON string
 mks2_network_health_instance = Mks2NetworkHealth.from_json(json)
 # print the JSON string representation of the object
-print(Mks2NetworkHealth.to_json())
+print(mks2_network_health_instance.to_json())
 
 # convert the object into a dict
 mks2_network_health_dict = mks2_network_health_instance.to_dict()

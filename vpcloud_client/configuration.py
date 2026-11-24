@@ -277,11 +277,9 @@ class Configuration:
         self.observatory_auth0_domain = (
             observatory_auth0_domain or os.environ.get("VPCLOUD_OBSERVATORY_AUTH0_DOMAIN") or None
         )
-        """Auth0 tenant that issues Observatory tokens. Defaults by
-           observatory_host: beta.observatory.voltagepark.com uses the dev
-           tenant (voltagepark-dev.us.auth0.com), every other host the prod
-           tenant (voltagepark-harbor.us.auth0.com). Client credentials belong
-           to one tenant, so beta needs an application in the dev tenant.
+        """Auth0 tenant that issues Observatory tokens. Defaults to the tenant
+           observatory_host trusts: voltagepark-harbor.us.auth0.com for the
+           public endpoints.
         """
         self._observatory_token_managers: Dict[str, Auth0TokenManager] = {}
         self.logger = {}
@@ -592,7 +590,9 @@ class Configuration:
         3. Exchange client_id/secret for token via Auth0 (preferred over file access_token)
         4. Access token from credentials file (fallback)
         
-        :return: Access token if available, None otherwise
+        :return: Access token if available, None when no credentials are configured
+        :raises AuthenticationError: If Auth0 refuses the client credentials
+            and the credentials file holds no access_token to fall back to
         """
         import os
         
@@ -626,8 +626,23 @@ class Configuration:
                 self.access_token = access_token
                 return access_token
             except AuthenticationError as e:
-                self.logger["package_logger"].warning(f"Failed to exchange Auth0 credentials for token: {e}")
-                # Fall through to try file access_token as fallback
+                file_creds = self._credential_provider.get_credentials_from_file()
+                if file_creds and file_creds.get("access_token"):
+                    self.logger["package_logger"].warning(
+                        f"Failed to exchange Auth0 credentials for token; using the credentials file's access_token: {e}"
+                    )
+                    return file_creds["access_token"]
+                audience = e.audience or Auth0TokenManager._get_audience_from_host(current_host)
+                others = [h for h in Auth0TokenManager.regional_hosts() if h != current_host.rstrip("/")]
+                raise self._token_error(
+                    e,
+                    audience,
+                    no_access=(
+                        ". Set Configuration(host=...) to the regional API endpoint for your "
+                        f"fleets' region (e.g. {', '.join(others)})."
+                    ),
+                    otherwise=f"Could not get an access token for {audience} (host {current_host}).",
+                ) from e
         
         # 4. Fallback: Check credentials file for access_token
         file_creds = self._credential_provider.get_credentials_from_file()
@@ -635,6 +650,30 @@ class Configuration:
             return file_creds["access_token"]
         
         return None
+
+    @staticmethod
+    def _token_error(error: AuthenticationError, audience: str, no_access: str, otherwise: str) -> AuthenticationError:
+        """Explain a refused token exchange, naming the audience and the fix.
+
+        :param no_access: the fix when Auth0 says the application has no access
+            to audience, appended to "This client has no access to <audience>"
+        :param otherwise: the message for any other failure
+        """
+        if error.status_code == 403 and error.error in (None, "access_denied"):
+            message = f"This client has no access to {audience}{no_access}"
+        elif error.status_code == 401:
+            message = (
+                f"Auth0 rejected the client credentials for {audience}: check client_id and "
+                "client_secret (or VPCLOUD_CLIENT_ID / VPCLOUD_CLIENT_SECRET)."
+            )
+        else:
+            message = otherwise
+        return AuthenticationError(
+            f"{message} {error}",
+            status_code=error.status_code,
+            error=error.error,
+            audience=audience,
+        )
 
     def _resolve_observatory_token(self) -> str:
         """Resolve an Observatory-audience token for observatory_host.
@@ -673,12 +712,16 @@ class Configuration:
                 refresh_margin=Auth0TokenManager.OBSERVATORY_REFRESH_MARGIN,
             )
             self._observatory_token_managers[domain] = manager
+        audience = Auth0TokenManager.OBSERVATORY_AUDIENCE
         try:
             return manager.get_token()
         except AuthenticationError as e:
-            raise AuthenticationError(
-                f"Could not get an access token for {Auth0TokenManager.OBSERVATORY_AUDIENCE} from {domain}. "
-                f"Check that your Auth0 application is granted the Observatory API: {e}"
+            grant = "Check that your Auth0 application is granted the Observatory API."
+            raise self._token_error(
+                e,
+                audience,
+                no_access=f" (the Observatory API) in {domain}. {grant}",
+                otherwise=f"Could not get an access token for {audience} from {domain}. {grant}",
             ) from e
 
     def to_debug_report(self) -> str:
@@ -690,7 +733,7 @@ class Configuration:
                "OS: {env}\n"\
                "Python Version: {pyversion}\n"\
                "Version of the API: 1.0.0\n"\
-               "SDK Package Version: 2.1.1".\
+               "SDK Package Version: 2.1.2".\
                format(env=sys.platform, pyversion=sys.version)
 
     def get_host_settings(self) -> List[HostSetting]:

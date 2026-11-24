@@ -15,12 +15,12 @@ Name | Type | Description | Notes
 ```python
 from vpcloud_client.models.query_range_request import QueryRangeRequest
 
-# TODO update the JSON string below
+# a QueryRangeRequest as JSON, with the properties above, for example from an API response
 json = "{}"
 # create an instance of QueryRangeRequest from a JSON string
 query_range_request_instance = QueryRangeRequest.from_json(json)
 # print the JSON string representation of the object
-print(QueryRangeRequest.to_json())
+print(query_range_request_instance.to_json())
 
 # convert the object into a dict
 query_range_request_dict = query_range_request_instance.to_dict()

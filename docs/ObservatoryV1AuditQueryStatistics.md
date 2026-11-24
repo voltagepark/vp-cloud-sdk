@@ -7,19 +7,19 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **bytes_scanned** | **str** | Bytes of audit log the query scanned, as a decimal string. | [optional] 
 **event_count** | **int** | Events in the results. Set once the query has succeeded. | [optional] 
-**truncated** | **bool** | True when more events matched than the results hold. Narrow the time window or the filters. | [optional] 
+**truncated** | **bool** | True when more events matched than the results hold. Narrow the time window or the filters. | [optional] [default to False]
 
 ## Example
 
 ```python
 from vpcloud_client.models.observatory_v1_audit_query_statistics import ObservatoryV1AuditQueryStatistics
 
-# TODO update the JSON string below
+# a ObservatoryV1AuditQueryStatistics as JSON, with the properties above, for example from an API response
 json = "{}"
 # create an instance of ObservatoryV1AuditQueryStatistics from a JSON string
 observatory_v1_audit_query_statistics_instance = ObservatoryV1AuditQueryStatistics.from_json(json)
 # print the JSON string representation of the object
-print(ObservatoryV1AuditQueryStatistics.to_json())
+print(observatory_v1_audit_query_statistics_instance.to_json())
 
 # convert the object into a dict
 observatory_v1_audit_query_statistics_dict = observatory_v1_audit_query_statistics_instance.to_dict()

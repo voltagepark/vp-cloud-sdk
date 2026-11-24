@@ -1,13 +1,16 @@
 # coding: utf-8
 
-"""Tests for vpcloud_client.streaming. No network: every call goes through
-httpx.MockTransport."""
+"""Tests for vpcloud_client.streaming. No network: calls go through
+httpx.MockTransport, or to a server on a loopback socket."""
 
 import asyncio
 import base64
 import datetime
 import json
+import socket
 import struct
+import threading
+import time
 
 import httpx
 import pytest
@@ -519,3 +522,116 @@ def test_async_reconnect_resumes_from_cursor():
     assert [e.kind for e in events] == ["samples"]
     assert handler.bodies()[1]["cursor"] == "v1:1"
     assert err.code == "invalid_argument"
+
+
+class BlockingStream(ChunkStream):
+    """A body that sends one message, then waits for more until httpx closes it."""
+
+    def __init__(self, first):
+        self.released = threading.Event()
+        super().__init__(self._chunks_then_block)
+        self._first = first
+
+    def _chunks_then_block(self):
+        yield self._first
+        assert self.released.wait(10), "the stream was never closed"
+
+    def close(self):
+        super().close()
+        self.released.set()
+
+
+def iterate_in_thread(stream):
+    """Iterate stream in a background thread; returns (thread, events, errors, first_event)."""
+    events, errors, first_event = [], [], threading.Event()
+
+    def run():
+        try:
+            for event in stream:
+                events.append(event)
+                first_event.set()
+        except BaseException as e:  # noqa: BLE001 - the test asserts there were none
+            errors.append(e)
+
+    thread = threading.Thread(target=run, daemon=True)
+    thread.start()
+    return thread, events, errors, first_event
+
+
+def test_close_from_another_thread_ends_a_blocked_loop():
+    body = BlockingStream(envelope(SAMPLES))
+    stream = open_watch(Recorder(stream_response(body)))
+    thread, events, errors, first_event = iterate_in_thread(stream)
+    assert first_event.wait(5)
+
+    stream.close()
+    thread.join(5)
+
+    assert not thread.is_alive()
+    assert errors == []
+    assert [e.kind for e in events] == ["samples"]
+    assert body.closed
+    stream.close()  # again, from this thread, once the loop has ended
+    assert list(stream) == []
+
+
+def test_close_from_another_thread_during_reconnect_backoff():
+    unavailable = end_stream(error={"code": "unavailable", "message": "draining"})
+    handler = Recorder(stream_response(envelope(SAMPLES) + unavailable), stream_response(unavailable))
+    stream = open_watch(handler, reconnect=True, reconnect_backoff=30)
+    thread, events, errors, first_event = iterate_in_thread(stream)
+    assert first_event.wait(5)
+    # The first attempt delivered a message, so the stream reconnects at
+    # once; the second fails and waits out a 15-30s backoff.
+    deadline = time.monotonic() + 5
+    while len(handler.requests) < 2 and time.monotonic() < deadline:
+        time.sleep(0.01)
+    assert len(handler.requests) == 2
+
+    stream.close()
+    thread.join(5)
+
+    assert not thread.is_alive()
+    assert errors == []
+    assert len(handler.requests) == 2
+
+
+def test_close_from_another_thread_interrupts_a_socket_read():
+    """Over a real connection the read is blocked in the socket, which close()
+    shuts down; nothing is sent after the first message."""
+    listener = socket.socket()
+    listener.bind(("127.0.0.1", 0))
+    listener.listen(1)
+    hold = threading.Event()
+
+    def serve():
+        conn, _ = listener.accept()
+        with conn:
+            conn.recv(65536)
+            message = envelope(SAMPLES)
+            conn.sendall(
+                b"HTTP/1.1 200 OK\r\ncontent-type: application/connect+json\r\ntransfer-encoding: chunked\r\n\r\n"
+                + b"%x\r\n" % len(message) + message + b"\r\n"
+            )
+            hold.wait(10)
+
+    server = threading.Thread(target=serve, daemon=True)
+    server.start()
+    http = httpx.Client(base_url="http://127.0.0.1:%d" % listener.getsockname()[1])
+    stream = watch(config(), "up", http=http)
+    try:
+        thread, events, errors, first_event = iterate_in_thread(stream)
+        assert first_event.wait(5)
+
+        started = time.monotonic()
+        stream.close()
+        thread.join(5)
+
+        assert not thread.is_alive()
+        assert time.monotonic() - started < 5
+        assert errors == []
+        assert [e.kind for e in events] == ["samples"]
+    finally:
+        hold.set()
+        http.close()
+        listener.close()

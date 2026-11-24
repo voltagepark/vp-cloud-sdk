@@ -28,8 +28,38 @@ logger = logging.getLogger("vpcloud_client.credentials")
 
 
 class AuthenticationError(Exception):
-    """Raised when authentication credentials cannot be resolved or are invalid."""
-    pass
+    """Raised when authentication credentials cannot be resolved or are invalid.
+
+    When Auth0 refused a token exchange, status_code and error are its HTTP
+    status and error code (e.g. 403 and "access_denied"), and audience is the
+    API the token was requested for. They are None otherwise.
+    """
+
+    def __init__(
+        self,
+        message: str,
+        *,
+        status_code: Optional[int] = None,
+        error: Optional[str] = None,
+        audience: Optional[str] = None,
+    ) -> None:
+        super().__init__(message)
+        self.status_code = status_code
+        self.error = error
+        self.audience = audience
+
+
+def _auth0_error(response) -> Tuple[Optional[str], str]:
+    """Auth0's error code and description from a refused token exchange."""
+    try:
+        body = response.json()
+    except Exception:
+        body = None
+    if isinstance(body, dict) and isinstance(body.get("error"), str):
+        description = body.get("error_description")
+        return body["error"], description if isinstance(description, str) else ""
+    text = response.text if isinstance(getattr(response, "text", None), str) else ""
+    return None, text.strip()[:200]
 
 
 class CredentialProvider:
@@ -184,8 +214,8 @@ class Auth0TokenManager:
     TOKEN_URL = f"https://{AUTH0_DOMAIN}/oauth/token"
 
     # Observatory (metrics, logs, audit) verifies one audience in every
-    # region. Beta's gateway trusts the dev Auth0 tenant; prod's trust the
-    # Harbor tenant.
+    # region, issued by the Harbor tenant unless observatory_auth0_domain
+    # says otherwise.
     OBSERVATORY_AUDIENCE = "https://observatory.voltagepark.com"
     OBSERVATORY_BETA_AUTH0_DOMAIN = "voltagepark-dev.us.auth0.com"
     OBSERVATORY_REFRESH_MARGIN = 300
@@ -208,6 +238,11 @@ class Auth0TokenManager:
         "sea1": "https://api.sea-1.voltagepark.com/harbor",
         "iad1": "https://api.iad-1.voltagepark.com/harbor",
     }
+
+    @staticmethod
+    def regional_hosts() -> Tuple[str, ...]:
+        """The regional API endpoints, e.g. https://api.sea1.voltagepark.com."""
+        return tuple(f"https://api.{region}.voltagepark.com" for region in Auth0TokenManager.REGION_AUDIENCE_MAP)
     
     @staticmethod
     def _extract_region_from_host(host: str) -> str:
@@ -335,8 +370,15 @@ class Auth0TokenManager:
             return access_token
             
         except httpx.HTTPStatusError as e:
+            status = e.response.status_code
+            error, description = _auth0_error(e.response)
+            detail = ": ".join(part for part in (error, description) if part)
             raise AuthenticationError(
-                f"Auth0 token exchange failed with status {e.response.status_code}: {e.response.text}"
+                f"Auth0 refused the token exchange for {self.audience} with status {status}"
+                + (f" ({detail})" if detail else ""),
+                status_code=status,
+                error=error,
+                audience=self.audience,
             ) from e
         except httpx.RequestError as e:
             raise AuthenticationError(f"Auth0 token exchange request failed: {e}") from e

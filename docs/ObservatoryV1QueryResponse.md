@@ -12,12 +12,12 @@ Name | Type | Description | Notes
 ```python
 from vpcloud_client.models.observatory_v1_query_response import ObservatoryV1QueryResponse
 
-# TODO update the JSON string below
+# a ObservatoryV1QueryResponse as JSON, with the properties above, for example from an API response
 json = "{}"
 # create an instance of ObservatoryV1QueryResponse from a JSON string
 observatory_v1_query_response_instance = ObservatoryV1QueryResponse.from_json(json)
 # print the JSON string representation of the object
-print(ObservatoryV1QueryResponse.to_json())
+print(observatory_v1_query_response_instance.to_json())
 
 # convert the object into a dict
 observatory_v1_query_response_dict = observatory_v1_query_response_instance.to_dict()

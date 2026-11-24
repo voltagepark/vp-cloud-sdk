@@ -17,12 +17,12 @@ Name | Type | Description | Notes
 ```python
 from vpcloud_client.models.bootstrap import Bootstrap
 
-# TODO update the JSON string below
+# a Bootstrap as JSON, with the properties above, for example from an API response
 json = "{}"
 # create an instance of Bootstrap from a JSON string
 bootstrap_instance = Bootstrap.from_json(json)
 # print the JSON string representation of the object
-print(Bootstrap.to_json())
+print(bootstrap_instance.to_json())
 
 # convert the object into a dict
 bootstrap_dict = bootstrap_instance.to_dict()

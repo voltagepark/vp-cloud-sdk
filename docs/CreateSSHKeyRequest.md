@@ -14,12 +14,12 @@ Name | Type | Description | Notes
 ```python
 from vpcloud_client.models.create_ssh_key_request import CreateSSHKeyRequest
 
-# TODO update the JSON string below
+# a CreateSSHKeyRequest as JSON, with the properties above, for example from an API response
 json = "{}"
 # create an instance of CreateSSHKeyRequest from a JSON string
 create_ssh_key_request_instance = CreateSSHKeyRequest.from_json(json)
 # print the JSON string representation of the object
-print(CreateSSHKeyRequest.to_json())
+print(create_ssh_key_request_instance.to_json())
 
 # convert the object into a dict
 create_ssh_key_request_dict = create_ssh_key_request_instance.to_dict()

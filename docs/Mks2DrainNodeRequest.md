@@ -15,12 +15,12 @@ Name | Type | Description | Notes
 ```python
 from vpcloud_client.models.mks2_drain_node_request import Mks2DrainNodeRequest
 
-# TODO update the JSON string below
+# a Mks2DrainNodeRequest as JSON, with the properties above, for example from an API response
 json = "{}"
 # create an instance of Mks2DrainNodeRequest from a JSON string
 mks2_drain_node_request_instance = Mks2DrainNodeRequest.from_json(json)
 # print the JSON string representation of the object
-print(Mks2DrainNodeRequest.to_json())
+print(mks2_drain_node_request_instance.to_json())
 
 # convert the object into a dict
 mks2_drain_node_request_dict = mks2_drain_node_request_instance.to_dict()

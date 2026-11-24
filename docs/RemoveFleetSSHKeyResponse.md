@@ -14,12 +14,12 @@ Name | Type | Description | Notes
 ```python
 from vpcloud_client.models.remove_fleet_ssh_key_response import RemoveFleetSSHKeyResponse
 
-# TODO update the JSON string below
+# a RemoveFleetSSHKeyResponse as JSON, with the properties above, for example from an API response
 json = "{}"
 # create an instance of RemoveFleetSSHKeyResponse from a JSON string
 remove_fleet_ssh_key_response_instance = RemoveFleetSSHKeyResponse.from_json(json)
 # print the JSON string representation of the object
-print(RemoveFleetSSHKeyResponse.to_json())
+print(remove_fleet_ssh_key_response_instance.to_json())
 
 # convert the object into a dict
 remove_fleet_ssh_key_response_dict = remove_fleet_ssh_key_response_instance.to_dict()

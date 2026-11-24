@@ -17,12 +17,12 @@ Name | Type | Description | Notes
 ```python
 from vpcloud_client.models.observatory_v1_audit_coverage import ObservatoryV1AuditCoverage
 
-# TODO update the JSON string below
+# a ObservatoryV1AuditCoverage as JSON, with the properties above, for example from an API response
 json = "{}"
 # create an instance of ObservatoryV1AuditCoverage from a JSON string
 observatory_v1_audit_coverage_instance = ObservatoryV1AuditCoverage.from_json(json)
 # print the JSON string representation of the object
-print(ObservatoryV1AuditCoverage.to_json())
+print(observatory_v1_audit_coverage_instance.to_json())
 
 # convert the object into a dict
 observatory_v1_audit_coverage_dict = observatory_v1_audit_coverage_instance.to_dict()

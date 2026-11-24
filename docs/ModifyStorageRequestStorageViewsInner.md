@@ -13,12 +13,12 @@ Name | Type | Description | Notes
 ```python
 from vpcloud_client.models.modify_storage_request_storage_views_inner import ModifyStorageRequestStorageViewsInner
 
-# TODO update the JSON string below
+# a ModifyStorageRequestStorageViewsInner as JSON, with the properties above, for example from an API response
 json = "{}"
 # create an instance of ModifyStorageRequestStorageViewsInner from a JSON string
 modify_storage_request_storage_views_inner_instance = ModifyStorageRequestStorageViewsInner.from_json(json)
 # print the JSON string representation of the object
-print(ModifyStorageRequestStorageViewsInner.to_json())
+print(modify_storage_request_storage_views_inner_instance.to_json())
 
 # convert the object into a dict
 modify_storage_request_storage_views_inner_dict = modify_storage_request_storage_views_inner_instance.to_dict()

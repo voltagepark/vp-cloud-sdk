@@ -1,6 +1,6 @@
 # vpcloud_client.ClusterValidationApi
 
-All URIs are relative to *https://api.sea1.voltagepark.com*
+All URIs are relative to *https://api.sea1.voltagepark.com*, the default `Configuration.host`. Set `host` to the regional API endpoint for your fleets' region.
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
@@ -23,25 +23,20 @@ Returns the full detail for a specific cluster-validation run on your fleet: run
 * Bearer (JWT) Authentication (bearerAuth):
 
 ```python
+import os
 import vpcloud_client
 from vpcloud_client.models.cluster_validation_detail import ClusterValidationDetail
 from vpcloud_client.rest import ApiException
 from pprint import pprint
 
-# Defining the host is optional and defaults to https://api.sea1.voltagepark.com
+# Set host to the regional API endpoint for your fleets' region, for example
+# https://api.iad1.voltagepark.com. It defaults to https://api.sea1.voltagepark.com.
+# The SDK exchanges your application's client credentials for an access token.
 # See configuration.py for a list of all supported configuration parameters.
 configuration = vpcloud_client.Configuration(
-    host = "https://api.sea1.voltagepark.com"
-)
-
-# The client must configure the authentication and authorization parameters
-# in accordance with the API server security policy.
-# Examples for each auth method are provided below, use the example that
-# satisfies your auth use case.
-
-# Configure Bearer authorization (JWT): bearerAuth
-configuration = vpcloud_client.Configuration(
-    access_token = os.environ["BEARER_TOKEN"]
+    host = "https://api.sea1.voltagepark.com",
+    client_id = os.environ["VPCLOUD_CLIENT_ID"],
+    client_secret = os.environ["VPCLOUD_CLIENT_SECRET"],
 )
 
 # Enter a context with an instance of the API client
@@ -108,24 +103,19 @@ Returns the per-node pass/fail report for a specific cluster-validation run on y
 * Bearer (JWT) Authentication (bearerAuth):
 
 ```python
+import os
 import vpcloud_client
 from vpcloud_client.rest import ApiException
 from pprint import pprint
 
-# Defining the host is optional and defaults to https://api.sea1.voltagepark.com
+# Set host to the regional API endpoint for your fleets' region, for example
+# https://api.iad1.voltagepark.com. It defaults to https://api.sea1.voltagepark.com.
+# The SDK exchanges your application's client credentials for an access token.
 # See configuration.py for a list of all supported configuration parameters.
 configuration = vpcloud_client.Configuration(
-    host = "https://api.sea1.voltagepark.com"
-)
-
-# The client must configure the authentication and authorization parameters
-# in accordance with the API server security policy.
-# Examples for each auth method are provided below, use the example that
-# satisfies your auth use case.
-
-# Configure Bearer authorization (JWT): bearerAuth
-configuration = vpcloud_client.Configuration(
-    access_token = os.environ["BEARER_TOKEN"]
+    host = "https://api.sea1.voltagepark.com",
+    client_id = os.environ["VPCLOUD_CLIENT_ID"],
+    client_secret = os.environ["VPCLOUD_CLIENT_SECRET"],
 )
 
 # Enter a context with an instance of the API client
@@ -192,24 +182,19 @@ Lists the cluster-validation tests available for your fleet, grouped by category
 * Bearer (JWT) Authentication (bearerAuth):
 
 ```python
+import os
 import vpcloud_client
 from vpcloud_client.rest import ApiException
 from pprint import pprint
 
-# Defining the host is optional and defaults to https://api.sea1.voltagepark.com
+# Set host to the regional API endpoint for your fleets' region, for example
+# https://api.iad1.voltagepark.com. It defaults to https://api.sea1.voltagepark.com.
+# The SDK exchanges your application's client credentials for an access token.
 # See configuration.py for a list of all supported configuration parameters.
 configuration = vpcloud_client.Configuration(
-    host = "https://api.sea1.voltagepark.com"
-)
-
-# The client must configure the authentication and authorization parameters
-# in accordance with the API server security policy.
-# Examples for each auth method are provided below, use the example that
-# satisfies your auth use case.
-
-# Configure Bearer authorization (JWT): bearerAuth
-configuration = vpcloud_client.Configuration(
-    access_token = os.environ["BEARER_TOKEN"]
+    host = "https://api.sea1.voltagepark.com",
+    client_id = os.environ["VPCLOUD_CLIENT_ID"],
+    client_secret = os.environ["VPCLOUD_CLIENT_SECRET"],
 )
 
 # Enter a context with an instance of the API client
@@ -273,25 +258,20 @@ Returns up to the 10 most recent cluster-validation runs for your fleet, newest 
 * Bearer (JWT) Authentication (bearerAuth):
 
 ```python
+import os
 import vpcloud_client
 from vpcloud_client.models.cluster_validation_list_response import ClusterValidationListResponse
 from vpcloud_client.rest import ApiException
 from pprint import pprint
 
-# Defining the host is optional and defaults to https://api.sea1.voltagepark.com
+# Set host to the regional API endpoint for your fleets' region, for example
+# https://api.iad1.voltagepark.com. It defaults to https://api.sea1.voltagepark.com.
+# The SDK exchanges your application's client credentials for an access token.
 # See configuration.py for a list of all supported configuration parameters.
 configuration = vpcloud_client.Configuration(
-    host = "https://api.sea1.voltagepark.com"
-)
-
-# The client must configure the authentication and authorization parameters
-# in accordance with the API server security policy.
-# Examples for each auth method are provided below, use the example that
-# satisfies your auth use case.
-
-# Configure Bearer authorization (JWT): bearerAuth
-configuration = vpcloud_client.Configuration(
-    access_token = os.environ["BEARER_TOKEN"]
+    host = "https://api.sea1.voltagepark.com",
+    client_id = os.environ["VPCLOUD_CLIENT_ID"],
+    client_secret = os.environ["VPCLOUD_CLIENT_SECRET"],
 )
 
 # Enter a context with an instance of the API client
@@ -356,26 +336,21 @@ Starts a cluster-validation run against your fleet's nodes and returns the run i
 * Bearer (JWT) Authentication (bearerAuth):
 
 ```python
+import os
 import vpcloud_client
 from vpcloud_client.models.cluster_validation_response import ClusterValidationResponse
 from vpcloud_client.models.customer_trigger_cluster_validation_request import CustomerTriggerClusterValidationRequest
 from vpcloud_client.rest import ApiException
 from pprint import pprint
 
-# Defining the host is optional and defaults to https://api.sea1.voltagepark.com
+# Set host to the regional API endpoint for your fleets' region, for example
+# https://api.iad1.voltagepark.com. It defaults to https://api.sea1.voltagepark.com.
+# The SDK exchanges your application's client credentials for an access token.
 # See configuration.py for a list of all supported configuration parameters.
 configuration = vpcloud_client.Configuration(
-    host = "https://api.sea1.voltagepark.com"
-)
-
-# The client must configure the authentication and authorization parameters
-# in accordance with the API server security policy.
-# Examples for each auth method are provided below, use the example that
-# satisfies your auth use case.
-
-# Configure Bearer authorization (JWT): bearerAuth
-configuration = vpcloud_client.Configuration(
-    access_token = os.environ["BEARER_TOKEN"]
+    host = "https://api.sea1.voltagepark.com",
+    client_id = os.environ["VPCLOUD_CLIENT_ID"],
+    client_secret = os.environ["VPCLOUD_CLIENT_SECRET"],
 )
 
 # Enter a context with an instance of the API client

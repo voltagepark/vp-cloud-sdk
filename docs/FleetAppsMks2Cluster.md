@@ -22,12 +22,12 @@ Name | Type | Description | Notes
 ```python
 from vpcloud_client.models.fleet_apps_mks2_cluster import FleetAppsMks2Cluster
 
-# TODO update the JSON string below
+# a FleetAppsMks2Cluster as JSON, with the properties above, for example from an API response
 json = "{}"
 # create an instance of FleetAppsMks2Cluster from a JSON string
 fleet_apps_mks2_cluster_instance = FleetAppsMks2Cluster.from_json(json)
 # print the JSON string representation of the object
-print(FleetAppsMks2Cluster.to_json())
+print(fleet_apps_mks2_cluster_instance.to_json())
 
 # convert the object into a dict
 fleet_apps_mks2_cluster_dict = fleet_apps_mks2_cluster_instance.to_dict()

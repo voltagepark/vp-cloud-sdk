@@ -19,12 +19,12 @@ Name | Type | Description | Notes
 ```python
 from vpcloud_client.models.mks2_cluster_health import Mks2ClusterHealth
 
-# TODO update the JSON string below
+# a Mks2ClusterHealth as JSON, with the properties above, for example from an API response
 json = "{}"
 # create an instance of Mks2ClusterHealth from a JSON string
 mks2_cluster_health_instance = Mks2ClusterHealth.from_json(json)
 # print the JSON string representation of the object
-print(Mks2ClusterHealth.to_json())
+print(mks2_cluster_health_instance.to_json())
 
 # convert the object into a dict
 mks2_cluster_health_dict = mks2_cluster_health_instance.to_dict()

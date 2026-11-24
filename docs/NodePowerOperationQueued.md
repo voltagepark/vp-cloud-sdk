@@ -17,12 +17,12 @@ Name | Type | Description | Notes
 ```python
 from vpcloud_client.models.node_power_operation_queued import NodePowerOperationQueued
 
-# TODO update the JSON string below
+# a NodePowerOperationQueued as JSON, with the properties above, for example from an API response
 json = "{}"
 # create an instance of NodePowerOperationQueued from a JSON string
 node_power_operation_queued_instance = NodePowerOperationQueued.from_json(json)
 # print the JSON string representation of the object
-print(NodePowerOperationQueued.to_json())
+print(node_power_operation_queued_instance.to_json())
 
 # convert the object into a dict
 node_power_operation_queued_dict = node_power_operation_queued_instance.to_dict()

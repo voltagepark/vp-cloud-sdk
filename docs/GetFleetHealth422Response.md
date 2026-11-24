@@ -14,12 +14,12 @@ Name | Type | Description | Notes
 ```python
 from vpcloud_client.models.get_fleet_health422_response import GetFleetHealth422Response
 
-# TODO update the JSON string below
+# a GetFleetHealth422Response as JSON, with the properties above, for example from an API response
 json = "{}"
 # create an instance of GetFleetHealth422Response from a JSON string
 get_fleet_health422_response_instance = GetFleetHealth422Response.from_json(json)
 # print the JSON string representation of the object
-print(GetFleetHealth422Response.to_json())
+print(get_fleet_health422_response_instance.to_json())
 
 # convert the object into a dict
 get_fleet_health422_response_dict = get_fleet_health422_response_instance.to_dict()

@@ -15,12 +15,12 @@ Name | Type | Description | Notes
 ```python
 from vpcloud_client.models.customer_trigger_cluster_validation_request import CustomerTriggerClusterValidationRequest
 
-# TODO update the JSON string below
+# a CustomerTriggerClusterValidationRequest as JSON, with the properties above, for example from an API response
 json = "{}"
 # create an instance of CustomerTriggerClusterValidationRequest from a JSON string
 customer_trigger_cluster_validation_request_instance = CustomerTriggerClusterValidationRequest.from_json(json)
 # print the JSON string representation of the object
-print(CustomerTriggerClusterValidationRequest.to_json())
+print(customer_trigger_cluster_validation_request_instance.to_json())
 
 # convert the object into a dict
 customer_trigger_cluster_validation_request_dict = customer_trigger_cluster_validation_request_instance.to_dict()

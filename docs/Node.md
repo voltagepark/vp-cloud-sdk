@@ -17,12 +17,12 @@ Name | Type | Description | Notes
 ```python
 from vpcloud_client.models.node import Node
 
-# TODO update the JSON string below
+# a Node as JSON, with the properties above, for example from an API response
 json = "{}"
 # create an instance of Node from a JSON string
 node_instance = Node.from_json(json)
 # print the JSON string representation of the object
-print(Node.to_json())
+print(node_instance.to_json())
 
 # convert the object into a dict
 node_dict = node_instance.to_dict()

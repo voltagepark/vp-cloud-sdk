@@ -28,8 +28,8 @@ class ObservatoryV1ResolvedCluster(BaseModel):
     """ # noqa: E501
     cluster_id: Optional[StrictStr] = Field(default=None, alias="clusterId")
     endpoint: Optional[StrictStr] = Field(default=None, description="Base URL of that region's endpoint. Send this cluster's queries there.")
-    logs_ready: Optional[StrictBool] = Field(default=None, description="Whether the cluster's logs can be queried yet.", alias="logsReady")
-    metrics_ready: Optional[StrictBool] = Field(default=None, description="Whether the cluster's metrics can be queried yet.", alias="metricsReady")
+    logs_ready: Optional[StrictBool] = Field(default=False, description="Whether the cluster's logs can be queried yet.", alias="logsReady")
+    metrics_ready: Optional[StrictBool] = Field(default=False, description="Whether the cluster's metrics can be queried yet.", alias="metricsReady")
     site: Optional[StrictStr] = Field(default=None, description="The region that serves the cluster's metrics and logs.")
     __properties: ClassVar[List[str]] = ["clusterId", "endpoint", "logsReady", "metricsReady", "site"]
 
@@ -86,8 +86,8 @@ class ObservatoryV1ResolvedCluster(BaseModel):
         _obj = cls.model_validate({
             "clusterId": obj.get("clusterId"),
             "endpoint": obj.get("endpoint"),
-            "logsReady": obj.get("logsReady"),
-            "metricsReady": obj.get("metricsReady"),
+            "logsReady": obj.get("logsReady") if obj.get("logsReady") is not None else False,
+            "metricsReady": obj.get("metricsReady") if obj.get("metricsReady") is not None else False,
             "site": obj.get("site")
         })
         return _obj

@@ -18,12 +18,12 @@ Name | Type | Description | Notes
 ```python
 from vpcloud_client.models.slurm_parameters import SlurmParameters
 
-# TODO update the JSON string below
+# a SlurmParameters as JSON, with the properties above, for example from an API response
 json = "{}"
 # create an instance of SlurmParameters from a JSON string
 slurm_parameters_instance = SlurmParameters.from_json(json)
 # print the JSON string representation of the object
-print(SlurmParameters.to_json())
+print(slurm_parameters_instance.to_json())
 
 # convert the object into a dict
 slurm_parameters_dict = slurm_parameters_instance.to_dict()

@@ -16,12 +16,12 @@ Name | Type | Description | Notes
 ```python
 from vpcloud_client.models.kubeconfig_v2_response import KubeconfigV2Response
 
-# TODO update the JSON string below
+# a KubeconfigV2Response as JSON, with the properties above, for example from an API response
 json = "{}"
 # create an instance of KubeconfigV2Response from a JSON string
 kubeconfig_v2_response_instance = KubeconfigV2Response.from_json(json)
 # print the JSON string representation of the object
-print(KubeconfigV2Response.to_json())
+print(kubeconfig_v2_response_instance.to_json())
 
 # convert the object into a dict
 kubeconfig_v2_response_dict = kubeconfig_v2_response_instance.to_dict()

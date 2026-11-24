@@ -15,12 +15,12 @@ Name | Type | Description | Notes
 ```python
 from vpcloud_client.models.list_nodes_response import ListNodesResponse
 
-# TODO update the JSON string below
+# a ListNodesResponse as JSON, with the properties above, for example from an API response
 json = "{}"
 # create an instance of ListNodesResponse from a JSON string
 list_nodes_response_instance = ListNodesResponse.from_json(json)
 # print the JSON string representation of the object
-print(ListNodesResponse.to_json())
+print(list_nodes_response_instance.to_json())
 
 # convert the object into a dict
 list_nodes_response_dict = list_nodes_response_instance.to_dict()

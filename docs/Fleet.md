@@ -28,12 +28,12 @@ Name | Type | Description | Notes
 ```python
 from vpcloud_client.models.fleet import Fleet
 
-# TODO update the JSON string below
+# a Fleet as JSON, with the properties above, for example from an API response
 json = "{}"
 # create an instance of Fleet from a JSON string
 fleet_instance = Fleet.from_json(json)
 # print the JSON string representation of the object
-print(Fleet.to_json())
+print(fleet_instance.to_json())
 
 # convert the object into a dict
 fleet_dict = fleet_instance.to_dict()

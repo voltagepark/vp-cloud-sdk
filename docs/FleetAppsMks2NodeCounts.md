@@ -16,12 +16,12 @@ Name | Type | Description | Notes
 ```python
 from vpcloud_client.models.fleet_apps_mks2_node_counts import FleetAppsMks2NodeCounts
 
-# TODO update the JSON string below
+# a FleetAppsMks2NodeCounts as JSON, with the properties above, for example from an API response
 json = "{}"
 # create an instance of FleetAppsMks2NodeCounts from a JSON string
 fleet_apps_mks2_node_counts_instance = FleetAppsMks2NodeCounts.from_json(json)
 # print the JSON string representation of the object
-print(FleetAppsMks2NodeCounts.to_json())
+print(fleet_apps_mks2_node_counts_instance.to_json())
 
 # convert the object into a dict
 fleet_apps_mks2_node_counts_dict = fleet_apps_mks2_node_counts_instance.to_dict()

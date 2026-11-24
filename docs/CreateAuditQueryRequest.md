@@ -25,12 +25,12 @@ Name | Type | Description | Notes
 ```python
 from vpcloud_client.models.create_audit_query_request import CreateAuditQueryRequest
 
-# TODO update the JSON string below
+# a CreateAuditQueryRequest as JSON, with the properties above, for example from an API response
 json = "{}"
 # create an instance of CreateAuditQueryRequest from a JSON string
 create_audit_query_request_instance = CreateAuditQueryRequest.from_json(json)
 # print the JSON string representation of the object
-print(CreateAuditQueryRequest.to_json())
+print(create_audit_query_request_instance.to_json())
 
 # convert the object into a dict
 create_audit_query_request_dict = create_audit_query_request_instance.to_dict()

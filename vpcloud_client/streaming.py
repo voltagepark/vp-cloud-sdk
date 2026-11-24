@@ -22,7 +22,8 @@
                     print(series.labels, [(s.time, s.value) for s in series.samples])
 
     Iterate inside `with` (or `async with` for awatch/atail): leaving the
-    block, for example with `break`, closes the HTTP stream.
+    block, for example with `break`, closes the HTTP stream. To stop a loop
+    running in another thread, call `stream.close()`; the loop ends cleanly.
 """  # noqa: E501
 
 from __future__ import annotations
@@ -32,7 +33,9 @@ import datetime
 import json
 import random
 import re
+import socket
 import struct
+import threading
 import time
 from collections.abc import Mapping
 from dataclasses import dataclass, field
@@ -473,7 +476,10 @@ class _Stream(Generic[E]):
         """Decide what follows one attempt; returns (failures, delay) or raises.
         A delay of None means stop iterating cleanly."""
         opts = self._options
-        if not opts.reconnect or self._closed:
+        if self._closed:
+            # Closed while reading: the error is the interrupted read.
+            return failures, None
+        if not opts.reconnect:
             if err is not None:
                 raise err
             return failures, None
@@ -494,7 +500,10 @@ class _Stream(Generic[E]):
 
 class ServerStream(_Stream[E]):
     """A server stream; iterate it for events. Use it as a context manager so
-    leaving the loop early closes the HTTP connection."""
+    leaving the loop early closes the HTTP connection.
+
+    close() may be called from another thread to stop a loop blocked waiting
+    for the next event: the loop then ends cleanly, without an error."""
 
     def __init__(self, http: httpx.Client, owns_http: bool, procedure: str, request: Dict[str, Any],
                  decode: Callable[[Dict[str, Any]], E], options: _Options) -> None:
@@ -503,6 +512,10 @@ class ServerStream(_Stream[E]):
         self._owns_http = owns_http
         self._response: Optional[httpx.Response] = None
         self._events: Optional[Generator[E, None, None]] = None
+        # Held while the iterating thread is inside the event generator, which
+        # another thread must not close.
+        self._iterating = threading.Lock()
+        self._wake = threading.Event()
 
     def __enter__(self) -> "ServerStream[E]":
         return self
@@ -514,15 +527,34 @@ class ServerStream(_Stream[E]):
         return self
 
     def __next__(self) -> E:
-        if self._events is None:
-            if self._closed:
-                raise StopIteration
-            self._events = self._run()
-        return next(self._events)
+        with self._iterating:
+            if self._events is None:
+                if self._closed:
+                    raise StopIteration
+                self._events = self._run()
+            try:
+                return next(self._events)
+            except StopIteration:
+                if self._closed:
+                    self._release()
+                raise
 
     def close(self) -> None:
-        """Close the HTTP stream. Safe to call more than once."""
+        """Close the HTTP stream. Safe to call more than once, and from another
+        thread while a loop is waiting for events: that loop then ends."""
         self._closed = True
+        self._wake.set()
+        if not self._iterating.acquire(blocking=False):
+            # Another thread is iterating: unblock its read, and it releases
+            # the stream when its loop ends.
+            self._interrupt()
+            return
+        try:
+            self._release()
+        finally:
+            self._iterating.release()
+
+    def _release(self) -> None:
         if self._events is not None:
             self._events.close()
         if self._response is not None:
@@ -531,14 +563,35 @@ class ServerStream(_Stream[E]):
         if self._owns_http:
             self._http.close()
 
+    def _interrupt(self) -> None:
+        """End a read blocked in another thread. Shutting the socket down wakes
+        the read without touching httpx state that thread is using; a transport
+        without a socket has its response closed instead."""
+        response = self._response
+        if response is None:
+            return
+        network_stream = response.extensions.get("network_stream")
+        sock = network_stream.get_extra_info("socket") if network_stream is not None else None
+        if isinstance(sock, socket.socket):
+            try:
+                # socket.socket's own shutdown, also for an SSLSocket, whose
+                # override would drop its TLS state under the reading thread.
+                socket.socket.shutdown(sock, socket.SHUT_RDWR)
+                return
+            except OSError:
+                pass
+        response.close()
+
     def _run(self) -> Generator[E, None, None]:
         failures = 0
-        while True:
+        while not self._closed:
             received = False
             err: Optional[ConnectError] = None
             try:
                 for event in self._attempt():
                     received = True
+                    if self._closed:
+                        return
                     if self._visible(event):
                         yield event
             except ConnectError as e:
@@ -546,7 +599,8 @@ class ServerStream(_Stream[E]):
             failures, delay = self._after_attempt(received, failures, err)
             if delay is None:
                 return
-            time.sleep(delay)
+            if self._wake.wait(delay):
+                return
             self.reconnects += 1
 
     def _attempt(self) -> Iterator[E]:
@@ -559,6 +613,12 @@ class ServerStream(_Stream[E]):
         except httpx.TransportError as e:
             raise _transport_error(e, self._options) from e
         self._response = response
+        # close() in another thread may have looked for a response to
+        # interrupt before this one was set.
+        if self._closed:
+            response.close()
+            self._response = None
+            return
         try:
             if response.status_code != 200:
                 response.read()

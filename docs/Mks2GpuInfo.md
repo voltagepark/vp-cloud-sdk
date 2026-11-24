@@ -18,12 +18,12 @@ Name | Type | Description | Notes
 ```python
 from vpcloud_client.models.mks2_gpu_info import Mks2GpuInfo
 
-# TODO update the JSON string below
+# a Mks2GpuInfo as JSON, with the properties above, for example from an API response
 json = "{}"
 # create an instance of Mks2GpuInfo from a JSON string
 mks2_gpu_info_instance = Mks2GpuInfo.from_json(json)
 # print the JSON string representation of the object
-print(Mks2GpuInfo.to_json())
+print(mks2_gpu_info_instance.to_json())
 
 # convert the object into a dict
 mks2_gpu_info_dict = mks2_gpu_info_instance.to_dict()

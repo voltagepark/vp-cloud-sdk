@@ -15,12 +15,12 @@ Name | Type | Description | Notes
 ```python
 from vpcloud_client.models.list_fleets_response import ListFleetsResponse
 
-# TODO update the JSON string below
+# a ListFleetsResponse as JSON, with the properties above, for example from an API response
 json = "{}"
 # create an instance of ListFleetsResponse from a JSON string
 list_fleets_response_instance = ListFleetsResponse.from_json(json)
 # print the JSON string representation of the object
-print(ListFleetsResponse.to_json())
+print(list_fleets_response_instance.to_json())
 
 # convert the object into a dict
 list_fleets_response_dict = list_fleets_response_instance.to_dict()

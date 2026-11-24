@@ -13,12 +13,12 @@ Name | Type | Description | Notes
 ```python
 from vpcloud_client.models.cluster_validation_list_response import ClusterValidationListResponse
 
-# TODO update the JSON string below
+# a ClusterValidationListResponse as JSON, with the properties above, for example from an API response
 json = "{}"
 # create an instance of ClusterValidationListResponse from a JSON string
 cluster_validation_list_response_instance = ClusterValidationListResponse.from_json(json)
 # print the JSON string representation of the object
-print(ClusterValidationListResponse.to_json())
+print(cluster_validation_list_response_instance.to_json())
 
 # convert the object into a dict
 cluster_validation_list_response_dict = cluster_validation_list_response_instance.to_dict()

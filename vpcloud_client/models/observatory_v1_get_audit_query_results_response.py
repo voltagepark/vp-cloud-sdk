@@ -28,7 +28,7 @@ class ObservatoryV1GetAuditQueryResultsResponse(BaseModel):
     """ # noqa: E501
     events_json: Optional[List[Union[StrictBytes, StrictStr]]] = Field(default=None, description="Audit events, each the base64 of one audit.k8s.io/v1 Event exactly as recorded.", alias="eventsJson")
     next_page_token: Optional[StrictStr] = Field(default=None, description="Pass as pageToken to read the next page. Empty on the last page.", alias="nextPageToken")
-    truncated: Optional[StrictBool] = None
+    truncated: Optional[StrictBool] = False
     __properties: ClassVar[List[str]] = ["eventsJson", "nextPageToken", "truncated"]
 
     model_config = ConfigDict(
@@ -84,7 +84,7 @@ class ObservatoryV1GetAuditQueryResultsResponse(BaseModel):
         _obj = cls.model_validate({
             "eventsJson": obj.get("eventsJson"),
             "nextPageToken": obj.get("nextPageToken"),
-            "truncated": obj.get("truncated")
+            "truncated": obj.get("truncated") if obj.get("truncated") is not None else False
         })
         return _obj
 
