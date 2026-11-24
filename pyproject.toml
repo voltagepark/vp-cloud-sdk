@@ -1,9 +1,9 @@
 [project]
 name = "vpcloud_client"
-version = "2.1.0"
+version = "2.1.1"
 description = "Voltage Park Cloud API"
 authors = [
-  {name = "Voltage Park Customer Support",email = "team@openapitools.org"},
+  {name = "Voltage Park Customer Support",email = "support@voltagepark.com"},
 ]
 license = { text = "Apache 2.0" }
 readme = "README.md"
@@ -19,7 +19,7 @@ dependencies = [
 ]
 
 [project.urls]
-Repository = "https://github.com/GIT_USER_ID/GIT_REPO_ID"
+Repository = "https://github.com/voltagepark/vp-cloud-sdk"
 
 [tool.poetry]
 requires-poetry = ">=2.0"

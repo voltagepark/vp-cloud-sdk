@@ -17,9 +17,11 @@ import inspect
 import json
 import pkgutil
 import re
+import runpy
 import typing
 from datetime import date, datetime, timezone
 from decimal import Decimal
+from pathlib import Path
 from urllib.parse import parse_qs, quote, urlsplit
 from uuid import UUID
 
@@ -36,7 +38,7 @@ except ImportError:  # Python < 3.11
 
 import vpcloud_client.api
 import vpcloud_client.models
-from vpcloud_client import ApiClient
+from vpcloud_client import ApiClient, __version__, credentials, rest
 from vpcloud_client.exceptions import ApiException
 from test.utils import MockResponse, create_test_config
 
@@ -563,3 +565,37 @@ class TestGeneratedOperations:
                 getattr(api, name)(**args)
 
         assert exc_info.value.status == 404
+
+
+def test_example_runs_end_to_end(monkeypatch, capsys):
+    example_path = Path(__file__).resolve().parent.parent / 'example.py'
+    payload = to_wire(build_model(vpcloud_client.models.ListFleetsResponse))
+    response = _json_response(200, payload)
+    calls = []
+
+    monkeypatch.setenv('VPCLOUD_CLIENT_ID', 'test-client-id')
+    monkeypatch.setenv('VPCLOUD_CLIENT_SECRET', 'test-client-secret')
+    monkeypatch.delenv('VPCLOUD_ACCESS_TOKEN', raising=False)
+    monkeypatch.setattr(
+        credentials.Auth0TokenManager,
+        'get_token',
+        lambda self, force_refresh=False: 'test-token',
+    )
+    monkeypatch.setattr(
+        rest.RESTClientObject,
+        'request',
+        lambda self, *args, **kwargs: calls.append((args, kwargs)) or response,
+    )
+
+    runpy.run_path(str(example_path))
+
+    assert len(calls) == 1
+    (method, url), kwargs = calls[0]
+    assert method == 'GET'
+    assert url.endswith('/v1/fleets')
+    assert kwargs['headers']['Authorization'] == 'Bearer test-token'
+    assert kwargs['headers']['User-Agent'] == f'vpcloud-client/{__version__}/python'
+
+    stdout = capsys.readouterr().out
+    dumped = json.loads(stdout.split('\n\n', 1)[1])
+    assert len(dumped['fleets']) == len(payload['fleets'])

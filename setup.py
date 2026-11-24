@@ -21,7 +21,7 @@ from setuptools import setup, find_packages  # noqa: H301
 # prerequisite: setuptools
 # http://pypi.python.org/pypi/setuptools
 NAME = "vpcloud-client"
-VERSION = "2.1.0"
+VERSION = "2.1.1"
 PYTHON_REQUIRES = ">= 3.9"
 REQUIRES = [
     "urllib3 >= 2.1.0, < 3.0.0",
@@ -36,8 +36,8 @@ setup(
     version=VERSION,
     description="Voltage Park Cloud API",
     author="Voltage Park Customer Support",
-    author_email="team@openapitools.org",
-    url="",
+    author_email="support@voltagepark.com",
+    url="https://github.com/voltagepark/vp-cloud-sdk",
     keywords=["OpenAPI", "OpenAPI-Generator", "Voltage Park Cloud API"],
     install_requires=REQUIRES,
     packages=find_packages(exclude=["test", "tests"]),

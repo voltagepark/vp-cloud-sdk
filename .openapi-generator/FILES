@@ -1,8 +1,5 @@
 .github/workflows/python.yml
 .gitignore
-.gitlab-ci.yml
-.openapi-generator-ignore
-.travis.yml
 README.md
 docs/AddFleetSSHKeyRequest.md
 docs/AddFleetSSHKeyResponse.md
@@ -121,7 +118,6 @@ docs/StorageProtectionPolicy.md
 docs/StorageView.md
 docs/StorageViewListResponse.md
 docs/UpdateStorageViewRequest.md
-git_push.sh
 pyproject.toml
 requirements.txt
 setup.cfg
