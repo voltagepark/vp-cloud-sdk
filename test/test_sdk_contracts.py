@@ -146,8 +146,8 @@ def _string_matching(pattern):
 
 
 def _validator_rules(model_cls):
-    """Map field name -> ('enum', values) or ('pattern', regex) from the
-    generated @field_validator functions."""
+    """Map field name -> ('enum', values), ('pattern', regex) or ('duration',)
+    from the generated @field_validator functions."""
     rules = {}
     decorators = model_cls.__pydantic_decorators__.field_validators.values()
     for decorator in decorators:
@@ -159,6 +159,8 @@ def _validator_rules(model_cls):
                 rules[field_name] = ('enum', ast.literal_eval(enum_match.group(1)))
             elif pattern_match:
                 rules[field_name] = ('pattern', pattern_match.group(1))
+            elif 'to_duration_seconds(' in source or 'normalize_duration(' in source:
+                rules[field_name] = ('duration',)
     return rules
 
 
@@ -227,6 +229,8 @@ def sample_value(annotation, depth=0, rule=None):
     if rule and rule[0] == 'enum':
         values = rule[1]
         return [values[0]] if origin in (list, set) else values[0]
+    if rule and rule[0] == 'duration':
+        return '60s'
     if origin in (list, set, tuple):
         args = typing_extensions.get_args(annotation)
         item = sample_value(args[0], depth + 1, rule) if args else 'item'

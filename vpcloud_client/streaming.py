@@ -43,6 +43,7 @@ from typing import Any, AsyncGenerator, AsyncIterator, Callable, Dict, Generator
 
 import httpx
 
+from vpcloud_client.durations import Duration, to_duration_seconds
 from vpcloud_client.results import Series, _decode_json_bytes, to_series
 
 __all__ = (
@@ -208,7 +209,7 @@ def watch(
     queries: Queries,
     *,
     cluster_id: str = "",
-    step: Union[str, float, None] = None,
+    step: Optional[Duration] = None,
     mode: str = "samples",
     cursor: str = "",
     include_heartbeats: bool = False,
@@ -228,8 +229,9 @@ def watch(
         queries: one PromQL string, a list of them (named "q0", "q1", ...), or
             a {name: query} mapping. Each event carries its query's name.
         cluster_id: watch one cluster; omit to watch the whole organization.
-        step: evaluation interval, as a duration string ("30s") or seconds.
-            Omit for the server's default.
+        step: evaluation interval: "30s", a Prometheus duration ("5m",
+            "1h30m"), seconds, or a datetime.timedelta. Omit for the server's
+            default.
         mode: "samples" (every new point) or "changes" (series appearing and
             disappearing).
         cursor: resume from this cursor, for example a previous
@@ -299,7 +301,7 @@ def awatch(
     queries: Queries,
     *,
     cluster_id: str = "",
-    step: Union[str, float, None] = None,
+    step: Optional[Duration] = None,
     mode: str = "samples",
     cursor: str = "",
     include_heartbeats: bool = False,
@@ -344,14 +346,14 @@ def atail(
     return AsyncServerStream(*_async_http(config, http), TAIL_PROCEDURE, request, _decode_tail, options)
 
 
-def _watch_request(queries: Queries, cluster_id: str, step: Union[str, float, None], mode: str, cursor: str) -> Dict[str, Any]:
+def _watch_request(queries: Queries, cluster_id: str, step: Optional[Duration], mode: str, cursor: str) -> Dict[str, Any]:
     if mode not in WATCH_MODES:
         raise ValueError(f"mode must be one of {sorted(WATCH_MODES)}, got {mode!r}")
     request: Dict[str, Any] = {"queries": _watch_queries(queries), "mode": WATCH_MODES[mode]}
     if cluster_id:
         request["clusterId"] = cluster_id
     if step is not None:
-        request["step"] = _duration(step)
+        request["step"] = to_duration_seconds(step)
     if cursor:
         request["cursor"] = cursor
     return request
@@ -801,12 +803,6 @@ def _watch_queries(queries: Queries) -> List[Dict[str, str]]:
     if not pairs:
         raise ValueError("watch needs at least one query")
     return [{"name": str(name), "query": str(query)} for name, query in pairs]
-
-
-def _duration(step: Union[str, float]) -> str:
-    if isinstance(step, (int, float)):
-        return f"{float(step):g}s"
-    return str(step)
 
 
 def _rfc3339(value: datetime.datetime) -> str:

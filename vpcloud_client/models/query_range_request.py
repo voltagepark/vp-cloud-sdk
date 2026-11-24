@@ -20,6 +20,8 @@ import json
 from datetime import datetime
 from pydantic import BaseModel, ConfigDict, Field, StrictStr
 from typing import Any, ClassVar, Dict, List, Optional
+from pydantic import field_validator
+from vpcloud_client.durations import to_duration_seconds
 from typing import Optional, Set
 from typing_extensions import Self
 
@@ -32,6 +34,16 @@ class QueryRangeRequest(BaseModel):
     start: Optional[datetime] = None
     step: Optional[StrictStr] = None
     __properties: ClassVar[List[str]] = ["end", "query", "start", "step"]
+
+    @field_validator('step', mode='before')
+    @classmethod
+    def durations_in_seconds(cls, value):
+        """Accepts seconds, a datetime.timedelta, "300s" or a Prometheus duration
+        such as "5m" or "1h30m", and holds it as seconds ("300s"), the form the API takes.
+        A request's duration must be positive."""
+        if value is None:
+            return value
+        return to_duration_seconds(value)
 
     model_config = ConfigDict(
         populate_by_name=True,

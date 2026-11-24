@@ -186,7 +186,33 @@ def test_org_wide_watch_has_no_cluster_and_changes_mode():
     assert body["step"] == "30s"
 
 
+@pytest.mark.parametrize("step, expected", [
+    ("5m", "300s"), ("1m30s", "90s"), ("500ms", "0.5s"), ("1.5s", "1.5s"), ("300", "300s"), (2.5, "2.5s"),
+    (datetime.timedelta(minutes=5), "300s"),
+])
+def test_step_is_sent_in_seconds(step, expected):
+    handler = Recorder(stream_response(end_stream()))
+    list(watch(config(), "up", step=step, http=sync_http(handler)))
+    assert handler.bodies()[0]["step"] == expected
+
+
+def test_async_step_is_sent_in_seconds():
+    handler = Recorder(stream_response(end_stream()))
+
+    async def run():
+        async with awatch(config(), "up", step="1h", http=async_http(handler)) as stream:
+            return [event async for event in stream]
+
+    assert asyncio.run(run()) == []
+    assert handler.bodies()[0]["step"] == "3600s"
+
+
 def test_bad_arguments():
+    with pytest.raises(ValueError, match="invalid duration"):
+        watch(config(), "up", step="5 minutes", http=sync_http(Recorder()))
+    for step in (0, "0s", -30, datetime.timedelta(seconds=-1)):
+        with pytest.raises(ValueError, match="must be positive"):
+            watch(config(), "up", step=step, http=sync_http(Recorder()))
     with pytest.raises(ValueError, match="mode"):
         watch(config(), "up", mode="everything", http=sync_http(Recorder()))
     with pytest.raises(ValueError, match="at least one query"):

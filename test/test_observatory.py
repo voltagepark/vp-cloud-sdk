@@ -5,6 +5,7 @@ audit). Auth0 and the HTTP layer are faked; every assertion is on what the SDK
 would have sent. No network."""
 
 import base64
+import datetime
 import json
 
 import httpx
@@ -14,6 +15,7 @@ import urllib3
 import vpcloud_client
 from vpcloud_client import credentials, rest
 from vpcloud_client.credentials import AuthenticationError
+from vpcloud_client.models.query_range_request import QueryRangeRequest
 from vpcloud_client.models.query_request import QueryRequest
 
 OBS = "https://observatory.voltagepark.com"
@@ -102,6 +104,20 @@ def test_query_text_is_sent_as_given(wire):
     query(vpcloud_client.Configuration(client_id="cid", client_secret="secret"))
     body = wire["requests"][0]["body"]
     assert (json.loads(body) if isinstance(body, str) else body) == {"query": "up"}
+
+
+@pytest.mark.parametrize("step", ["5m", 300, datetime.timedelta(minutes=5)])
+def test_range_query_step_is_sent_in_seconds(wire, step):
+    """The gateway takes a protobuf Duration ("300s") and answers "5m" with an error."""
+    config = vpcloud_client.Configuration(client_id="cid", client_secret="secret")
+    end = datetime.datetime(2026, 11, 23, tzinfo=datetime.timezone.utc)
+    request = QueryRangeRequest(query="up", start=end - datetime.timedelta(hours=1), end=end, step=step)
+    with vpcloud_client.ApiClient(config) as api:
+        vpcloud_client.MetricsApi(api).query_metrics_range("c-1", request)
+        vpcloud_client.MetricsApi(api).query_org_metrics_range(request)
+    bodies = [r["body"] for r in wire["requests"]]
+    assert [r["url"] for r in wire["requests"]] == [OBS + "/v1/clusters/c-1/query_range", OBS + "/v1/query_range"]
+    assert [(json.loads(b) if isinstance(b, str) else b)["step"] for b in bodies] == ["300s", "300s"]
 
 
 def test_beta_uses_the_dev_tenant(wire):
