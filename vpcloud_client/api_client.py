@@ -27,7 +27,7 @@ from urllib.parse import quote
 from typing import Tuple, Optional, List, Dict, Union
 from pydantic import SecretStr
 
-from vpcloud_client.configuration import Configuration
+from vpcloud_client.configuration import OBSERVATORY_ORG_WIDE_PATHS, Configuration
 from vpcloud_client.api_response import ApiResponse, T as ApiResponseT
 import vpcloud_client.models
 from vpcloud_client import rest
@@ -91,7 +91,7 @@ class ApiClient:
             self.default_headers[header_name] = header_value
         self.cookie = cookie
         # Set default User-Agent.
-        self.user_agent = 'vpcloud-client/3.0.0/python'
+        self.user_agent = 'vpcloud-client/3.1.0/python'
         self.client_side_validation = configuration.client_side_validation
 
     def __enter__(self):
@@ -174,8 +174,9 @@ class ApiClient:
                               request; this effectively ignores the authentication
                               in the spec for a single request.
         :param _service: "observatory" for an Observatory operation (metrics,
-            logs, audit): it is sent to configuration.observatory_host with an
-            Observatory token. None for a Harbor operation.
+            logs, audit): it is sent to configuration.observatory_host (or
+            observatory_org_host, for an org-wide one) with an Observatory
+            token. None for a Harbor operation.
         :return: tuple of form (path, http_method, query_params, header_params,
             body, post_params, files)
         """
@@ -218,10 +219,14 @@ class ApiClient:
             if files:
                 post_params.extend(self.files_parameters(files))
 
-        # request host. Observatory operations always go to observatory_host:
-        # ignore_operation_servers redirects only Harbor operations.
+        # request host. Observatory operations always go to observatory_host, or
+        # observatory_org_host for org-wide ones: ignore_operation_servers
+        # redirects only Harbor operations.
         if _service == "observatory":
-            request_host = self.configuration.observatory_host
+            if resource_path in OBSERVATORY_ORG_WIDE_PATHS:
+                request_host = self.configuration.observatory_org_host
+            else:
+                request_host = self.configuration.observatory_host
         elif _host is None or self.configuration.ignore_operation_servers:
             request_host = self.configuration.host
         else:

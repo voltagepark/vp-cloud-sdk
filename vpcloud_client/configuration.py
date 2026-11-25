@@ -25,6 +25,8 @@ import urllib3
 
 from vpcloud_client.credentials import (
     HARBOR_REGIONS,
+    OBSERVATORY_DEFAULT_HOST,
+    OBSERVATORY_REGIONS,
     REGION_HELP,
     Auth0TokenManager,
     AuthenticationError,
@@ -32,6 +34,11 @@ from vpcloud_client.credentials import (
     harbor_region,
 )
 from vpcloud_client.retry import RetryStrategy
+
+# Observatory operations that span the organization rather than one cluster.
+# They go to Configuration.observatory_org_host; every other Observatory
+# operation goes to observatory_host.
+OBSERVATORY_ORG_WIDE_PATHS = frozenset({"/v1/query", "/v1/query_range"})
 
 JSON_SCHEMA_VALIDATION_KEYWORDS = {
     'multipleOf', 'maximum', 'exclusiveMaximum',
@@ -148,7 +155,11 @@ class Configuration:
     :param region: Harbor region for fleets, nodes, Kubernetes, storage and the other
       regional APIs (sea1, iad1, dfw2 or ord1). Picks the API endpoint and token audience.
       Falls back to VPCLOUD_REGION, then the credentials file profile's region, when
-      host isn't set. The Observability APIs don't need it.
+      host isn't set. The Observability APIs don't need it, but it also picks their
+      endpoint (see observatory_host).
+    :param observatory_host: Base url of the Observability APIs (metrics, logs, audit).
+      Falls back to VPCLOUD_OBSERVATORY_HOST, then the region's Observability endpoint,
+      then https://observatory.voltagepark.com.
     :param ignore_operation_servers
       Boolean to ignore operation servers for the API client.
       Config will use `host` as the base url regardless of the operation servers.
@@ -282,13 +293,7 @@ class Configuration:
         """Access token (may be resolved automatically)
         """
         import os
-        self.observatory_host = (
-            observatory_host
-            or os.environ.get("VPCLOUD_OBSERVATORY_HOST")
-            or "https://observatory.voltagepark.com"
-        ).rstrip("/")
-        """Base URL of the Observatory gateway (metrics, logs, audit)
-        """
+        self.observatory_host = observatory_host or os.environ.get("VPCLOUD_OBSERVATORY_HOST")
         self.observatory_access_token = observatory_access_token
         """Observatory-audience access token. Never taken from access_token,
            which is for the Harbor API.
@@ -677,6 +682,24 @@ class Configuration:
             return harbor_region(file_region, f"credentials profile {self._profile!r}")
         return None
 
+    def _observatory_region(self) -> Optional[str]:
+        """The region whose Observability endpoint to use, or None.
+
+        As region, but an unknown VPCLOUD_REGION or credentials file region
+        gives None instead of raising: the Observability APIs work without a
+        region.
+        """
+        if self.server_index is not None:
+            return None
+        if self._region_unresolved:
+            try:
+                return self._resolve_region()
+            except ValueError:
+                return None
+        if self._region is not None:
+            return self._region
+        return Auth0TokenManager.region_for_host(self._base_path) if self._base_path else None
+
     @staticmethod
     def _token_error(error: AuthenticationError, audience: str, no_access: str, otherwise: str) -> AuthenticationError:
         """Explain a refused token exchange, naming the audience and the fix.
@@ -759,7 +782,7 @@ class Configuration:
                "OS: {env}\n"\
                "Python Version: {pyversion}\n"\
                "Version of the API: 1.0.0\n"\
-               "SDK Package Version: 3.0.0".\
+               "SDK Package Version: 3.1.0".\
                format(env=sys.platform, pyversion=sys.version)
 
     def get_host_settings(self) -> List[HostSetting]:
@@ -874,3 +897,35 @@ class Configuration:
         self._base_path = None
         self.server_index = None
         self._access_token = self._credential_provider._explicit_access_token
+
+    @property
+    def observatory_host(self) -> str:
+        """Base URL of the Observability APIs (metrics, logs, audit), except org-wide metrics.
+
+        observatory_host if set, else VPCLOUD_OBSERVATORY_HOST, else the
+        region's Observability endpoint, else https://observatory.voltagepark.com.
+        Each region's endpoint serves only that region's clusters.
+        """
+        if self._observatory_host:
+            return self._observatory_host
+        endpoint = OBSERVATORY_REGIONS.get(self._observatory_region() or "")
+        return endpoint.host if endpoint else OBSERVATORY_DEFAULT_HOST
+
+    @observatory_host.setter
+    def observatory_host(self, value: Optional[str]) -> None:
+        """Send every Observability request to value; None picks it by region again."""
+        self._observatory_host = value.rstrip("/") if value else None
+
+    @property
+    def observatory_org_host(self) -> str:
+        """Base URL for org-wide metrics: query_org_metrics, query_org_metrics_range
+        and watch without cluster_id.
+
+        observatory_host if set (argument or VPCLOUD_OBSERVATORY_HOST), else the
+        region's Observability endpoint if it serves org-wide metrics, else
+        https://observatory.voltagepark.com.
+        """
+        if self._observatory_host:
+            return self._observatory_host
+        endpoint = OBSERVATORY_REGIONS.get(self._observatory_region() or "")
+        return endpoint.host if endpoint and endpoint.org_metrics else OBSERVATORY_DEFAULT_HOST

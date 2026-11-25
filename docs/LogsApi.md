@@ -1,6 +1,6 @@
 # vpcloud_client.LogsApi
 
-All URIs are relative to *https://observatory.voltagepark.com*, the default `Configuration.observatory_host`. `ClustersApi.resolve_clusters()` reports the regional endpoint that serves each cluster. These APIs don't need a region.
+All URIs are relative to `Configuration.observatory_host`: your region's Observability endpoint (*https://ord1.observatory.voltagepark.com* for ord1), else *https://observatory.voltagepark.com*. `ClustersApi.resolve_clusters()` reports the regional endpoint that serves each cluster. These APIs don't need a region, and an unknown one doesn't break them.
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
@@ -28,13 +28,14 @@ from vpcloud_client.rest import ApiException
 from pprint import pprint
 
 # Observatory operations (metrics, logs, audit) are sent to observatory_host,
-# https://observatory.voltagepark.com by default. ClustersApi.resolve_clusters()
-# reports the regional endpoint that serves each cluster; set observatory_host
-# to it for a cluster served elsewhere.
+# which defaults to the Observability endpoint of your region (VPCLOUD_REGION):
+# https://ord1.observatory.voltagepark.com for ord1, else
+# https://observatory.voltagepark.com. ClustersApi.resolve_clusters() reports
+# the regional endpoint that serves each cluster; set observatory_host to it
+# for a cluster in another region.
 # The SDK exchanges your application's client credentials for an access token.
 # See configuration.py for a list of all supported configuration parameters.
 configuration = vpcloud_client.Configuration(
-    observatory_host = "https://observatory.voltagepark.com",
     client_id = os.environ["VPCLOUD_CLIENT_ID"],
     client_secret = os.environ["VPCLOUD_CLIENT_SECRET"],
 )

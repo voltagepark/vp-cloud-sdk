@@ -1,6 +1,6 @@
 [project]
 name = "vpcloud_client"
-version = "3.0.0"
+version = "3.1.0"
 description = "Voltage Park Cloud API"
 authors = [
   {name = "Voltage Park Customer Support",email = "support@voltagepark.com"},

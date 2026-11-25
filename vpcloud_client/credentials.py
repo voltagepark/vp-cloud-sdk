@@ -83,6 +83,26 @@ HARBOR_REGIONS: Dict[str, HarborRegion] = {
     ),
 }
 
+class ObservatoryEndpoint(NamedTuple):
+    host: str
+    org_metrics: bool
+
+
+OBSERVATORY_DEFAULT_HOST = "https://observatory.voltagepark.com"
+
+# Each region's Observability API endpoint, the regional gateway that serves
+# that region's clusters (any other cluster gets 403 or a misdirection error
+# there). org_metrics: the gateway also serves org-wide metrics
+# (query_org_metrics, query_org_metrics_range, watch without cluster_id);
+# otherwise those go to OBSERVATORY_DEFAULT_HOST. A region missing here uses
+# OBSERVATORY_DEFAULT_HOST for everything: sea1 and dfw2 have gateways
+# (sea1.observatory.voltagepark.com, dfw2.observatory.voltagepark.com) that
+# serve no clusters yet; add them when they do.
+OBSERVATORY_REGIONS: Dict[str, ObservatoryEndpoint] = {
+    "iad1": ObservatoryEndpoint(OBSERVATORY_DEFAULT_HOST, org_metrics=True),
+    "ord1": ObservatoryEndpoint("https://ord1.observatory.voltagepark.com", org_metrics=True),
+}
+
 REGION_HELP = (
     "Pass Configuration(region=...), set VPCLOUD_REGION, or add region to your "
     "~/.voltagepark/credentials profile. Valid regions: " + ", ".join(HARBOR_REGIONS) + "."

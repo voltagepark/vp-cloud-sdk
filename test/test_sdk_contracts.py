@@ -39,6 +39,7 @@ except ImportError:  # Python < 3.11
 import vpcloud_client.api
 import vpcloud_client.models
 from vpcloud_client import ApiClient, __version__, credentials, rest
+from vpcloud_client.configuration import OBSERVATORY_ORG_WIDE_PATHS
 from vpcloud_client.exceptions import ApiException
 from test.utils import MockResponse, create_test_config
 
@@ -523,8 +524,15 @@ class TestGeneratedOperations:
             expected_path = expected_path.replace(
                 '{' + alias + '}', quote(str(args[arg]), safe=''))
         parts = urlsplit(url)
-        # Observatory operations go to observatory_host, Harbor ones to host.
-        host = api_client.configuration.observatory_host if spec['service'] == 'observatory' else HOST
+        # Observatory operations go to observatory_host (org-wide ones to
+        # observatory_org_host), Harbor ones to host.
+        config = api_client.configuration
+        if spec['service'] != 'observatory':
+            host = HOST
+        elif spec['path'] in OBSERVATORY_ORG_WIDE_PATHS:
+            host = config.observatory_org_host
+        else:
+            host = config.observatory_host
         assert f'{parts.scheme}://{parts.netloc}{parts.path}' == host + expected_path
 
         query = parse_qs(parts.query)
@@ -569,6 +577,20 @@ class TestGeneratedOperations:
                 getattr(api, name)(**args)
 
         assert exc_info.value.status == 404
+
+
+def test_every_observatory_operation_is_per_cluster_or_listed_org_wide():
+    """A regional endpoint serves only its region's clusters, and maybe not
+    org-wide metrics, so a new Observatory operation without a cluster_id must
+    be added to OBSERVATORY_ORG_WIDE_PATHS (or be resolve_clusters)."""
+    paths = {
+        spec['path']
+        for spec in (_operation_spec(api_cls, name) for api_cls, name in OPERATIONS)
+        if spec['service'] == 'observatory'
+    }
+    unrouted = {p for p in paths if '{cluster_id}' not in p and p != '/v1/clusters'} - OBSERVATORY_ORG_WIDE_PATHS
+    assert unrouted == set()
+    assert OBSERVATORY_ORG_WIDE_PATHS <= paths
 
 
 def test_example_runs_end_to_end(monkeypatch, capsys):

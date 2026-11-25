@@ -7,8 +7,9 @@
     log lines as they arrive. Both are long-lived server streams, which the
     generated REST methods can't hold open, so this module speaks the Connect
     protocol (https://connectrpc.com/docs/protocol) over httpx: HTTP/1.1, JSON,
-    no compression. Requests go to `Configuration.observatory_host` with the
-    same Observatory token as the other Observatory methods.
+    no compression. Requests go to `Configuration.observatory_host` (an
+    org-wide watch to `Configuration.observatory_org_host`) with the same
+    Observatory token as the other Observatory methods.
 
     Usage:
 
@@ -225,7 +226,8 @@ def watch(
 
     Args:
         client: a `vpcloud_client.ApiClient` or `Configuration`. The stream
-            goes to its `observatory_host` with an Observatory token.
+            goes to its `observatory_host` (`observatory_org_host` without
+            cluster_id) with an Observatory token.
         queries: one PromQL string, a list of them (named "q0", "q1", ...), or
             a {name: query} mapping. Each event carries its query's name.
         cluster_id: watch one cluster; omit to watch the whole organization.
@@ -257,7 +259,7 @@ def watch(
     request = _watch_request(queries, cluster_id, step, mode, cursor)
     options = _Options(include_heartbeats, read_timeout, connect_timeout, headers, reconnect,
                        max_reconnect_attempts, reconnect_backoff, _token_source(config))
-    return ServerStream(*_sync_http(config, http), WATCH_PROCEDURE, request, _decode_watch, options)
+    return ServerStream(*_sync_http(config, http, org_wide=not cluster_id), WATCH_PROCEDURE, request, _decode_watch, options)
 
 
 def tail(
@@ -293,7 +295,7 @@ def tail(
     request = _tail_request(query, cluster_id, since, cursor)
     options = _Options(include_heartbeats, read_timeout, connect_timeout, headers, reconnect,
                        max_reconnect_attempts, reconnect_backoff, _token_source(config))
-    return ServerStream(*_sync_http(config, http), TAIL_PROCEDURE, request, _decode_tail, options)
+    return ServerStream(*_sync_http(config, http, org_wide=False), TAIL_PROCEDURE, request, _decode_tail, options)
 
 
 def awatch(
@@ -319,7 +321,7 @@ def awatch(
     request = _watch_request(queries, cluster_id, step, mode, cursor)
     options = _Options(include_heartbeats, read_timeout, connect_timeout, headers, reconnect,
                        max_reconnect_attempts, reconnect_backoff, _token_source(config))
-    return AsyncServerStream(*_async_http(config, http), WATCH_PROCEDURE, request, _decode_watch, options)
+    return AsyncServerStream(*_async_http(config, http, org_wide=not cluster_id), WATCH_PROCEDURE, request, _decode_watch, options)
 
 
 def atail(
@@ -343,7 +345,7 @@ def atail(
     request = _tail_request(query, cluster_id, since, cursor)
     options = _Options(include_heartbeats, read_timeout, connect_timeout, headers, reconnect,
                        max_reconnect_attempts, reconnect_backoff, _token_source(config))
-    return AsyncServerStream(*_async_http(config, http), TAIL_PROCEDURE, request, _decode_tail, options)
+    return AsyncServerStream(*_async_http(config, http, org_wide=False), TAIL_PROCEDURE, request, _decode_tail, options)
 
 
 def _watch_request(queries: Queries, cluster_id: str, step: Optional[Duration], mode: str, cursor: str) -> Dict[str, Any]:
@@ -774,18 +776,22 @@ def _verify(config: Any) -> Any:
     return config.ssl_ca_cert or True
 
 
-def _sync_http(config: Any, http: Optional[httpx.Client]) -> Tuple[httpx.Client, bool]:
+def _base_url(config: Any, org_wide: bool) -> str:
+    return config.observatory_org_host if org_wide else config.observatory_host
+
+
+def _sync_http(config: Any, http: Optional[httpx.Client], org_wide: bool) -> Tuple[httpx.Client, bool]:
     if http is not None:
         _require_base_url(http)
         return http, False
-    return httpx.Client(base_url=config.observatory_host, verify=_verify(config)), True
+    return httpx.Client(base_url=_base_url(config, org_wide), verify=_verify(config)), True
 
 
-def _async_http(config: Any, http: Optional[httpx.AsyncClient]) -> Tuple[httpx.AsyncClient, bool]:
+def _async_http(config: Any, http: Optional[httpx.AsyncClient], org_wide: bool) -> Tuple[httpx.AsyncClient, bool]:
     if http is not None:
         _require_base_url(http)
         return http, False
-    return httpx.AsyncClient(base_url=config.observatory_host, verify=_verify(config)), True
+    return httpx.AsyncClient(base_url=_base_url(config, org_wide), verify=_verify(config)), True
 
 
 def _require_base_url(http: Any) -> None:

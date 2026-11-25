@@ -239,6 +239,58 @@ def test_default_http_targets_observatory_host():
     assert stream._http.is_closed
 
 
+@pytest.fixture
+def no_region_env(monkeypatch, tmp_path):
+    for k in ("VPCLOUD_REGION", "VPCLOUD_OBSERVATORY_HOST"):
+        monkeypatch.delenv(k, raising=False)
+    monkeypatch.setattr(vpcloud_client.credentials.CredentialProvider, "CREDENTIALS_FILE", tmp_path / "credentials")
+
+
+ORD1 = "https://ord1.observatory.voltagepark.com"
+DEFAULT = "https://observatory.voltagepark.com"
+
+
+def opened_base_urls(cfg):
+    """The base URL each stream kind opens against: watch for one cluster,
+    tail, org-wide watch, then the async versions."""
+    async def open_async():
+        streams = [awatch(cfg, "up", cluster_id="c-1"), atail(cfg, "error", cluster_id="c-1"), awatch(cfg, "up")]
+        urls = [str(s._http.base_url) for s in streams]
+        for s in streams:
+            await s.aclose()
+        return urls
+
+    streams = [watch(cfg, "up", cluster_id="c-1"), tail(cfg, "error", cluster_id="c-1"), watch(cfg, "up")]
+    urls = [str(s._http.base_url) for s in streams]
+    for s in streams:
+        s.close()
+    return urls + asyncio.run(open_async())
+
+
+@pytest.mark.parametrize("kwargs,per_cluster,org_wide", [
+    ({"region": "ord1"}, ORD1, ORD1),
+    ({"region": "iad1"}, DEFAULT, DEFAULT),
+    ({"region": "sea1"}, DEFAULT, DEFAULT),
+    ({"region": "ord1", "observatory_host": "https://proxy.example"}, "https://proxy.example", "https://proxy.example"),
+])
+def test_streams_open_against_the_regions_endpoint(no_region_env, kwargs, per_cluster, org_wide):
+    assert opened_base_urls(config(**kwargs)) == [per_cluster, per_cluster, org_wide] * 2
+
+
+def test_org_wide_watch_skips_a_regional_endpoint_without_org_metrics(no_region_env, monkeypatch):
+    regional = "https://sea1.observatory.voltagepark.com"
+    monkeypatch.setitem(vpcloud_client.credentials.OBSERVATORY_REGIONS, "sea1",
+                        vpcloud_client.credentials.ObservatoryEndpoint(regional, org_metrics=False))
+    assert opened_base_urls(config(region="sea1")) == [regional, regional, DEFAULT] * 2
+
+
+def test_streams_ignore_an_unknown_env_region(no_region_env, monkeypatch):
+    monkeypatch.setenv("VPCLOUD_REGION", "ord-1")
+    assert opened_base_urls(config()) == [DEFAULT] * 6
+    monkeypatch.setenv("VPCLOUD_REGION", "ord1")
+    assert opened_base_urls(config()) == [ORD1] * 6
+
+
 def test_harbor_token_is_never_sent(monkeypatch):
     for k in ("VPCLOUD_CLIENT_ID", "VPCLOUD_CLIENT_SECRET", "VPCLOUD_OBSERVATORY_ACCESS_TOKEN"):
         monkeypatch.delenv(k, raising=False)

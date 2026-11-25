@@ -427,3 +427,131 @@ def test_configs_without_client_credentials_are_unchanged(wire):
     list_fleets(vpcloud_client.Configuration(region="sea1"))
     assert wire["mints"] == []
     assert [r["auth"] for r in wire["requests"]] == ["Bearer harbor-token", None]
+
+
+
+ORD1_OBS = "https://ord1.observatory.voltagepark.com"
+
+
+def obs_config(**kwargs):
+    return vpcloud_client.Configuration(client_id="cid", client_secret="secret", **kwargs)
+
+
+def observatory_urls(wire, config):
+    """Send one of each kind of Observatory call and return their URLs:
+    per-cluster metrics, logs and audit, resolve_clusters, then org-wide metrics."""
+    end = datetime.datetime(2026, 11, 23, tzinfo=datetime.timezone.utc)
+    sent = len(wire["requests"])
+    with vpcloud_client.ApiClient(config) as api:
+        vpcloud_client.MetricsApi(api).query_metrics("c-1", QueryRequest(query="up"))
+        vpcloud_client.LogsApi(api).query_logs("c-1", LogsQueryRequest(query="error"))
+        vpcloud_client.KubernetesAuditApi(api).get_audit_coverage("c-1")
+        vpcloud_client.ClustersApi(api).resolve_clusters()
+        vpcloud_client.MetricsApi(api).query_org_metrics(QueryRequest(query="up"))
+        vpcloud_client.MetricsApi(api).query_org_metrics_range(QueryRangeRequest(
+            query="up", start=end - datetime.timedelta(hours=1), end=end, step="60s"))
+    return [r["url"] for r in wire["requests"][sent:]]
+
+
+def routed(per_cluster, org_wide):
+    return [
+        per_cluster + "/v1/clusters/c-1/query",
+        per_cluster + "/v1/clusters/c-1/logs/query",
+        per_cluster + "/v1/clusters/c-1/audit/coverage",
+        per_cluster + "/v1/clusters",
+        org_wide + "/v1/query",
+        org_wide + "/v1/query_range",
+    ]
+
+
+@pytest.mark.parametrize("arg,env,region,expected", [
+    ("https://arg.example", "https://env.example", "ord1", "https://arg.example"),
+    (None, "https://env.example", "ord1", "https://env.example"),
+    (None, None, "ord1", ORD1_OBS),
+    (None, None, None, OBS),
+])
+def test_observatory_host_precedence_is_argument_env_region_default(wire, monkeypatch, arg, env, region, expected):
+    if env:
+        monkeypatch.setenv("VPCLOUD_OBSERVATORY_HOST", env)
+    config = obs_config(observatory_host=arg, region=region)
+    assert observatory_urls(wire, config) == routed(expected, expected)
+
+
+@pytest.mark.parametrize("region,per_cluster,org_wide", [
+    ("ord1", ORD1_OBS, ORD1_OBS),
+    ("iad1", OBS, OBS),
+    ("sea1", OBS, OBS),
+    ("dfw2", OBS, OBS),
+])
+def test_region_picks_the_observability_endpoint(wire, region, per_cluster, org_wide):
+    """ord1 has its own endpoint, iad1's is the default one, and regions
+    whose endpoint serves no clusters yet use the default."""
+    assert observatory_urls(wire, obs_config(region=region)) == routed(per_cluster, org_wide)
+
+
+def test_one_observatory_token_for_every_regional_endpoint(wire):
+    config = obs_config(region="ord1")
+    observatory_urls(wire, config)
+    config.region = "iad1"
+    observatory_urls(wire, config)
+    assert wire["mints"] == [(PROD, OBS)]
+    assert {r["auth"] for r in wire["requests"]} == {f"Bearer tok[{PROD}|{OBS}]"}
+
+
+def test_env_and_credentials_file_region_pick_the_observability_endpoint(wire, monkeypatch, tmp_path):
+    monkeypatch.setenv("VPCLOUD_REGION", " ORD1 ")
+    assert obs_config().observatory_host == ORD1_OBS
+    monkeypatch.delenv("VPCLOUD_REGION")
+    (tmp_path / "credentials").write_text("[default]\nregion = ord1\n")
+    assert observatory_urls(wire, obs_config()) == routed(ORD1_OBS, ORD1_OBS)
+
+
+@pytest.mark.parametrize("source", ["env", "file"])
+def test_unknown_env_or_file_region_uses_the_default_endpoint(wire, monkeypatch, tmp_path, source):
+    if source == "env":
+        monkeypatch.setenv("VPCLOUD_REGION", "ord-1")
+    else:
+        (tmp_path / "credentials").write_text("[default]\nregion = eu-west-1\n")
+    config = obs_config()
+    assert observatory_urls(wire, config) == routed(OBS, OBS)
+    assert wire["mints"] == [(PROD, OBS)]
+    with pytest.raises(ValueError, match="Unknown region"):
+        config.region
+
+
+def test_org_wide_metrics_skip_a_regional_endpoint_without_them(wire, monkeypatch):
+    regional = "https://sea1.observatory.voltagepark.com"
+    monkeypatch.setitem(credentials.OBSERVATORY_REGIONS, "sea1", credentials.ObservatoryEndpoint(regional, org_metrics=False))
+    config = obs_config(region="sea1")
+    assert observatory_urls(wire, config) == routed(regional, OBS)
+    assert (config.observatory_host, config.observatory_org_host) == (regional, OBS)
+
+
+def test_explicit_observatory_host_wins_for_every_call(wire):
+    config = obs_config(region="ord1", observatory_host="https://observatory.voltagepark.com/")
+    assert observatory_urls(wire, config) == routed(OBS, OBS)
+
+
+def test_observatory_host_follows_later_changes(wire):
+    config = obs_config(region="sea1")
+    assert config.observatory_host == OBS
+    config.region = "ord1"
+    assert (config.observatory_host, config.observatory_org_host) == (ORD1_OBS, ORD1_OBS)
+    config.observatory_host = "https://proxy.example/"
+    assert (config.observatory_host, config.observatory_org_host) == ("https://proxy.example", "https://proxy.example")
+    config.observatory_host = None
+    assert config.observatory_host == ORD1_OBS
+    config.server_index = 1
+    assert config.observatory_host == OBS
+
+
+def test_regional_api_host_picks_the_observability_endpoint(wire, monkeypatch):
+    monkeypatch.setenv("VPCLOUD_REGION", "iad1")
+    assert obs_config(host="https://api.ord1.voltagepark.com").observatory_host == ORD1_OBS
+    assert obs_config(host="https://harbor-proxy.internal").observatory_host == OBS
+
+
+def test_beta_endpoint_keeps_the_dev_tenant_with_a_region(wire):
+    beta = "https://beta.observatory.voltagepark.com"
+    assert observatory_urls(wire, obs_config(region="ord1", observatory_host=beta)) == routed(beta, beta)
+    assert wire["mints"] == [(DEV, OBS)]
