@@ -95,11 +95,11 @@ OBSERVATORY_DEFAULT_HOST = "https://observatory.voltagepark.com"
 # there). org_metrics: the gateway also serves org-wide metrics
 # (query_org_metrics, query_org_metrics_range, watch without cluster_id);
 # otherwise those go to OBSERVATORY_DEFAULT_HOST. A region missing here uses
-# OBSERVATORY_DEFAULT_HOST for everything: sea1 and dfw2 have gateways
-# (sea1.observatory.voltagepark.com, dfw2.observatory.voltagepark.com) that
-# serve no clusters yet; add them when they do.
+# OBSERVATORY_DEFAULT_HOST for everything.
 OBSERVATORY_REGIONS: Dict[str, ObservatoryEndpoint] = {
+    "sea1": ObservatoryEndpoint("https://sea1.observatory.voltagepark.com", org_metrics=False),
     "iad1": ObservatoryEndpoint(OBSERVATORY_DEFAULT_HOST, org_metrics=True),
+    "dfw2": ObservatoryEndpoint("https://dfw2.observatory.voltagepark.com", org_metrics=False),
     "ord1": ObservatoryEndpoint("https://ord1.observatory.voltagepark.com", org_metrics=True),
 }
 

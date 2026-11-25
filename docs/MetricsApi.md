@@ -1,6 +1,6 @@
 # vpcloud_client.MetricsApi
 
-All URIs are relative to `Configuration.observatory_host`: your region's Observability endpoint (*https://ord1.observatory.voltagepark.com* for ord1), else *https://observatory.voltagepark.com*. `ClustersApi.resolve_clusters()` reports the regional endpoint that serves each cluster. These APIs don't need a region, and an unknown one doesn't break them.
+Per-cluster URIs and `ClustersApi` URIs are relative to `Configuration.observatory_host`: *https://&lt;region&gt;.observatory.voltagepark.com* for sea1, dfw2 and ord1, else *https://observatory.voltagepark.com*. Org-wide `MetricsApi` URIs use `Configuration.observatory_org_host`, which stays on the main host for sea1 and dfw2. `ClustersApi.resolve_clusters()` reports the regional endpoint that serves each cluster. These APIs don't need a region, and an unknown one doesn't break them.
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
@@ -29,12 +29,7 @@ from vpcloud_client.models.query_request import QueryRequest
 from vpcloud_client.rest import ApiException
 from pprint import pprint
 
-# Observatory operations (metrics, logs, audit) are sent to observatory_host,
-# which defaults to the Observability endpoint of your region (VPCLOUD_REGION):
-# https://ord1.observatory.voltagepark.com for ord1, else
-# https://observatory.voltagepark.com. ClustersApi.resolve_clusters() reports
-# the regional endpoint that serves each cluster; set observatory_host to it
-# for a cluster in another region.
+# Uses VPCLOUD_REGION's Observability endpoint (main host for sea1/dfw2 org metrics); set observatory_host to override.
 # The SDK exchanges your application's client credentials for an access token.
 # See configuration.py for a list of all supported configuration parameters.
 configuration = vpcloud_client.Configuration(
@@ -109,12 +104,7 @@ from vpcloud_client.models.query_range_request import QueryRangeRequest
 from vpcloud_client.rest import ApiException
 from pprint import pprint
 
-# Observatory operations (metrics, logs, audit) are sent to observatory_host,
-# which defaults to the Observability endpoint of your region (VPCLOUD_REGION):
-# https://ord1.observatory.voltagepark.com for ord1, else
-# https://observatory.voltagepark.com. ClustersApi.resolve_clusters() reports
-# the regional endpoint that serves each cluster; set observatory_host to it
-# for a cluster in another region.
+# Uses VPCLOUD_REGION's Observability endpoint (main host for sea1/dfw2 org metrics); set observatory_host to override.
 # The SDK exchanges your application's client credentials for an access token.
 # See configuration.py for a list of all supported configuration parameters.
 configuration = vpcloud_client.Configuration(
@@ -189,12 +179,7 @@ from vpcloud_client.models.query_request import QueryRequest
 from vpcloud_client.rest import ApiException
 from pprint import pprint
 
-# Observatory operations (metrics, logs, audit) are sent to observatory_host,
-# which defaults to the Observability endpoint of your region (VPCLOUD_REGION):
-# https://ord1.observatory.voltagepark.com for ord1, else
-# https://observatory.voltagepark.com. ClustersApi.resolve_clusters() reports
-# the regional endpoint that serves each cluster; set observatory_host to it
-# for a cluster in another region.
+# Uses VPCLOUD_REGION's Observability endpoint (main host for sea1/dfw2 org metrics); set observatory_host to override.
 # The SDK exchanges your application's client credentials for an access token.
 # See configuration.py for a list of all supported configuration parameters.
 configuration = vpcloud_client.Configuration(
@@ -267,12 +252,7 @@ from vpcloud_client.models.query_range_request import QueryRangeRequest
 from vpcloud_client.rest import ApiException
 from pprint import pprint
 
-# Observatory operations (metrics, logs, audit) are sent to observatory_host,
-# which defaults to the Observability endpoint of your region (VPCLOUD_REGION):
-# https://ord1.observatory.voltagepark.com for ord1, else
-# https://observatory.voltagepark.com. ClustersApi.resolve_clusters() reports
-# the regional endpoint that serves each cluster; set observatory_host to it
-# for a cluster in another region.
+# Uses VPCLOUD_REGION's Observability endpoint (main host for sea1/dfw2 org metrics); set observatory_host to override.
 # The SDK exchanges your application's client credentials for an access token.
 # See configuration.py for a list of all supported configuration parameters.
 configuration = vpcloud_client.Configuration(

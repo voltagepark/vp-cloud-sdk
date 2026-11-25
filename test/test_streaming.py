@@ -247,6 +247,8 @@ def no_region_env(monkeypatch, tmp_path):
 
 
 ORD1 = "https://ord1.observatory.voltagepark.com"
+SEA1 = "https://sea1.observatory.voltagepark.com"
+DFW2 = "https://dfw2.observatory.voltagepark.com"
 DEFAULT = "https://observatory.voltagepark.com"
 
 
@@ -270,18 +272,17 @@ def opened_base_urls(cfg):
 @pytest.mark.parametrize("kwargs,per_cluster,org_wide", [
     ({"region": "ord1"}, ORD1, ORD1),
     ({"region": "iad1"}, DEFAULT, DEFAULT),
-    ({"region": "sea1"}, DEFAULT, DEFAULT),
+    ({"region": "sea1"}, SEA1, DEFAULT),
+    ({"region": "dfw2"}, DFW2, DEFAULT),
     ({"region": "ord1", "observatory_host": "https://proxy.example"}, "https://proxy.example", "https://proxy.example"),
+    (
+        {"region": "sea1", "observatory_host": "https://proxy.example"},
+        "https://proxy.example",
+        "https://proxy.example",
+    ),
 ])
 def test_streams_open_against_the_regions_endpoint(no_region_env, kwargs, per_cluster, org_wide):
     assert opened_base_urls(config(**kwargs)) == [per_cluster, per_cluster, org_wide] * 2
-
-
-def test_org_wide_watch_skips_a_regional_endpoint_without_org_metrics(no_region_env, monkeypatch):
-    regional = "https://sea1.observatory.voltagepark.com"
-    monkeypatch.setitem(vpcloud_client.credentials.OBSERVATORY_REGIONS, "sea1",
-                        vpcloud_client.credentials.ObservatoryEndpoint(regional, org_metrics=False))
-    assert opened_base_urls(config(region="sea1")) == [regional, regional, DEFAULT] * 2
 
 
 def test_streams_ignore_an_unknown_env_region(no_region_env, monkeypatch):

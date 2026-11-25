@@ -87,7 +87,11 @@ def test_observatory_calls_get_their_own_audience_and_host(wire):
     observatory = [r for r in wire["requests"] if "/v1/fleets" not in r["url"]]
     assert harbor[0]["url"].startswith("https://api.sea1.voltagepark.com/")
     assert harbor[0]["auth"] == f"Bearer tok[{PROD}|{HARBOR_SEA1}]"
-    assert [r["url"] for r in observatory] == [OBS + "/v1/clusters/c-1/query", OBS + "/v1/query", OBS + "/v1/clusters"]
+    assert [r["url"] for r in observatory] == [
+        SEA1_OBS + "/v1/clusters/c-1/query",
+        OBS + "/v1/query",
+        SEA1_OBS + "/v1/clusters",
+    ]
     assert {r["auth"] for r in observatory} == {f"Bearer tok[{PROD}|{OBS}]"}
 
 
@@ -195,7 +199,7 @@ def test_ignore_operation_servers_redirects_only_harbor(wire):
     query(config)
     with vpcloud_client.ApiClient(config) as api:
         vpcloud_client.FleetsApi(api).list_fleets()
-    assert wire["requests"][0]["url"] == OBS + "/v1/clusters/c-1/query"
+    assert wire["requests"][0]["url"] == SEA1_OBS + "/v1/clusters/c-1/query"
     assert wire["requests"][1]["url"] == "https://harbor.example/v1/fleets"
 
 
@@ -429,8 +433,9 @@ def test_configs_without_client_credentials_are_unchanged(wire):
     assert [r["auth"] for r in wire["requests"]] == ["Bearer harbor-token", None]
 
 
-
 ORD1_OBS = "https://ord1.observatory.voltagepark.com"
+SEA1_OBS = "https://sea1.observatory.voltagepark.com"
+DFW2_OBS = "https://dfw2.observatory.voltagepark.com"
 
 
 def obs_config(**kwargs):
@@ -480,12 +485,11 @@ def test_observatory_host_precedence_is_argument_env_region_default(wire, monkey
 @pytest.mark.parametrize("region,per_cluster,org_wide", [
     ("ord1", ORD1_OBS, ORD1_OBS),
     ("iad1", OBS, OBS),
-    ("sea1", OBS, OBS),
-    ("dfw2", OBS, OBS),
+    ("sea1", SEA1_OBS, OBS),
+    ("dfw2", DFW2_OBS, OBS),
 ])
 def test_region_picks_the_observability_endpoint(wire, region, per_cluster, org_wide):
-    """ord1 has its own endpoint, iad1's is the default one, and regions
-    whose endpoint serves no clusters yet use the default."""
+    """iad1's endpoint is the default one; sea1 and dfw2 send org-wide metrics there."""
     assert observatory_urls(wire, obs_config(region=region)) == routed(per_cluster, org_wide)
 
 
@@ -519,22 +523,24 @@ def test_unknown_env_or_file_region_uses_the_default_endpoint(wire, monkeypatch,
         config.region
 
 
-def test_org_wide_metrics_skip_a_regional_endpoint_without_them(wire, monkeypatch):
-    regional = "https://sea1.observatory.voltagepark.com"
-    monkeypatch.setitem(credentials.OBSERVATORY_REGIONS, "sea1", credentials.ObservatoryEndpoint(regional, org_metrics=False))
+def test_org_wide_host_skips_a_regional_endpoint_without_org_metrics(wire):
     config = obs_config(region="sea1")
-    assert observatory_urls(wire, config) == routed(regional, OBS)
-    assert (config.observatory_host, config.observatory_org_host) == (regional, OBS)
+    assert (config.observatory_host, config.observatory_org_host) == (SEA1_OBS, OBS)
 
 
-def test_explicit_observatory_host_wins_for_every_call(wire):
-    config = obs_config(region="ord1", observatory_host="https://observatory.voltagepark.com/")
-    assert observatory_urls(wire, config) == routed(OBS, OBS)
+@pytest.mark.parametrize("region,override", [
+    ("ord1", "https://observatory.voltagepark.com/"),
+    ("sea1", "https://proxy.example/"),
+])
+def test_explicit_observatory_host_wins_for_every_call(wire, region, override):
+    config = obs_config(region=region, observatory_host=override)
+    expected = override.rstrip("/")
+    assert observatory_urls(wire, config) == routed(expected, expected)
 
 
 def test_observatory_host_follows_later_changes(wire):
     config = obs_config(region="sea1")
-    assert config.observatory_host == OBS
+    assert config.observatory_host == SEA1_OBS
     config.region = "ord1"
     assert (config.observatory_host, config.observatory_org_host) == (ORD1_OBS, ORD1_OBS)
     config.observatory_host = "https://proxy.example/"
